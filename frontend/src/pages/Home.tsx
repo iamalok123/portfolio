@@ -1,5 +1,6 @@
 import { PageTransition } from '../components/layout/PageTransition'
 import { About } from '../components/sections/About'
+import { BlogPreview } from '../components/sections/BlogPreview'
 import { Experience } from '../components/sections/Experience'
 import { Hero } from '../components/sections/Hero'
 import { Projects } from '../components/sections/Projects'
@@ -13,6 +14,7 @@ export function Home() {
       <Projects />
       <Skills />
       <Experience />
+      <BlogPreview />
     </PageTransition>
   )
 }

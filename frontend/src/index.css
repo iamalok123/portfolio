@@ -90,6 +90,121 @@ button {
   animation: marquee 24s linear infinite;
 }
 
+.prose-portfolio {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.prose-portfolio h1,
+.prose-portfolio h2,
+.prose-portfolio h3 {
+  scroll-margin-top: 7rem;
+  color: var(--foreground);
+  font-family: var(--font-display);
+  line-height: 1.08;
+}
+
+.prose-portfolio h1 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  font-weight: 800;
+}
+
+.prose-portfolio h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 3rem 0 1rem;
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  font-weight: 800;
+}
+
+.prose-portfolio h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 2.2rem 0 0.8rem;
+  font-size: clamp(1.35rem, 3.5vw, 2rem);
+  font-weight: 800;
+}
+
+.prose-portfolio h2 a,
+.prose-portfolio h3 a {
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.prose-portfolio h2:hover a,
+.prose-portfolio h3:hover a {
+  opacity: 1;
+}
+
+.prose-portfolio p,
+.prose-portfolio ul,
+.prose-portfolio ol {
+  margin: 1rem 0;
+}
+
+.prose-portfolio ul,
+.prose-portfolio ol {
+  padding-left: 1.4rem;
+}
+
+.prose-portfolio li {
+  margin: 0.45rem 0;
+}
+
+.prose-portfolio blockquote {
+  margin: 2rem 0;
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+  color: var(--foreground);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.prose-portfolio code {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  padding: 0.16rem 0.45rem;
+  color: var(--foreground);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.prose-portfolio pre {
+  margin: 2rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: #0b0f14;
+  padding: 1.15rem;
+}
+
+.prose-portfolio pre code {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: #e5edf5;
+}
+
+.prose-portfolio a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.prose-portfolio img {
+  margin: 2rem 0;
+  border-radius: 0.75rem;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
