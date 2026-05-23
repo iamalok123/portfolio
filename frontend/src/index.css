@@ -36,12 +36,17 @@
   --border: rgba(255, 255, 255, 0.08);
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth;
+  /* scroll-behavior intentionally omitted — Lenis manages ALL scrolling.
+     Adding scroll-behavior: smooth here would conflict with Lenis and
+     cause the 1-2 second scroll delay/double-animation bug. */
+  overflow-x: hidden;
 }
 
 body {
@@ -221,7 +226,6 @@ button {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
 }

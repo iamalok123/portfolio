@@ -15,40 +15,54 @@ function CountUp({ value, suffix, decimals = 0, inView }: CountUpProps) {
   const frameRef = useRef(0)
 
   useEffect(() => {
-    if (!inView) {
-      return
-    }
+    // Cancel any in-progress animation
+    cancelAnimationFrame(frameRef.current)
 
-    const duration = 1100
+    if (!inView) return
+
+    // Reset to 0 before starting so the animation always plays from the start
+    setDisplay(0)
+
+    const duration = 1200
     let startTime: number | null = null
 
     const tick = (time: number) => {
-      startTime ??= time
-      const progress = Math.min((time - startTime) / duration, 1)
+      if (startTime === null) startTime = time
+      const elapsed = time - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      // Ease-out cubic for a natural deceleration
       const eased = 1 - Math.pow(1 - progress, 3)
 
       setDisplay(value * eased)
 
       if (progress < 1) {
         frameRef.current = requestAnimationFrame(tick)
+      } else {
+        // Ensure we always land exactly on the target value
+        setDisplay(value)
       }
     }
 
     frameRef.current = requestAnimationFrame(tick)
 
     return () => cancelAnimationFrame(frameRef.current)
-  }, [decimals, inView, value])
+    // Only re-run when inView or value changes — NOT decimals
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, value])
+
+  // Format: decimals > 0 → toFixed, else Math.floor to avoid "0.9st Place"
+  const formatted = decimals > 0 ? display.toFixed(decimals) : Math.floor(display).toString()
 
   return (
     <span>
-      {display.toFixed(decimals)}
+      {formatted}
       {suffix}
     </span>
   )
 }
 
 export function About() {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 })
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
 
   return (
     <section id="about" ref={ref} className="relative overflow-hidden py-24 sm:py-32">

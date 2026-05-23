@@ -1,18 +1,37 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
 import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react'
 import { useTheme } from 'next-themes'
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from '../../lib/utils'
 
 const navItems = [
-  { label: 'Home', href: '/#home', sectionId: 'home' },
-  { label: 'About', href: '/#about', sectionId: 'about' },
-  { label: 'Projects', href: '/#projects', sectionId: 'projects' },
-  { label: 'Blog', href: '/#blog', sectionId: 'blog' },
-  { label: 'Contact', href: '/#contact', sectionId: 'contact' },
+  { label: 'Home', sectionId: 'home' },
+  { label: 'About', sectionId: 'about' },
+  { label: 'Projects', sectionId: 'projects' },
+  { label: 'Blog', sectionId: 'blog' },
+  { label: 'Contact', sectionId: 'contact' },
 ]
 
+// ─── Lenis scroll-to helper ─────────────────────────────────────────────────
+// App.tsx exposes the Lenis instance on window.lenis.
+// We use lenis.scrollTo(element) for perfectly smooth, physics-based scrolling.
+// Fall back to scrollIntoView if Lenis hasn't initialised yet (rare).
+function scrollToSection(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return
+
+  const lenis = (window as Window & { lenis?: { scrollTo: (target: HTMLElement | string, opts?: object) => void } }).lenis
+
+  if (lenis) {
+    lenis.scrollTo(el, { offset: 0, duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) })
+  } else {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+
+// ─── Theme Toggle ────────────────────────────────────────────────────────────
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const isDark = resolvedTheme !== 'light'
@@ -43,64 +62,111 @@ function ThemeToggle() {
   )
 }
 
+// ─── Navbar ──────────────────────────────────────────────────────────────────
 export function Navbar() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { scrollY } = useScroll()
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  // Store a pending scroll target when we navigate to '/' from another page
+  const pendingScroll = useRef<string | null>(null)
+
+  const isOnHome = location.pathname === '/'
+
+  // Derive active section for non-home pages
   const displayActiveSection = location.pathname.startsWith('/blog')
     ? 'blog'
     : location.pathname.startsWith('/projects')
       ? 'projects'
       : activeSection
 
+  // ── Scroll header background ───────────────────────────────────────────────
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50)
   })
 
+  // ── IntersectionObserver for active section ────────────────────────────────
+  // We run this with a small delay to give lazy-loaded sections time to mount.
   useEffect(() => {
-    if (location.pathname !== '/') {
-      return
+    if (!isOnHome) return
+
+    let observer: IntersectionObserver | null = null
+
+    // Small delay so lazy-loaded section components are guaranteed to be in DOM
+    const timer = setTimeout(() => {
+      const sections = navItems
+        .map((item) => document.getElementById(item.sectionId))
+        .filter((s): s is HTMLElement => Boolean(s))
+
+      if (!sections.length) return
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          // Find the section that's most visible right now
+          const best = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+
+          if (best?.target.id) {
+            setActiveSection(best.target.id)
+          }
+        },
+        {
+          // '-20% top, -55% bottom' keeps the "winning" section crisp
+          rootMargin: '-20% 0px -55% 0px',
+          threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+        },
+      )
+
+      sections.forEach((s) => observer!.observe(s))
+    }, 300) // 300 ms is enough for Suspense lazy chunks to paint
+
+    return () => {
+      clearTimeout(timer)
+      observer?.disconnect()
     }
+  }, [isOnHome])
 
-    const sections = navItems
-      .map((item) => document.getElementById(item.sectionId))
-      .filter((section): section is HTMLElement => Boolean(section))
-
-    if (!sections.length) {
-      return
+  // ── Execute pending scroll after navigating to home ──────────────────────
+  useEffect(() => {
+    if (isOnHome && pendingScroll.current) {
+      const id = pendingScroll.current
+      pendingScroll.current = null
+      // Wait one tick so Home's sections are rendered before we scroll
+      const timer = setTimeout(() => scrollToSection(id), 100)
+      return () => clearTimeout(timer)
     }
+  }, [isOnHome])
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-
-        if (visibleEntry?.target.id) {
-          setActiveSection(visibleEntry.target.id)
-        }
-      },
-      {
-        rootMargin: '-35% 0px -50% 0px',
-        threshold: [0.1, 0.35, 0.6],
-      },
-    )
-
-    sections.forEach((section) => observer.observe(section))
-
-    return () => observer.disconnect()
-  }, [location.pathname])
-
+  // ── Lock body scroll when mobile menu is open ─────────────────────────────
   useEffect(() => {
     document.body.style.overflow = isMobileOpen ? 'hidden' : ''
-
     return () => {
       document.body.style.overflow = ''
     }
   }, [isMobileOpen])
 
+  // ── Handle nav link clicks ─────────────────────────────────────────────────
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent, sectionId: string) => {
+      e.preventDefault()
+      setIsMobileOpen(false)
+
+      if (isOnHome) {
+        // Already on home → just scroll to the section
+        scrollToSection(sectionId)
+      } else {
+        // On another page → store scroll target and navigate to home
+        pendingScroll.current = sectionId
+        navigate('/')
+      }
+    },
+    [isOnHome, navigate],
+  )
+
+  // ── Nav background ────────────────────────────────────────────────────────
   const navBackground = useMemo(
     () =>
       isScrolled
@@ -109,13 +175,15 @@ export function Navbar() {
     [isScrolled],
   )
 
+  // ── Render a single desktop nav link ──────────────────────────────────────
   const renderNavLink = (item: (typeof navItems)[number], index: number) => {
     const isActive = displayActiveSection === item.sectionId
 
     return (
       <motion.a
         key={item.sectionId}
-        href={item.href}
+        href={`/#${item.sectionId}`}
+        onClick={(e) => handleNavClick(e, item.sectionId)}
         className={cn(
           'group relative py-2 text-sm font-medium text-muted transition-colors hover:text-foreground',
           isActive && 'text-accent',
@@ -165,6 +233,7 @@ export function Navbar() {
             <ThemeToggle />
             <motion.a
               href="/#contact"
+              onClick={(e) => handleNavClick(e, 'contact')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 360, damping: 22 }}
@@ -190,10 +259,11 @@ export function Navbar() {
         </div>
       </motion.nav>
 
+      {/* ── Mobile full-screen overlay ─────────────────────────────────── */}
       <AnimatePresence>
         {isMobileOpen ? (
           <motion.div
-            className="fixed inset-0 z-[60] bg-bg/96 px-6 py-6 backdrop-blur-xl lg:hidden"
+            className="fixed inset-0 z-60 bg-bg/96 px-6 py-6 backdrop-blur-xl lg:hidden"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -227,8 +297,8 @@ export function Navbar() {
               {navItems.map((item) => (
                 <motion.a
                   key={item.sectionId}
-                  href={item.href}
-                  onClick={() => setIsMobileOpen(false)}
+                  href={`/#${item.sectionId}`}
+                  onClick={(e) => handleNavClick(e, item.sectionId)}
                   variants={{
                     closed: { opacity: 0, x: 42 },
                     open: { opacity: 1, x: 0 },
@@ -246,7 +316,7 @@ export function Navbar() {
 
             <motion.a
               href="/#contact"
-              onClick={() => setIsMobileOpen(false)}
+              onClick={(e) => handleNavClick(e, 'contact')}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 220, damping: 24, delay: 0.5 }}

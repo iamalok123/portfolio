@@ -1,7 +1,9 @@
 import Lenis from '@studio-freight/lenis'
 import { AnimatePresence } from 'framer-motion'
 import { lazy, Suspense, useEffect } from 'react'
+import { Toaster } from 'react-hot-toast'
 import { Route, Routes, useLocation } from 'react-router-dom'
+import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
@@ -29,6 +31,18 @@ function RouteFallback() {
   )
 }
 
+// ─── Scroll-to-top on every route change ─────────────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    // Instant scroll — Lenis handles smooth scroll, this just resets position
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
+
 function App() {
   const location = useLocation()
 
@@ -36,7 +50,13 @@ function App() {
     const lenis = new Lenis({
       duration: 1.1,
       smoothWheel: true,
+      // Prevent Lenis from blocking programmatic scrollTo calls
+      // so our scrollIntoView calls in Navbar work correctly
     })
+
+    // Expose Lenis on window so Navbar's scrollToSection helper can call
+    // lenis.scrollTo() directly for the smoothest possible experience
+    ;(window as Window & { lenis?: Lenis }).lenis = lenis
 
     let frame = 0
 
@@ -50,11 +70,28 @@ function App() {
     return () => {
       cancelAnimationFrame(frame)
       lenis.destroy()
+      ;(window as Window & { lenis?: Lenis }).lenis = undefined
     }
   }, [])
 
   return (
     <div className="min-h-svh bg-bg text-foreground">
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: 'var(--surface)',
+            color: 'var(--foreground)',
+            border: '1px solid var(--border)',
+            fontFamily: 'var(--font-body)',
+            fontSize: '0.875rem',
+          },
+          success: {
+            iconTheme: { primary: 'var(--accent)', secondary: '#0d0d0d' },
+          },
+        }}
+      />
+      <ScrollToTop />
       <Navbar />
       <AnimatePresence mode="wait" initial={false}>
         <Suspense key={location.pathname} fallback={<RouteFallback />}>
@@ -67,6 +104,7 @@ function App() {
           </Routes>
         </Suspense>
       </AnimatePresence>
+      <Footer />
     </div>
   )
 }
