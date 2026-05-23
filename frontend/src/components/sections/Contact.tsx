@@ -4,12 +4,12 @@ import {
   BriefcaseBusiness,
   Check,
   Copy,
-  Github,
   Loader2,
   Mail,
   MessagesSquare,
   SendHorizonal,
 } from 'lucide-react'
+import { Github } from 'react-bootstrap-icons'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -23,7 +23,7 @@ const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   subject: z.enum(['Internship', 'Project', 'Freelance', 'Other'], {
-    required_error: 'Please select a subject',
+    message: 'Please select a subject',
   }),
   message: z.string().min(20, 'Message must be at least 20 characters'),
   honeypot: z.string().max(0).optional(), // anti-spam
