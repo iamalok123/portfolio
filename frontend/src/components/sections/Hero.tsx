@@ -141,7 +141,7 @@ export function Hero() {
               <span className="size-3 rounded-full bg-[#28c840]" />
               <span className="ml-auto font-mono text-xs text-muted">alok.dev</span>
             </div>
-            <div className="relative aspect-[4/4.5] overflow-hidden rounded-xl border-4 border-accent bg-surface-2">
+            <div className="relative aspect-4/4.5 overflow-hidden rounded-xl border-4 border-accent bg-surface-2">
               <div className="absolute inset-0 bg-[linear-gradient(135deg,color-mix(in_srgb,var(--accent)_20%,transparent),transparent_45%),radial-gradient(circle_at_50%_20%,color-mix(in_srgb,var(--foreground)_14%,transparent),transparent_20rem)]" />
               <div className="absolute inset-x-10 bottom-0 h-[78%] rounded-t-full border border-accent/35 bg-bg shadow-[inset_0_0_60px_color-mix(in_srgb,var(--accent)_14%,transparent)]" />
               <div className="absolute left-1/2 top-[28%] size-24 -translate-x-1/2 rounded-full border-4 border-accent bg-surface" />

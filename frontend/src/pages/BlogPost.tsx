@@ -208,7 +208,7 @@ export function BlogPost() {
     <PageTransition>
       <motion.div
         style={{ scaleX: progressScale }}
-        className="fixed left-0 top-0 z-[70] h-1 w-full origin-left bg-accent"
+        className="fixed left-0 top-0 z-70 h-1 w-full origin-left bg-accent"
       />
 
       <article className="mx-auto min-h-svh w-full max-w-7xl px-6 pb-24 pt-32 sm:px-8 lg:px-10">
