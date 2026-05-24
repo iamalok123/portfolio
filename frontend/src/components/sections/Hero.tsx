@@ -12,11 +12,11 @@ const badges = ['Knight @ LeetCode', 'SIH 2025 Winner', 'Open Source']
 
 export function Hero() {
   return (
-    <section id="home" className="relative isolate min-h-svh overflow-hidden pt-24">
+    <section id="home" className="relative isolate min-h-svh overflow-hidden pt-20">
       <div className="hero-grain pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_72%_22%,color-mix(in_srgb,var(--accent)_18%,transparent),transparent_28rem)]" />
 
-      <div className="mx-auto grid min-h-[calc(100svh-6rem)] w-full max-w-7xl items-center gap-12 px-6 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
+      <div className="mx-auto grid min-h-[calc(100svh-5rem)] w-full max-w-7xl items-center gap-12 px-6 pb-16 pt-4 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10">
         <motion.div
           initial="hidden"
           animate="visible"
