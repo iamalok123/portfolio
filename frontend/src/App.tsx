@@ -5,6 +5,9 @@ import { Toaster } from 'react-hot-toast'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
+import { CustomCursor } from './components/ui/CustomCursor'
+import { LoadingScreen } from './components/ui/LoadingScreen'
+import { ScrollProgressBar } from './components/ui/ScrollProgressBar'
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
 const Blog = lazy(() => import('./pages/Blog').then((module) => ({ default: module.Blog })))
@@ -31,17 +34,6 @@ function RouteFallback() {
   )
 }
 
-// ─── Scroll-to-top on every route change ─────────────────────────────────────
-function ScrollToTop() {
-  const { pathname } = useLocation()
-
-  useEffect(() => {
-    // Instant scroll — Lenis handles smooth scroll, this just resets position
-    window.scrollTo(0, 0)
-  }, [pathname])
-
-  return null
-}
 
 function App() {
   const location = useLocation()
@@ -50,8 +42,6 @@ function App() {
     const lenis = new Lenis({
       duration: 1.1,
       smoothWheel: true,
-      // Prevent Lenis from blocking programmatic scrollTo calls
-      // so our scrollIntoView calls in Navbar work correctly
     })
 
     // Expose Lenis on window so Navbar's scrollToSection helper can call
@@ -75,37 +65,43 @@ function App() {
   }, [])
 
   return (
-    <div className="min-h-svh bg-bg text-foreground">
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: 'var(--surface)',
-            color: 'var(--foreground)',
-            border: '1px solid var(--border)',
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.875rem',
-          },
-          success: {
-            iconTheme: { primary: 'var(--accent)', secondary: '#0d0d0d' },
-          },
-        }}
-      />
-      <ScrollToTop />
-      <Navbar />
-      <AnimatePresence mode="wait" initial={false}>
-        <Suspense key={location.pathname} fallback={<RouteFallback />}>
-          <Routes location={location}>
-            <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </AnimatePresence>
-      <Footer />
-    </div>
+    <>
+      {/* ── Global overlays (above everything) ───────────────────────────────── */}
+      <LoadingScreen />
+      <CustomCursor />
+      <ScrollProgressBar />
+
+      <div className="min-h-svh bg-bg text-foreground">
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: 'var(--surface)',
+              color: 'var(--foreground)',
+              border: '1px solid var(--border)',
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.875rem',
+            },
+            success: {
+              iconTheme: { primary: 'var(--accent)', secondary: '#0d0d0d' },
+            },
+          }}
+        />
+        <Navbar />
+        <AnimatePresence mode="wait" initial={false}>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </AnimatePresence>
+        <Footer />
+      </div>
+    </>
   )
 }
 

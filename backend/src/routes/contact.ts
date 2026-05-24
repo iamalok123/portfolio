@@ -1,0 +1,21 @@
+import { Router } from 'express'
+import rateLimit from 'express-rate-limit'
+import { sendMessage } from '../controllers/contact.js'
+
+// Rate limit: max 3 requests per 15 minutes per IP for contact endpoint
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3,
+  message: {
+    success: false,
+    message: 'Too many messages sent. Please wait 15 minutes before trying again.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+
+const router = Router()
+
+router.post('/', contactLimiter, sendMessage)
+
+export default router

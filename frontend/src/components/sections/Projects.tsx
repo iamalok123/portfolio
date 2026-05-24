@@ -31,10 +31,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ type: 'spring', stiffness: 150, damping: 22, delay: index * 0.04 }}
       whileHover={{ y: -4 }}
-      className={cn(
-        'group relative overflow-hidden rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent/40',
-        isLarge && 'lg:col-span-2',
-      )}
+      className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent/40"
     >
       {project.featured ? (
         <span className="absolute right-5 top-5 z-10 rotate-3 rounded-sm bg-accent px-3 py-1 font-display text-[10px] font-extrabold uppercase tracking-[0.18em] text-black">
@@ -62,7 +59,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         </div>
       </a>
 
-      <div className="pt-5">
+      <div className="flex flex-1 flex-col pt-5">
         <div className="flex items-start justify-between gap-4">
           <h3 className="font-display text-2xl font-extrabold text-foreground">{project.title}</h3>
           <div className="flex shrink-0 gap-2 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
@@ -87,7 +84,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
         </div>
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted">{project.desc}</p>
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-auto pt-5 flex flex-wrap gap-2">
           {project.techStack.map((tech) => (
             <span
               key={tech}

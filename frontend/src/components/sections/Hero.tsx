@@ -7,7 +7,7 @@ import {
   MessagesSquare,
 } from 'lucide-react'
 
-const headingWords = ['HEY,', "I'M", 'ALOK', 'KUMAR.']
+const headingWords = ['HEY,', "I'M", 'Alok', 'Hotta.']
 const badges = ['Knight @ LeetCode', 'SIH 2025 Winner', 'Open Source']
 
 export function Hero() {

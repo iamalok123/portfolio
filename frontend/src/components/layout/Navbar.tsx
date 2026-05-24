@@ -87,45 +87,39 @@ export function Navbar() {
     setIsScrolled(latest > 50)
   })
 
-  // ── IntersectionObserver for active section ────────────────────────────────
-  // We run this with a small delay to give lazy-loaded sections time to mount.
+  // ── Scroll Listener for active section ─────────────────────────────────────
   useEffect(() => {
     if (!isOnHome) return
 
-    let observer: IntersectionObserver | null = null
-
-    // Small delay so lazy-loaded section components are guaranteed to be in DOM
-    const timer = setTimeout(() => {
+    const handleScroll = () => {
       const sections = navItems
         .map((item) => document.getElementById(item.sectionId))
         .filter((s): s is HTMLElement => Boolean(s))
 
       if (!sections.length) return
 
-      observer = new IntersectionObserver(
-        (entries) => {
-          // Find the section that's most visible right now
-          const best = entries
-            .filter((e) => e.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+      let currentSection = 'home'
 
-          if (best?.target.id) {
-            setActiveSection(best.target.id)
-          }
-        },
-        {
-          // '-20% top, -55% bottom' keeps the "winning" section crisp
-          rootMargin: '-20% 0px -55% 0px',
-          threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
-        },
-      )
+      for (const section of sections) {
+        const rect = section.getBoundingClientRect()
+        // If the top of the section crosses the upper 35% of the screen,
+        // it becomes the active section. Iterating top-to-bottom ensures
+        // the deepest visible section wins.
+        if (rect.top <= window.innerHeight * 0.35) {
+          currentSection = section.id
+        }
+      }
 
-      sections.forEach((s) => observer!.observe(s))
-    }, 300) // 300 ms is enough for Suspense lazy chunks to paint
+      setActiveSection(currentSection)
+    }
+
+    // Run once on mount
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {
-      clearTimeout(timer)
-      observer?.disconnect()
+      window.removeEventListener('scroll', handleScroll)
     }
   }, [isOnHome])
 
@@ -193,12 +187,11 @@ export function Navbar() {
         transition={{ type: 'spring', stiffness: 220, damping: 24, delay: index * 0.02 }}
       >
         {item.label}
-        <motion.span
-          className="absolute inset-x-0 -bottom-0.5 h-px origin-left bg-accent"
-          initial={false}
-          animate={{ scaleX: isActive ? 1 : 0 }}
-          whileHover={{ scaleX: 1 }}
-          transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+        <span
+          className={cn(
+            'absolute inset-x-0 -bottom-0.5 h-px origin-left bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100',
+            isActive ? 'scale-x-100' : 'scale-x-0'
+          )}
         />
       </motion.a>
     )
