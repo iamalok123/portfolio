@@ -6,7 +6,7 @@ export const PROJECTS_DATA: Project[] = [
     title: 'Zephyr',
     desc: 'AI website builder that turns prompts into editable, production-minded web experiences.',
     tags: ['AI/ML', 'Full-Stack'],
-    techStack: ['React', 'Node.js', 'LangChain', 'MongoDB'],
+    techStack: ['All', 'TypeScript', 'React', 'Node.js', 'LangChain', 'MongoDB'],
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
     coverImage: '',

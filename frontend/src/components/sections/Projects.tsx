@@ -7,7 +7,16 @@ import { api } from '../../lib/axios'
 import { cn } from '../../lib/utils'
 import type { Project } from '../../types'
 
-const filters = ['All', 'Full-Stack', 'AI/ML', 'Frontend', 'Open Source']
+const filters = [
+  'All',
+  'Full-Stack',
+  'Frontend',
+  'AI/ML',
+  'Open Source',
+  'React',
+  'Node.js',
+  'TypeScript',
+]
 
 function SkeletonCard() {
   return (
@@ -21,8 +30,6 @@ function SkeletonCard() {
 }
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const isLarge = project.featured && index === 0
-
   return (
     <motion.article
       layout
@@ -108,10 +115,12 @@ export function Projects() {
     let isActive = true
 
     api
-      .get<Project[]>('/projects')
-      .then((response) => {
-        if (isActive && Array.isArray(response.data) && response.data.length > 0) {
-          setProjects(response.data)
+      .get<{ success: boolean; data: Project[] }>('/projects')
+      .then((res) => {
+        if (isActive && res.data.success) {
+          if (res.data.data.length > 0) {
+            setProjects(res.data.data)
+          }
         }
       })
       .catch(() => {
@@ -137,7 +146,10 @@ export function Projects() {
       return ordered
     }
 
-    return ordered.filter((project) => project.tags.includes(activeFilter))
+    return ordered.filter(
+      (project) =>
+        project.tags.includes(activeFilter) || project.techStack.includes(activeFilter)
+    )
   }, [activeFilter, projects])
 
   return (
@@ -153,15 +165,17 @@ export function Projects() {
             </h2>
           </div>
 
-          <div className="flex w-full gap-2 overflow-x-auto rounded-full border border-border bg-surface p-1 lg:w-auto">
+          <div className="flex flex-wrap items-center gap-2 lg:max-w-[50%] lg:justify-end">
             {filters.map((filter) => (
               <button
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
                 className={cn(
-                  'relative shrink-0 rounded-full px-4 py-2 text-sm font-semibold text-muted transition',
-                  activeFilter === filter && 'text-black',
+                  'relative shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition',
+                  activeFilter === filter
+                    ? 'border-transparent text-black'
+                    : 'border-border bg-surface text-muted hover:text-foreground'
                 )}
               >
                 {activeFilter === filter ? (

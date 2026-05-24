@@ -16,8 +16,9 @@ export function CustomCursor() {
   const cursorY = useSpring(mouseY, springConfig)
 
   useEffect(() => {
-    // Only render on non-touch desktop
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return
+    // Completely disable on mobile/tablet devices (either by touch detection or screen width)
+    const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+    if (isTouch || window.innerWidth < 1024 || navigator.maxTouchPoints > 0) return
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX)
@@ -59,14 +60,14 @@ export function CustomCursor() {
     }
   }, [mouseX, mouseY, isVisible])
 
-  // Don't render on touch devices
-  if ('ontouchstart' in window && navigator.maxTouchPoints > 0) return null
+  // Don't render component at all if we know it's a touch device
+  if (typeof window !== 'undefined' && navigator.maxTouchPoints > 0) return null
 
   return (
     <>
       {/* Main cursor dot */}
       <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-9999 rounded-full"
+        className="pointer-events-none fixed top-0 left-0 z-9999 hidden rounded-full lg:block"
         style={{
           x: cursorX,
           y: cursorY,
@@ -85,7 +86,7 @@ export function CustomCursor() {
 
       {/* Outer ring — always small, just follows */}
       <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-9998 rounded-full border border-accent/40"
+        className="pointer-events-none fixed top-0 left-0 z-9998 hidden rounded-full border border-accent/40 lg:block"
         style={{
           x: cursorX,
           y: cursorY,
