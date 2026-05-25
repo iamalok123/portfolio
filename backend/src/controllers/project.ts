@@ -14,11 +14,10 @@ export async function getProjects(
   }
 
   try {
-    const { tech, featured } = req.query as Record<string, string | undefined>
+    const { tech } = req.query as Record<string, string | undefined>
 
     const filter: Record<string, unknown> = {}
     if (tech) filter['techStack'] = { $in: [new RegExp(tech, 'i')] }
-    if (featured === 'true') filter['featured'] = true
 
     const projects = await Project.find(filter).sort({ order: 1 }).lean()
     res.json({ success: true, data: projects })

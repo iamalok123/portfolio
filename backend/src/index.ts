@@ -2,6 +2,8 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { connectDB } from './config/db.js'
 import blogRoutes from './routes/blog.js'
 import projectRoutes from './routes/project.js'
@@ -9,6 +11,8 @@ import contactRoutes from './routes/contact.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const assetDir = path.resolve(__dirname, '../../assets')
 
 // ─── Security ────────────────────────────────────────────────────────────────
 app.use(helmet())
@@ -21,7 +25,6 @@ const allowedOrigins = (process.env.CLIENT_URL ?? 'http://localhost:5173').split
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., Postman, same-origin)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true)
       } else {
@@ -37,6 +40,18 @@ app.use(
 // ─── Body parsing ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '1mb' }))
 app.use(express.urlencoded({ extended: true, limit: '1mb' }))
+
+// ─── Seeded media assets ─────────────────────────────────────────────────────
+app.use(
+  ['/assets', '/asset'],
+  express.static(assetDir, {
+    maxAge: '7d',
+    immutable: true,
+    setHeaders: (res) => {
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin')
+    },
+  }),
+)
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {

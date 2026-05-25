@@ -20,9 +20,6 @@ function CountUp({ value, suffix, decimals = 0, inView }: CountUpProps) {
 
     if (!inView) return
 
-    // Reset to 0 before starting so the animation always plays from the start
-    setDisplay(0)
-
     const duration = 1200
     let startTime: number | null = null
 
@@ -46,8 +43,6 @@ function CountUp({ value, suffix, decimals = 0, inView }: CountUpProps) {
     frameRef.current = requestAnimationFrame(tick)
 
     return () => cancelAnimationFrame(frameRef.current)
-    // Only re-run when inView or value changes — NOT decimals
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, value])
 
   // Format: decimals > 0 → toFixed, else Math.floor to avoid "0.9st Place"
@@ -85,8 +80,8 @@ export function About() {
           </div>
           <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-border bg-surface px-5 py-3 text-sm font-medium text-foreground">
             <span className="relative flex size-3">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#32d583] opacity-70" />
-              <span className="relative inline-flex size-3 rounded-full bg-[#32d583]" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-foreground opacity-30" />
+              <span className="relative inline-flex size-3 rounded-full bg-foreground" />
             </span>
             Currently Building
             <span className="font-display font-bold text-accent">{ABOUT_CONTENT.currentBuild}</span>
@@ -146,7 +141,7 @@ export function About() {
                 transition={{ type: 'spring', stiffness: 150, damping: 20 }}
                 className="group flex items-start gap-4 rounded-lg border border-border bg-surface p-5 transition hover:-translate-y-1 hover:border-l-accent"
               >
-                <div className="grid size-11 shrink-0 place-items-center rounded-md bg-accent text-black">
+                <div className="grid size-11 shrink-0 place-items-center rounded-md bg-accent text-bg">
                   <Icon size={20} />
                 </div>
                 <div>

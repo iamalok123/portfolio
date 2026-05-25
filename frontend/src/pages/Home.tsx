@@ -12,8 +12,8 @@ export function Home() {
     <PageTransition>
       <Hero />
       <About />
-      <Projects />
       <Skills />
+      <Projects />
       <Experience />
       <BlogPreview />
       <Contact />

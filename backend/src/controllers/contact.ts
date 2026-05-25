@@ -121,7 +121,7 @@ async function sendEmailNotification(data: {
     html: `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">
         <h2 style="color: #0d0d0d; margin-bottom: 8px;">New Portfolio Message</h2>
-        <p style="color: #6b7280; font-size: 14px; margin-bottom: 24px;">Received via alok.dev contact form</p>
+        <p style="color: #6b7280; font-size: 14px; margin-bottom: 24px;">Received via alokhotta.site contact form</p>
         
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
           <tr>

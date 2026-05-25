@@ -28,7 +28,7 @@ export function Experience() {
           className="mx-auto max-w-3xl text-center"
         >
           <p className="font-mono text-sm uppercase tracking-[0.24em] text-accent">
-            // roadmap
+            // Journey
           </p>
           <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.02] text-foreground sm:text-6xl">
             Experience Timeline
@@ -58,7 +58,7 @@ export function Experience() {
                     isLeft ? 'md:[&>article]:col-start-1' : 'md:[&>article]:col-start-2',
                   )}
                 >
-                  <div className="absolute left-2.5 top-7 z-10 grid size-6 place-items-center rounded-full bg-accent text-black shadow-[0_0_0_8px_var(--bg)] md:left-1/2 md:-translate-x-1/2">
+                  <div className="absolute left-2.5 top-7 z-10 grid size-6 place-items-center rounded-full bg-accent text-bg shadow-[0_0_0_8px_var(--bg)] md:left-1/2 md:-translate-x-1/2">
                     <span
                       className={cn(
                         'size-2.5 rounded-full bg-black',
@@ -74,7 +74,7 @@ export function Experience() {
                     )}
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <span className="rounded-full bg-accent px-3 py-1 font-display text-xs font-extrabold uppercase tracking-[0.16em] text-black">
+                      <span className="rounded-full bg-accent px-3 py-1 font-display text-xs font-extrabold uppercase tracking-[0.16em] text-bg">
                         {date}
                       </span>
                       <span className="grid size-10 place-items-center rounded-md bg-surface-2 text-accent">

@@ -7,8 +7,8 @@ export interface Blog {
   category: string
   readTime: number
   publishedAt: string
-  coverImage: string
-  featured: boolean
+  image?: string
+  coverImage?: string
 }
 
 export interface Project {
@@ -19,7 +19,7 @@ export interface Project {
   techStack: string[]
   liveUrl: string
   githubUrl: string
-  coverImage: string
-  featured: boolean
+  image?: string
+  coverImage?: string
   order: number
 }

@@ -214,7 +214,7 @@ export function Navbar() {
             className="font-display text-xl font-extrabold tracking-normal text-foreground"
             aria-label="Go to home"
           >
-            <span className="text-accent">[</span>alok.dev
+            <span className="text-accent">[</span>alokhotta.site
             <span className="text-accent">]</span>
           </Link>
 
@@ -230,7 +230,8 @@ export function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-xs font-extrabold uppercase tracking-[0.18em] text-black"
+              style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-display text-xs font-extrabold uppercase tracking-[0.18em]"
             >
               Hire Me
               <ArrowUpRight size={16} />
@@ -264,7 +265,7 @@ export function Navbar() {
           >
             <div className="flex items-center justify-between">
               <Link to="/" className="font-display text-xl font-extrabold text-foreground">
-                <span className="text-accent">[</span>alok.dev
+                <span className="text-accent">[</span>alokhotta.site
                 <span className="text-accent">]</span>
               </Link>
               <motion.button
@@ -313,7 +314,8 @@ export function Navbar() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 220, damping: 24, delay: 0.5 }}
-              className="mt-12 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-5 py-4 font-display text-sm font-extrabold uppercase tracking-[0.18em] text-black"
+              style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+              className="mt-12 inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-4 font-display text-sm font-extrabold uppercase tracking-[0.18em]"
             >
               Hire Me
               <ArrowUpRight size={18} />

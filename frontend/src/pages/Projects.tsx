@@ -5,7 +5,7 @@ export function Projects() {
   return (
     <PageTransition>
       <div className="pt-12">
-        <ProjectShowcase />
+        <ProjectShowcase showViewAll={false} />
       </div>
     </PageTransition>
   )

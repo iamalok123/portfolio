@@ -7,7 +7,9 @@ export function PageTransition({ children }: PropsWithChildren) {
     window.scrollTo(0, 0)
     
     // Also reset Lenis internal state if available to prevent jump bugs
-    const lenis = (window as Window & { lenis?: { scrollTo: (y: number, opts: any) => void } }).lenis
+    const lenis = (window as Window & {
+      lenis?: { scrollTo: (target: number, options?: { immediate?: boolean }) => void }
+    }).lenis
     if (lenis) {
       lenis.scrollTo(0, { immediate: true })
     }

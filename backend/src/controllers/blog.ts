@@ -26,7 +26,7 @@ export async function getBlogs(req: Request, res: Response, next: NextFunction):
     if (sort === 'oldest') sortOption = { publishedAt: 1 }
     if (sort === 'readTime') sortOption = { readTime: 1 }
 
-    const blogs = await Blog.find(filter).sort(sortOption).select('-content').lean()
+    const blogs = await Blog.find(filter).sort(sortOption).lean()
     res.json({ success: true, data: blogs })
   } catch (err) {
     next(err)

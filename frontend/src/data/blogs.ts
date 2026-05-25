@@ -2,55 +2,143 @@ import type { Blog } from '../types'
 
 export const BLOGS_MOCK: Blog[] = [
   {
-    _id: 'blog-zephyr',
-    title: 'Building Zephyr: Lessons From an AI Website Builder',
-    slug: 'building-zephyr-ai-website-builder',
-    category: 'Projects',
-    tags: ['AI', 'React', 'LangChain', 'Product'],
-    readTime: 7,
-    publishedAt: '2026-05-10',
+    _id: 'blog-ai-bad-engineering',
+    title: "AI Can't Save Bad Engineering",
+    slug: 'ai-cant-save-bad-engineering',
+    category: 'Opinion',
+    tags: ['AI', 'Engineering', 'Systems', 'Fundamentals'],
+    readTime: 9,
+    publishedAt: '2026-05-25',
     coverImage: '',
-    featured: true,
-    content: `# Building Zephyr: Lessons From an AI Website Builder
+    content: `# AI Can't Save Bad Engineering
 
-Zephyr started as a simple question: what would it feel like if a website builder understood product intent before it touched layout?
+AI tools can't compensate for poor engineering.
 
-Instead of generating a static page and stopping there, I wanted a workflow where the system could reason about structure, components, copy, and implementation constraints.
+## The Shallow Engineer Problem
 
-## The Product Shape
+Let's talk about shallow engineers today.
 
-The first version focuses on three loops: prompt, generate, refine.
+There are many engineers who are nothing without AI. So let us dive into this.
 
-- The prompt captures the target user, business type, and must-have sections.
-- The generator creates a structured page model instead of one large blob of UI.
-- The refinement pass checks spacing, hierarchy, and responsive behavior.
+First, I have noticed a common pattern among many open-source contributors during GSoC.
 
-That last step matters because AI output can look impressive while still being hard to use.
+They can ship features.
 
-## Architecture Notes
+They can write thousands of lines of code.
 
-The frontend is React and Tailwind. The backend handles generation orchestration, provider calls, persistence, and project history.
+But they do not know what it actually does.
 
-\`\`\`ts
-type PageBlock = {
-  id: string
-  kind: 'hero' | 'features' | 'pricing' | 'faq'
-  intent: string
-  content: Record<string, string>
-}
-\`\`\`
+That is one of the major problems when people use AI as a replacement for understanding.
 
-Keeping page blocks structured makes it easier to regenerate one section without destroying the whole page.
+## Understanding Before Code
 
-## What I Learned
+Good engineering starts before the first line of code.
 
-The biggest lesson is that AI product quality depends on constraints. Strong constraints do not make the output less creative. They make it editable, predictable, and shippable.
+You need to understand the data model, the failure cases, the user flow, and the constraints of the system. Without that, AI can only generate something that looks useful from a distance.
 
-> A good AI feature should feel like leverage, not a slot machine.
+If you cannot explain the existing architecture, you cannot safely change it.
 
-## Next Steps
+If you cannot reason about tradeoffs, you cannot review generated code.
 
-I am improving component selection, version history, and export quality. The long-term goal is a builder that helps developers move faster without hiding the code from them.`,
+If you cannot debug without guessing, the tool is carrying the project instead of helping you.
+
+## The Vibe Coder
+
+The vibe coder moves fast, but only while the path is obvious.
+
+They paste an error into AI.
+
+They accept the first fix.
+
+They add another dependency.
+
+They keep layering changes until the code finally runs.
+
+The result may pass a happy-path demo, but it becomes difficult to maintain because nobody made a real decision. The system is just a pile of plausible suggestions.
+
+## Two Weeks of Wasted Effort
+
+I have seen people spend weeks fixing a problem that would have taken a day if they had first read the code.
+
+They ask AI to modify files they do not understand. Then the generated patch breaks another flow. Then they ask for another patch. Soon the project has multiple half-fixes stacked on top of each other.
+
+The real cost is not the time spent typing prompts.
+
+The real cost is losing the map of the system.
+
+### The Code That Broke
+
+Most bad AI-generated code does not look obviously broken.
+
+It has good variable names.
+
+It has comments.
+
+It may even compile.
+
+But it often misses hidden contracts: authorization rules, cache behavior, edge cases, race conditions, validation boundaries, and long-term readability.
+
+### The Complexity He Missed
+
+Complexity is rarely in the line that changed.
+
+It is in how that line interacts with everything around it.
+
+That is why shallow fixes become expensive. They solve the visible symptom while quietly increasing the system's future maintenance cost.
+
+## What They Lack
+
+The problem is not using AI.
+
+The problem is using AI without fundamentals.
+
+Strong engineers still use AI, but they use it differently. They ask better questions. They reject weak answers. They turn generated code into something that fits the system.
+
+## Decision Bugs
+
+A syntax bug is easy to find.
+
+A decision bug is harder.
+
+It happens when the code technically works, but the design choice is wrong. The API shape is confusing. The state lives in the wrong place. The abstraction hides important behavior. The database query works today but will collapse with real data.
+
+AI can help surface options, but it cannot own the decision for you.
+
+### Symptoms of AI Dependency
+
+- You cannot explain the code you just merged.
+- You avoid debugging and immediately ask for a rewrite.
+- You add libraries before checking the standard solution.
+- You accept patches without understanding the tradeoff.
+- You measure progress by generated lines instead of reduced complexity.
+
+## Fundamentals That Matter
+
+Learn how data flows through your app.
+
+Learn how HTTP, databases, authentication, queues, caching, and rendering actually behave.
+
+Learn to read stack traces.
+
+Learn to write small tests.
+
+Learn to delete code.
+
+These fundamentals make AI useful because they give you judgment.
+
+## Maintenance Is the Real Challenge
+
+Shipping the first version is not the hard part.
+
+Maintaining it is.
+
+Real engineering begins when requirements change, users report bugs, performance matters, and someone else has to read what you wrote.
+
+AI can speed up the work, but it cannot save bad engineering.
+
+The tool is powerful.
+
+The responsibility is still yours.`,
   },
   {
     _id: 'blog-leetcode',
@@ -61,7 +149,6 @@ I am improving component selection, version history, and export quality. The lon
     readTime: 5,
     publishedAt: '2026-04-18',
     coverImage: '',
-    featured: true,
     content: `# How I Approach LeetCode Without Burning Out
 
 Competitive programming rewards consistency more than intensity. The difficult part is building a rhythm that survives exams, projects, and real life.
@@ -106,7 +193,6 @@ The point is not to grind forever. The point is to become reliable under pressur
     readTime: 8,
     publishedAt: '2026-03-24',
     coverImage: '',
-    featured: true,
     content: `# Designing a MERN Portfolio That Feels Like a Product
 
 A developer portfolio should do more than list projects. It should behave like a focused product: fast, structured, accessible, and easy to explore.
@@ -151,7 +237,6 @@ The best portfolio is not the loudest one. It is the one that makes your work ea
     readTime: 6,
     publishedAt: '2026-02-12',
     coverImage: '',
-    featured: false,
     content: `# Preparing for Open Source Programs as a Student
 
 Open source programs reward preparation long before the application opens.

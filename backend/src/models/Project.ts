@@ -7,8 +7,8 @@ export interface IProject extends Document {
   techStack: string[]
   liveUrl?: string
   githubUrl?: string
+  image?: string
   coverImage?: string
-  featured: boolean
   order: number
 }
 
@@ -20,11 +20,21 @@ const ProjectSchema = new Schema<IProject>(
     techStack: { type: [String], default: [] },
     liveUrl: { type: String },
     githubUrl: { type: String },
+    image: { type: String },
     coverImage: { type: String },
-    featured: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
   },
   { timestamps: true },
 )
+
+ProjectSchema.pre('validate', function () {
+  if (!this.coverImage && this.image) {
+    this.coverImage = this.image
+  }
+
+  if (!this.image && this.coverImage) {
+    this.image = this.coverImage
+  }
+})
 
 export const Project = mongoose.model<IProject>('Project', ProjectSchema)

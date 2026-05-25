@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { Github } from 'react-bootstrap-icons'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useInView } from 'react-intersection-observer'
 import { z } from 'zod'
@@ -107,7 +107,7 @@ function FloatingInput({ label, error, id, className, ...props }: FloatingInputP
           focused
             ? 'border-accent shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_14%,transparent)]'
             : 'border-border',
-          error && 'border-red-500',
+          error && 'border-foreground',
           className,
         )}
       />
@@ -123,7 +123,7 @@ function FloatingInput({ label, error, id, className, ...props }: FloatingInputP
         {label}
       </label>
       {error ? (
-        <p className="mt-1.5 text-xs text-red-500">{error}</p>
+        <p className="mt-1.5 text-xs text-foreground">{error}</p>
       ) : null}
     </div>
   )
@@ -166,7 +166,7 @@ function FloatingTextarea({
           focused
             ? 'border-accent shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_14%,transparent)]'
             : 'border-border',
-          error && 'border-red-500',
+          error && 'border-foreground',
           className,
         )}
       />
@@ -182,7 +182,7 @@ function FloatingTextarea({
         {label}
       </label>
       {error ? (
-        <p className="mt-1.5 text-xs text-red-500">{error}</p>
+        <p className="mt-1.5 text-xs text-foreground">{error}</p>
       ) : null}
     </div>
   )
@@ -253,13 +253,13 @@ export function Contact() {
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
 
-  const watchedValues = watch()
+  const watchedValues = useWatch({ control })
 
   const onSubmit = async (data: FormData) => {
     if (data.honeypot) return // spam bot check
@@ -295,7 +295,7 @@ export function Contact() {
           ref={leftRef}
           initial={{ opacity: 0, x: -48 }}
           animate={leftInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ type: 'spring', stiffness: 130, damping: 22 }}
+          transition={{ type: "spring", stiffness: 130, damping: 22 }}
         >
           <p className="font-mono text-sm uppercase tracking-[0.24em] text-accent">
             // contact
@@ -305,15 +305,15 @@ export function Contact() {
           </h2>
           <p className="mt-6 max-w-lg text-base leading-8 text-muted">
             I'm currently open to internship opportunities, freelance
-            collaborations, and exciting projects. If you have an idea or
-            just want to say hi, my inbox is always open.
+            collaborations, and exciting projects. If you have an idea or just
+            want to say hi, my inbox is always open.
           </p>
 
           {/* Availability status */}
           <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-border bg-surface px-5 py-3 text-sm font-medium text-foreground">
             <span className="relative flex size-3">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#32d583] opacity-70" />
-              <span className="relative inline-flex size-3 rounded-full bg-[#32d583]" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-foreground opacity-30" />
+              <span className="relative inline-flex size-3 rounded-full bg-foreground" />
             </span>
             Available for work
           </div>
@@ -351,8 +351,8 @@ export function Contact() {
                 aria-label={label}
                 whileHover={{ y: -3, scale: 1.08 }}
                 whileTap={{ scale: 0.94 }}
-                transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-                className="grid size-11 place-items-center rounded-md border border-border bg-surface text-muted transition hover:border-accent/50 hover:bg-accent hover:text-black"
+                transition={{ type: "spring", stiffness: 360, damping: 22 }}
+                className="grid size-11 place-items-center rounded-md border border-border bg-surface text-muted transition hover:border-accent/50 hover:bg-accent hover:text-bg"
               >
                 <Icon />
               </motion.a>
@@ -365,15 +365,17 @@ export function Contact() {
           ref={rightRef}
           initial={{ opacity: 0, x: 48 }}
           animate={rightInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ type: 'spring', stiffness: 130, damping: 22 }}
+          transition={{ type: "spring", stiffness: 130, damping: 22 }}
         >
           <motion.form
             onSubmit={handleSubmit(onSubmit)}
             className="rounded-2xl border border-border bg-surface p-6 shadow-[0_24px_90px_rgba(0,0,0,0.14)] sm:p-8"
             initial="hidden"
-            animate={rightInView ? 'visible' : 'hidden'}
+            animate={rightInView ? "visible" : "hidden"}
             variants={{
-              visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } },
+              visible: {
+                transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+              },
               hidden: {},
             }}
           >
@@ -382,24 +384,27 @@ export function Contact() {
               type="text"
               tabIndex={-1}
               aria-hidden="true"
-              className="absolute left-[-9999px] opacity-0"
-              {...register('honeypot')}
+              className="absolute -left-2499.75 opacity-0"
+              {...register("honeypot")}
             />
 
-            <motion.div variants={fieldVariants} transition={{ type: 'spring', stiffness: 150, damping: 22 }}>
+            <motion.div
+              variants={fieldVariants}
+              transition={{ type: "spring", stiffness: 150, damping: 22 }}
+            >
               <FloatingInput
                 id="contact-name"
                 label="Your Name"
                 autoComplete="name"
                 error={errors.name?.message}
-                value={watchedValues.name ?? ''}
-                {...register('name')}
+                value={watchedValues.name ?? ""}
+                {...register("name")}
               />
             </motion.div>
 
             <motion.div
               variants={fieldVariants}
-              transition={{ type: 'spring', stiffness: 150, damping: 22 }}
+              transition={{ type: "spring", stiffness: 150, damping: 22 }}
               className="mt-4"
             >
               <FloatingInput
@@ -408,77 +413,79 @@ export function Contact() {
                 type="email"
                 autoComplete="email"
                 error={errors.email?.message}
-                value={watchedValues.email ?? ''}
-                {...register('email')}
+                value={watchedValues.email ?? ""}
+                {...register("email")}
               />
             </motion.div>
 
             {/* Subject dropdown */}
             <motion.div
               variants={fieldVariants}
-              transition={{ type: 'spring', stiffness: 150, damping: 22 }}
+              transition={{ type: "spring", stiffness: 150, damping: 22 }}
               className="relative mt-4"
             >
               <select
                 id="contact-subject"
                 defaultValue=""
                 className={cn(
-                  'w-full appearance-none rounded-lg border bg-surface-2 px-4 py-4 text-sm outline-none transition-all',
+                  "w-full appearance-none rounded-lg border bg-surface-2 px-4 py-4 text-sm outline-none transition-all",
                   errors.subject
-                    ? 'border-red-500 text-foreground'
-                    : 'border-border text-foreground focus:border-accent focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_14%,transparent)]',
+                    ? "border-foreground text-foreground"
+                    : "border-border text-foreground focus:border-accent focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_14%,transparent)]",
                 )}
-                {...register('subject')}
+                {...register("subject")}
               >
                 <option value="" disabled className="text-muted">
                   Subject — Internship, Project, Freelance, Other
                 </option>
-                {['Internship', 'Project', 'Freelance', 'Other'].map((s) => (
+                {["Internship", "Project", "Freelance", "Other"].map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
                 ))}
               </select>
               {errors.subject ? (
-                <p className="mt-1.5 text-xs text-red-500">{errors.subject.message}</p>
+                <p className="mt-1.5 text-xs text-foreground">
+                  {errors.subject.message}
+                </p>
               ) : null}
             </motion.div>
 
             <motion.div
               variants={fieldVariants}
-              transition={{ type: 'spring', stiffness: 150, damping: 22 }}
+              transition={{ type: "spring", stiffness: 150, damping: 22 }}
               className="mt-4"
             >
               <FloatingTextarea
                 id="contact-message"
                 label="Your Message"
                 error={errors.message?.message}
-                value={watchedValues.message ?? ''}
-                {...register('message')}
+                value={watchedValues.message ?? ""}
+                {...register("message")}
               />
             </motion.div>
 
             <motion.div
               variants={fieldVariants}
-              transition={{ type: 'spring', stiffness: 150, damping: 22 }}
+              transition={{ type: "spring", stiffness: 150, damping: 22 }}
               className="mt-6"
             >
               <motion.button
                 type="submit"
-                disabled={status === 'submitting' || status === 'success'}
-                whileHover={status === 'idle' ? { scale: 1.02 } : undefined}
-                whileTap={status === 'idle' ? { scale: 0.98 } : undefined}
-                transition={{ type: 'spring', stiffness: 340, damping: 22 }}
+                disabled={status === "submitting" || status === "success"}
+                whileHover={status === "idle" ? { scale: 1.02 } : undefined}
+                whileTap={status === "idle" ? { scale: 0.98 } : undefined}
+                transition={{ type: "spring", stiffness: 340, damping: 22 }}
                 className={cn(
-                  'relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full py-4 font-display text-sm font-extrabold uppercase tracking-[0.18em] transition-colors',
-                  status === 'success'
-                    ? 'bg-[#32d583] text-black'
-                    : 'bg-accent text-black hover:opacity-90',
-                  status === 'submitting' && 'cursor-not-allowed opacity-70',
+                  "relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full py-4 font-display text-sm font-extrabold uppercase tracking-[0.18em] transition-colors",
+                  status === "success"
+                    ? "bg-accent text-bg"
+                    : "bg-accent text-bg hover:opacity-90",
+                  status === "submitting" && "cursor-not-allowed opacity-70",
                 )}
               >
                 <AnimatePresence mode="wait" initial={false}>
-                  {status === 'submitting' ? (
+                  {status === "submitting" ? (
                     <motion.span
                       key="loading"
                       initial={{ opacity: 0 }}
@@ -489,7 +496,7 @@ export function Contact() {
                       <Loader2 size={17} className="animate-spin" />
                       Sending…
                     </motion.span>
-                  ) : status === 'success' ? (
+                  ) : status === "success" ? (
                     <motion.span
                       key="success"
                       initial={{ opacity: 0, scale: 0.8 }}
@@ -519,5 +526,5 @@ export function Contact() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

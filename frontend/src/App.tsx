@@ -23,17 +23,23 @@ const NotFound = lazy(() =>
 
 function RouteFallback() {
   return (
-    <div className="grid min-h-svh place-items-center bg-bg px-6">
-      <div className="text-center">
-        <p className="font-display text-3xl font-extrabold text-foreground">alok.dev</p>
-        <div className="mt-4 h-1 w-36 overflow-hidden rounded-full bg-surface-2">
+    <div
+      className="grid min-h-[calc(100svh-5rem)] place-items-center bg-bg px-6 py-16"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div className="flex w-full max-w-sm flex-col items-center text-center">
+        <p className="break-all font-display text-2xl font-extrabold text-foreground sm:text-3xl">
+          alokhotta.site
+        </p>
+        <div className="mt-4 h-1 w-40 max-w-[64vw] overflow-hidden rounded-full bg-surface-2">
           <div className="h-full w-1/2 animate-pulse rounded-full bg-accent" />
         </div>
       </div>
     </div>
   )
 }
-
 
 function App() {
   const location = useLocation()
@@ -83,7 +89,7 @@ function App() {
               fontSize: '0.875rem',
             },
             success: {
-              iconTheme: { primary: 'var(--accent)', secondary: '#0d0d0d' },
+              iconTheme: { primary: 'var(--accent)', secondary: 'var(--bg)' },
             },
           }}
         />
@@ -93,6 +99,7 @@ function App() {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blogs" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="*" element={<NotFound />} />

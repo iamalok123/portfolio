@@ -58,13 +58,12 @@ export function Footer() {
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : undefined}
       transition={{ type: 'spring', stiffness: 120, damping: 22 }}
-      style={{ backgroundColor: '#0a0a0a' }}
-      className="relative overflow-hidden border-t border-white/5"
+      className="relative overflow-hidden border-t border-border bg-bg"
     >
       {/* Giant parallax background text */}
       <motion.p
         style={{ y: bgTextY }}
-        className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-display text-[clamp(5rem,18vw,14rem)] font-extrabold uppercase leading-none tracking-tight text-white/4"
+        className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-display text-[clamp(5rem,18vw,14rem)] font-bold uppercase leading-none tracking-tight text-foreground/5"
         aria-hidden="true"
       >
         OPEN TO WORK
@@ -77,10 +76,10 @@ export function Footer() {
           {/* Logo */}
           <Link
             to="/"
-            className="font-display text-2xl font-extrabold tracking-normal text-white"
+            className="font-display text-2xl font-bold tracking-normal text-foreground"
             aria-label="Go to home"
           >
-            <span className="text-accent">[</span>alok.dev
+            <span className="text-accent">[</span>alokhotta.site
             <span className="text-accent">]</span>
           </Link>
 
@@ -92,7 +91,7 @@ export function Footer() {
                   <motion.a
                     href={href}
                     whileHover={{ color: 'var(--accent)' }}
-                    className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-white/50 transition-colors hover:text-accent"
+                    className="font-display text-sm font-semibold uppercase tracking-[0.18em] text-muted transition-colors hover:text-foreground"
                   >
                     {label}
                   </motion.a>
@@ -113,7 +112,7 @@ export function Footer() {
                 whileHover={{ y: -3, scale: 1.1 }}
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-                className="grid size-10 place-items-center rounded-md border border-white/10 bg-white/5 text-white/50 transition hover:border-accent/50 hover:text-accent"
+                className="grid size-10 place-items-center rounded-md border border-border bg-surface text-muted transition hover:border-foreground/40 hover:text-foreground"
               >
                 <Icon />
               </motion.a>
@@ -122,31 +121,28 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="mt-12 h-px w-full bg-white/5" />
+        <div className="mt-12 h-px w-full bg-border" />
 
         {/* Bottom bar */}
         <div className="mt-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="text-sm text-white/35">
+          <p className="text-sm text-muted">
             Designed &amp; Built by{' '}
-            <span className="font-semibold text-white/55">Alok Kumar</span>
+            <span className="font-semibold text-foreground">Alok Kumar</span>
           </p>
 
-          <p className="text-sm text-white/35">
-            Made with{' '}
-            <span className="text-accent">React</span>
-            {' '}+{' '}
-            <span aria-label="love">❤️</span>
+          <p className="text-sm text-muted">
+            Built with <span className="font-semibold text-foreground">React</span> + TypeScript
           </p>
 
           <div className="flex items-center gap-4">
-            <p className="text-sm text-white/35">© {currentYear}</p>
+            <p className="text-sm text-muted">© {currentYear}</p>
             <motion.a
               href="/#home"
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.96 }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/40 transition hover:border-accent/40 hover:text-accent"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted transition hover:border-foreground/40 hover:text-foreground"
             >
-              Back to top
+              Back to start
               <ArrowUpRight size={13} />
             </motion.a>
           </div>

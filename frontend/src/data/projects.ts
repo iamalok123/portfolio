@@ -9,8 +9,7 @@ export const PROJECTS_DATA: Project[] = [
     techStack: ['All', 'TypeScript', 'React', 'Node.js', 'LangChain', 'MongoDB'],
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
-    coverImage: '',
-    featured: true,
+    coverImage: '/assets/project/zephyr.png',
     order: 1,
   },
   {
@@ -21,8 +20,7 @@ export const PROJECTS_DATA: Project[] = [
     techStack: ['React', 'Express', 'MongoDB', 'Tailwind'],
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
-    coverImage: '',
-    featured: true,
+    coverImage: '/assets/project/studyflow.png',
     order: 2,
   },
   {
@@ -34,7 +32,6 @@ export const PROJECTS_DATA: Project[] = [
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
     coverImage: '',
-    featured: false,
     order: 3,
   },
   {
@@ -46,7 +43,6 @@ export const PROJECTS_DATA: Project[] = [
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
     coverImage: '',
-    featured: false,
     order: 4,
   },
   {
@@ -58,7 +54,6 @@ export const PROJECTS_DATA: Project[] = [
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
     coverImage: '',
-    featured: false,
     order: 5,
   },
   {
@@ -70,7 +65,6 @@ export const PROJECTS_DATA: Project[] = [
     liveUrl: 'https://example.com',
     githubUrl: 'https://github.com',
     coverImage: '',
-    featured: false,
     order: 6,
   },
 ]

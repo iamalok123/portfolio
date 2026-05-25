@@ -4,30 +4,38 @@ import { Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import { BLOGS_MOCK } from '../../data/blogs'
 import { getBlogExcerpt } from '../../lib/blog'
+import { resolveAssetUrl } from '../../lib/assets'
+import { BlogCoverArt } from '../ui/BlogCoverArt'
+
+const MotionLink = motion(Link)
 
 export function BlogPreview() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
-  const featuredBlogs = BLOGS_MOCK.filter((blog) => blog.featured).slice(0, 3)
+  const previewBlogs = BLOGS_MOCK.slice(0, 3)
 
   return (
     <section id="blog" ref={ref} className="py-24 sm:py-32">
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div>
-            <p className="font-mono text-sm uppercase tracking-[0.24em] text-accent">
-              // writings
+            <p className="font-mono text-sm uppercase tracking-[0.24em] text-muted">
+              // Writings
             </p>
-            <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.02] text-foreground sm:text-6xl">
+            <h2 className="mt-5 font-display text-4xl font-bold leading-[1.06] text-foreground sm:text-6xl">
               Thoughts & Build Notes.
             </h2>
           </div>
-          <Link
-            to="/blog"
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-accent/60 px-5 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] text-foreground transition hover:bg-accent hover:text-black"
+          <MotionLink
+            to="/blogs"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+            style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+            className="inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 font-display text-sm font-bold uppercase tracking-[0.16em]"
           >
             Read All Posts
             <ArrowUpRight size={17} />
-          </Link>
+          </MotionLink>
         </div>
 
         <motion.div
@@ -39,7 +47,7 @@ export function BlogPreview() {
             hidden: {},
           }}
         >
-          {featuredBlogs.map((blog) => (
+          {previewBlogs.map((blog) => (
             <motion.article
               key={blog._id}
               variants={{
@@ -47,21 +55,26 @@ export function BlogPreview() {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ type: 'spring', stiffness: 150, damping: 22 }}
-              className="group overflow-hidden rounded-lg border border-border bg-surface p-4 transition hover:-translate-y-1 hover:border-accent/45"
+              className="group flex h-full overflow-hidden rounded-lg border border-border bg-surface p-4 transition hover:-translate-y-1 hover:border-foreground/30"
             >
-              <Link to={`/blog/${blog.slug}`}>
-                <div className="aspect-video rounded-md bg-[linear-gradient(135deg,color-mix(in_srgb,var(--accent)_26%,transparent),transparent_48%),radial-gradient(circle_at_72%_22%,color-mix(in_srgb,var(--foreground)_14%,transparent),transparent_14rem),var(--surface-2)]" />
-                <div className="pt-5">
-                  <span className="rounded-full bg-accent px-3 py-1 font-display text-[10px] font-extrabold uppercase tracking-[0.16em] text-black">
+              <Link to={`/blog/${blog.slug}`} className="flex min-h-full w-full flex-col">
+                <BlogCoverArt
+                  title={blog.title}
+                  imageSrc={resolveAssetUrl(blog.coverImage || blog.image)}
+                  compact
+                  className="rounded-md"
+                />
+                <div className="flex flex-1 flex-col pt-5">
+                  <span className="w-fit rounded-full border border-border bg-surface-2/60 px-3 py-1 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-muted backdrop-blur">
                     {blog.category}
                   </span>
-                  <h3 className="mt-4 font-display text-2xl font-extrabold leading-tight text-foreground transition group-hover:text-accent">
+                  <h3 className="mt-4 font-display text-2xl font-bold leading-tight text-foreground transition group-hover:text-muted">
                     {blog.title}
                   </h3>
                   <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted">
                     {getBlogExcerpt(blog)}
                   </p>
-                  <div className="mt-5 flex flex-wrap items-center gap-4 text-xs font-medium uppercase tracking-[0.14em] text-muted">
+                  <div className="mt-auto flex flex-wrap items-center gap-4 pt-5 text-xs font-medium uppercase tracking-[0.14em] text-muted">
                     <span className="inline-flex items-center gap-1.5">
                       <Clock3 size={14} />
                       {blog.readTime} min
@@ -79,6 +92,20 @@ export function BlogPreview() {
             </motion.article>
           ))}
         </motion.div>
+
+        <div className="mt-10 flex justify-center">
+          <MotionLink
+            to="/blogs"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+            style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+            className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-display text-sm font-bold uppercase tracking-[0.16em]"
+          >
+            Read More
+            <ArrowUpRight size={17} />
+          </MotionLink>
+        </div>
       </div>
     </section>
   )

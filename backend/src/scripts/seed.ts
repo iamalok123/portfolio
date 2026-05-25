@@ -1,7 +1,25 @@
 /**
- * MongoDB Seed Script
- * Run with: node --loader ts-node/esm src/scripts/seed.ts
- * Make sure MONGO_URI is set in your .env file
+ * Portfolio content seed
+ *
+ * Run from backend:
+ *   npm run seed
+ *
+ * How to update content:
+ * 1. Projects: edit PROJECTS below. `order` controls display order. `tags`
+ *    drive the project filters. `techStack` drives the small tech bubbles.
+ * 2. Project images: put files in backend/assets/project and use
+ *    projectImage('file-name.png'). Leave coverImage empty for the frontend
+ *    fallback artwork.
+ * 3. Blogs: edit BLOGS below. `slug` controls the URL: /blog/your-slug.
+ *    Keep slugs stable when updating a post so old links keep working.
+ * 4. Blog images: put files in backend/assets/blog and use
+ *    blogImage('file-name.png'). Leave coverImage empty for fallback artwork.
+ * 5. Blog content is Markdown. Headings become the table of contents on the
+ *    blog detail page, and fenced code blocks get the copy button in the UI.
+ * 6. This file is the source of truth. Records removed from PROJECTS/BLOGS
+ *    are removed from the database the next time this seed runs.
+ *
+ * Make sure MONGO_URI is set in your .env file before running.
  */
 
 import 'dotenv/config'
@@ -9,62 +27,97 @@ import { connectDB } from '../config/db.js'
 import { Blog } from '../models/Blog.js'
 import { Project } from '../models/Project.js'
 
-const PROJECTS = [
+type ProjectSeed = {
+  title: string
+  desc: string
+  tags: string[]
+  techStack: string[]
+  liveUrl: string
+  githubUrl: string
+  coverImage?: string
+  image?: string
+  order: number
+}
+
+type BlogSeed = {
+  title: string
+  slug: string
+  content: string
+  tags: string[]
+  category: string
+  readTime: number
+  publishedAt: Date
+  coverImage?: string
+  image?: string
+}
+
+const assetPath = (folder: 'blog' | 'project', fileName: string) => `/assets/${folder}/${fileName}`
+const projectImage = (fileName: string) => assetPath('project', fileName)
+const blogImage = (fileName: string) => assetPath('blog', fileName)
+
+const withImageAlias = <T extends { coverImage?: string; image?: string }>(item: T): T => {
+  const image = item.coverImage || item.image || ''
+  return { ...item, coverImage: image, image }
+}
+
+const PROJECTS: ProjectSeed[] = [
   {
     title: 'Zephyr — AI Website Builder',
-    desc: 'An AI-powered website builder that generates production-ready Next.js sites from natural language prompts. Uses LangChain, OpenAI, and Pinecone for RAG-based code generation.',
-    tags: ['AI/ML', 'Full-Stack'],
-    techStack: ['Next.js', 'TypeScript', 'LangChain', 'OpenAI', 'Pinecone', 'MongoDB'],
+    coverImage: projectImage('zephyr.png'),
+    desc: 'An AI-powered website builder that generates functional websites from natural language prompts. Uses Typescript, Express.js, and Openrouter API for code generation.',
+    tags: ['AI/ML', 'Full-Stack', 'React'],
+    techStack: ['React.js', 'TypeScript', 'Inngest', 'Openrouter API', 'Better Auth', 'PostgreSQL'],
     liveUrl: 'https://zephyr.demo',
     githubUrl: 'https://github.com/alok/zephyr',
-    featured: true,
     order: 1,
   },
   {
     title: 'StudyFlow',
+    coverImage: projectImage('studyflow.png'),
     desc: 'A collaborative study platform with real-time whiteboard, Pomodoro timer, and AI-generated flashcards from uploaded PDFs. Built for students, by a student.',
-    tags: ['Full-Stack'],
-    techStack: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'OpenAI API'],
+    tags: ['Full-Stack', 'RAG', 'AI/ML'],
+    techStack: ['React', 'Node.js', 'RAG', 'MongoDB', 'Gemini API'],
     liveUrl: 'https://studyflow.demo',
     githubUrl: 'https://github.com/alok/studyflow',
-    featured: true,
     order: 2,
   },
   {
     title: 'ByteChat',
+    coverImage: '',
     desc: 'A real-time messaging app with end-to-end encryption, group chats, file sharing, and read receipts. Supports 10k+ concurrent connections via Socket.io clustering.',
     tags: ['Full-Stack'],
     techStack: ['React', 'Node.js', 'Socket.io', 'PostgreSQL', 'Redis'],
     liveUrl: 'https://bytechat.demo',
     githubUrl: 'https://github.com/alok/bytechat',
-    featured: false,
     order: 3,
   },
   {
     title: 'CodeLens — AI Code Reviewer',
+    coverImage: '',
     desc: 'VS Code extension that provides AI-powered code review, suggests refactors, detects bugs, and explains complex code in plain English using GPT-4.',
     tags: ['AI/ML', 'Open Source'],
     techStack: ['TypeScript', 'VS Code API', 'OpenAI', 'Node.js'],
     liveUrl: 'https://marketplace.visualstudio.com',
     githubUrl: 'https://github.com/alok/codelens',
-    featured: false,
     order: 4,
   },
   {
     title: 'Portfolio v3',
+    coverImage: '',
     desc: 'This very portfolio! Built with React, Vite, Framer Motion, and a Node.js + MongoDB backend. Dark-first design with neon lime accent, custom cursor, and cinematic loading screen.',
     tags: ['Frontend', 'Open Source'],
     techStack: ['React', 'TypeScript', 'Framer Motion', 'Node.js', 'MongoDB'],
-    liveUrl: 'https://alok.dev',
+    liveUrl: 'https://alokhotta.site',
     githubUrl: 'https://github.com/alok/portfolio',
-    featured: false,
     order: 5,
   },
 ]
 
-const BLOGS = [
+const BLOGS: BlogSeed[] = [
   {
     title: 'Building an AI Website Builder with LangChain and Next.js',
+    slug: 'building-ai-website-builder-langchain-nextjs',
+    coverImage: '',
     content: `# Building an AI Website Builder with LangChain and Next.js
 
 ## Introduction
@@ -105,8 +158,6 @@ The quality of RAG output heavily depends on embedding quality. I used OpenAI's 
 
 The system can generate a fully functional 5-page Next.js website in under 30 seconds. Test it at [zephyr.demo](https://zephyr.demo).
 
-> "The best way to learn AI engineering is to build something real with it." — Me, probably.
-
 ## What's Next
 
 - Support for React Native mobile apps
@@ -117,10 +168,11 @@ The system can generate a fully functional 5-page Next.js website in under 30 se
     category: 'Tutorial',
     readTime: 8,
     publishedAt: new Date('2025-03-15'),
-    featured: true,
   },
   {
     title: 'How I Won Smart India Hackathon 2025 as a Team Lead',
+    slug: 'smart-india-hackathon-2025-team-lead',
+    coverImage: '',
     content: `# How I Won Smart India Hackathon 2025 as a Team Lead
 
 ## The Beginning
@@ -173,10 +225,11 @@ I'm open-sourcing the core AgriLink platform. Watch this space.
     category: 'Career',
     readTime: 6,
     publishedAt: new Date('2025-01-20'),
-    featured: true,
   },
   {
     title: 'From 0 to LeetCode Knight: My Competitive Programming Journey',
+    slug: 'leetcode-knight-competitive-programming-journey',
+    coverImage: '',
     content: `# From 0 to LeetCode Knight: My Competitive Programming Journey
 
 ## The Beginning
@@ -237,30 +290,66 @@ If you're starting out: just start. Do one problem today. Then tomorrow. That's 
     category: 'Career',
     readTime: 7,
     publishedAt: new Date('2024-11-10'),
-    featured: false,
   },
 ]
 
+async function syncProjects() {
+  const projects = PROJECTS.map(withImageAlias).sort((a, b) => a.order - b.order)
+  const projectTitles = projects.map((project) => project.title)
+
+  await Project.deleteMany({ title: { $nin: projectTitles } })
+
+  const updatedProjects = await Promise.all(
+    projects.map((project) =>
+      Project.findOneAndUpdate(
+        { title: project.title },
+        { $set: project },
+        { new: true, runValidators: true, setDefaultsOnInsert: true, upsert: true },
+      ),
+    ),
+  )
+
+  return updatedProjects.length
+}
+
+async function syncBlogs() {
+  const blogs = BLOGS.map(withImageAlias).sort(
+    (a, b) => b.publishedAt.getTime() - a.publishedAt.getTime(),
+  )
+  const blogSlugs = blogs.map((blog) => blog.slug)
+
+  await Blog.deleteMany({ slug: { $nin: blogSlugs } })
+
+  const updatedBlogs = await Promise.all(
+    blogs.map((blog) =>
+      Blog.findOneAndUpdate(
+        { slug: blog.slug },
+        { $set: blog },
+        { new: true, runValidators: true, setDefaultsOnInsert: true, upsert: true },
+      ),
+    ),
+  )
+
+  return updatedBlogs.length
+}
+
 async function seed() {
-  console.log('🌱 Connecting to MongoDB...')
+  console.log('Connecting to MongoDB...')
   await connectDB()
 
-  console.log('🗑️  Clearing existing data...')
-  await Promise.all([Project.deleteMany({}), Blog.deleteMany({})])
+  console.log('Syncing projects from seed.ts...')
+  const projectCount = await syncProjects()
+  console.log(`Synced ${projectCount} projects`)
 
-  console.log('📦 Seeding projects...')
-  const projects = await Project.insertMany(PROJECTS)
-  console.log(`✅ Inserted ${projects.length} projects`)
+  console.log('Syncing blogs from seed.ts...')
+  const blogCount = await syncBlogs()
+  console.log(`Synced ${blogCount} blog posts`)
 
-  console.log('📝 Seeding blogs...')
-  const blogs = await Blog.insertMany(BLOGS)
-  console.log(`✅ Inserted ${blogs.length} blog posts`)
-
-  console.log('\n🎉 Seed complete!')
+  console.log('Seed complete')
   process.exit(0)
 }
 
 seed().catch((err) => {
-  console.error('❌ Seed failed:', err)
+  console.error('Seed failed:', err)
   process.exit(1)
 })

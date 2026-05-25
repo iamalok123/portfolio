@@ -8,8 +8,8 @@ export interface IBlog extends Document {
   category: string
   readTime: number
   publishedAt: Date
+  image?: string
   coverImage?: string
-  featured: boolean
 }
 
 /** Simple slug generator — converts "My Blog Post" → "my-blog-post" */
@@ -31,16 +31,24 @@ const BlogSchema = new Schema<IBlog>(
     category: { type: String, required: true, trim: true },
     readTime: { type: Number, required: true, min: 1 },
     publishedAt: { type: Date, default: Date.now },
+    image: { type: String },
     coverImage: { type: String },
-    featured: { type: Boolean, default: false },
   },
   { timestamps: true },
 )
 
-// Auto-generate slug from title before save
+// Auto-generate slug from title unless seed/content explicitly provides one.
 BlogSchema.pre('validate', async function () {
+  if (!this.coverImage && this.image) {
+    this.coverImage = this.image
+  }
+
+  if (!this.image && this.coverImage) {
+    this.image = this.coverImage
+  }
+
   if (this.isNew || this.isModified('title')) {
-    const baseSlug = toSlug(this.title as string)
+    const baseSlug = toSlug((this.slug || this.title) as string)
     let slug = baseSlug
     let count = 0
     // Ensure uniqueness — can't reference Blog here as it's not yet defined,
@@ -59,4 +67,3 @@ BlogSchema.pre('validate', async function () {
 })
 
 export const Blog = mongoose.model<IBlog>('Blog', BlogSchema)
-

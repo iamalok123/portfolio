@@ -15,8 +15,10 @@ export function slugify(value: string) {
 }
 
 export function getBlogExcerpt(blog: Blog, limit = 112) {
-  const cleaned = blog.content
+  const source = blog.content || blog.title
+  const cleaned = source
     .replace(/```[\s\S]*?```/g, '')
+    .replace(/^#\s+.+$/gm, '')
     .replace(/[#>*_`[\]()-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()

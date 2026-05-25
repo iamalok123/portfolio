@@ -6,11 +6,11 @@ export function ScrollProgressBar() {
 
   return (
     <motion.div
-      className="pointer-events-none fixed top-0 left-0 z-9997 h-[3px] w-screen origin-left"
+      className="pointer-events-none fixed left-0 top-0 z-9997 h-0.75 w-screen origin-left"
       style={{
         scaleX,
         background:
-          'linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, cyan))',
+          'var(--accent)',
       }}
     />
   )

@@ -1,26 +1,34 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-const STORAGE_KEY = 'alok_dev_loaded'
+const STORAGE_KEY = 'alokhotta_site_loaded'
+const DISPLAY_TIME_MS = 1800
 
 export function LoadingScreen() {
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(() => {
+    try {
+      return sessionStorage.getItem(STORAGE_KEY) !== '1'
+    } catch {
+      return true
+    }
+  })
   const [strokeDone, setStrokeDone] = useState(false)
 
   useEffect(() => {
-    // Show loading screen only once per session
-    if (!sessionStorage.getItem(STORAGE_KEY)) {
-      setShow(true)
+    if (!show) return
+
+    try {
       sessionStorage.setItem(STORAGE_KEY, '1')
-
-      // Hide after 1.8s
-      const timer = setTimeout(() => {
-        setShow(false)
-      }, 1800)
-
-      return () => clearTimeout(timer)
+    } catch {
+      // Storage can be unavailable in private or locked-down browsing contexts.
     }
-  }, [])
+
+    const timer = window.setTimeout(() => {
+      setShow(false)
+    }, DISPLAY_TIME_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [show])
 
   return (
     <AnimatePresence>
@@ -30,7 +38,10 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-99999 flex items-center justify-center bg-bg"
+          className="fixed inset-0 z-99999 flex items-center justify-center bg-bg px-6"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
         >
           {/* Noise overlay */}
           <div className="hero-grain pointer-events-none absolute inset-0 opacity-40" />
@@ -38,34 +49,35 @@ export function LoadingScreen() {
           {/* Accent glow */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,color-mix(in_srgb,var(--accent)_14%,transparent),transparent)]" />
 
-          <div className="relative flex flex-col items-center gap-6">
+          <div className="relative flex w-full flex-col items-center gap-5 sm:gap-6">
             {/* SVG text with stroke animation */}
             <svg
-              viewBox="0 0 420 90"
-              className="w-64 sm:w-80 md:w-[420px]"
-              aria-label="alok.dev"
+              viewBox="0 0 760 110"
+              preserveAspectRatio="xMidYMid meet"
+              className="w-full max-w-76 sm:max-w-md md:max-w-152"
+              aria-label="alokhotta.site"
             >
               <text
                 x="50%"
-                y="75"
+                y="78"
                 textAnchor="middle"
                 fontFamily="'Syne', system-ui, sans-serif"
-                fontSize="80"
+                fontSize="82"
                 fontWeight="800"
                 fill="none"
                 stroke="var(--foreground)"
                 strokeWidth="1.5"
               >
-                alok.dev
+                alokhotta.site
               </text>
 
               {/* Filled version that fades in after stroke */}
               <motion.text
                 x="50%"
-                y="75"
+                y="78"
                 textAnchor="middle"
                 fontFamily="'Syne', system-ui, sans-serif"
-                fontSize="80"
+                fontSize="82"
                 fontWeight="800"
                 fill="var(--foreground)"
                 stroke="none"
@@ -73,16 +85,16 @@ export function LoadingScreen() {
                 animate={{ opacity: strokeDone ? 1 : 0 }}
                 transition={{ duration: 0.4 }}
               >
-                alok.dev
+                alokhotta.site
               </motion.text>
 
               {/* Stroke animation overlay */}
               <motion.text
                 x="50%"
-                y="75"
+                y="78"
                 textAnchor="middle"
                 fontFamily="'Syne', system-ui, sans-serif"
-                fontSize="80"
+                fontSize="82"
                 fontWeight="800"
                 fill="none"
                 stroke="var(--accent)"
@@ -93,7 +105,7 @@ export function LoadingScreen() {
                 transition={{ duration: 1.0, ease: 'easeInOut' }}
                 onAnimationComplete={() => setStrokeDone(true)}
               >
-                alok.dev
+                alokhotta.site
               </motion.text>
             </svg>
 

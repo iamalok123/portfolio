@@ -51,7 +51,7 @@ export function NotFound() {
           >
             <Link
               to="/"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 font-display text-sm font-extrabold uppercase tracking-[0.18em] text-black transition hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 font-display text-sm font-extrabold uppercase tracking-[0.18em] text-bg transition hover:scale-105 active:scale-95"
             >
               <ArrowLeft size={16} />
               Back Home

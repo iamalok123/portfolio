@@ -3,13 +3,16 @@ import { CalendarDays, Clock3, Filter, Search, SearchX, SlidersHorizontal, X } f
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { PageTransition } from '../components/layout/PageTransition'
+import { BlogCoverArt } from '../components/ui/BlogCoverArt'
 import { BLOG_CATEGORIES, BLOGS_MOCK } from '../data/blogs'
 import { getBlogExcerpt } from '../lib/blog'
 import { api } from '../lib/axios'
+import { resolveAssetUrl } from '../lib/assets'
 import { cn } from '../lib/utils'
 import type { Blog as BlogType } from '../types'
 
 type SortMode = 'latest' | 'oldest' | 'readTime'
+type BlogListResponse = BlogType[] | { success: boolean; data: BlogType[] }
 
 function BlogSkeleton() {
   return (
@@ -24,6 +27,8 @@ function BlogSkeleton() {
 }
 
 function BlogCard({ blog, index }: { blog: BlogType; index: number }) {
+  const coverImage = resolveAssetUrl(blog.coverImage || blog.image)
+
   return (
     <motion.article
       layout
@@ -31,21 +36,15 @@ function BlogCard({ blog, index }: { blog: BlogType; index: number }) {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 160, damping: 22, delay: index * 0.035 }}
-      className="group overflow-hidden rounded-lg border border-border bg-surface p-4 transition hover:-translate-y-1 hover:border-accent/45"
+      className="group flex h-full overflow-hidden rounded-lg border border-border bg-surface p-4 transition hover:-translate-y-1 hover:border-foreground/30"
     >
-      <Link to={`/blog/${blog.slug}`}>
-        <div className="relative aspect-video overflow-hidden rounded-md bg-[linear-gradient(135deg,color-mix(in_srgb,var(--accent)_24%,transparent),transparent_46%),radial-gradient(circle_at_78%_24%,color-mix(in_srgb,var(--foreground)_14%,transparent),transparent_14rem),var(--surface-2)]">
-          {blog.featured ? (
-            <span className="absolute right-4 top-4 rotate-3 rounded-sm bg-accent px-3 py-1 font-display text-[10px] font-extrabold uppercase tracking-[0.16em] text-black">
-              Featured
-            </span>
-          ) : null}
-        </div>
-        <div className="pt-5">
-          <span className="rounded-full bg-accent px-3 py-1 font-display text-[10px] font-extrabold uppercase tracking-[0.16em] text-black">
+      <Link to={`/blog/${blog.slug}`} className="flex min-h-full w-full flex-col">
+        <BlogCoverArt title={blog.title} imageSrc={coverImage} compact className="rounded-md" />
+        <div className="flex flex-1 flex-col pt-5">
+          <span className="w-fit rounded-full border border-border bg-surface-2/60 px-3 py-1 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-muted backdrop-blur">
             {blog.category}
           </span>
-          <h2 className="mt-4 font-display text-2xl font-extrabold leading-tight text-foreground transition group-hover:text-accent">
+          <h2 className="mt-4 font-display text-2xl font-bold leading-tight text-foreground transition group-hover:text-muted">
             {blog.title}
           </h2>
           <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted">{getBlogExcerpt(blog)}</p>
@@ -59,7 +58,7 @@ function BlogCard({ blog, index }: { blog: BlogType; index: number }) {
               </span>
             ))}
           </div>
-          <div className="mt-5 flex flex-wrap items-center gap-4 text-xs font-medium uppercase tracking-[0.14em] text-muted">
+          <div className="mt-auto flex flex-wrap items-center gap-4 pt-5 text-xs font-medium uppercase tracking-[0.14em] text-muted">
             <span className="inline-flex items-center gap-1.5">
               <Clock3 size={14} />
               {blog.readTime} min
@@ -93,10 +92,12 @@ export function Blog() {
     let isActive = true
 
     api
-      .get<BlogType[]>('/blogs')
+      .get<BlogListResponse>('/blogs')
       .then((response) => {
-        if (isActive && Array.isArray(response.data) && response.data.length > 0) {
-          setPosts(response.data)
+        const nextPosts = Array.isArray(response.data) ? response.data : response.data.data
+
+        if (isActive && Array.isArray(nextPosts) && nextPosts.length > 0) {
+          setPosts(nextPosts)
         }
       })
       .catch(() => {
@@ -192,10 +193,10 @@ export function Blog() {
       <section className="mx-auto min-h-svh w-full max-w-7xl px-6 pb-24 pt-32 sm:px-8 lg:px-10">
         <div className="grid gap-8 lg:grid-cols-[1fr_23rem] lg:items-end">
           <div>
-            <p className="font-mono text-sm uppercase tracking-[0.28em] text-accent">
-              // blog
+            <p className="font-mono text-sm uppercase tracking-[0.28em] text-muted">
+              Blog
             </p>
-            <h1 className="mt-5 font-display text-5xl font-extrabold leading-[0.95] text-foreground sm:text-7xl">
+            <h1 className="mt-5 font-display text-5xl font-bold leading-none text-foreground sm:text-7xl">
               Thoughts & Writings
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">
@@ -206,7 +207,7 @@ export function Blog() {
 
           <div className="rounded-lg border border-border bg-surface p-4">
             <div className="flex items-center gap-3 text-muted">
-              <SlidersHorizontal size={18} className="text-accent" />
+              <SlidersHorizontal size={18} className="text-foreground" />
               <span className="font-display text-sm font-bold uppercase tracking-[0.16em]">
                 Sort
               </span>
@@ -214,7 +215,7 @@ export function Blog() {
             <select
               value={sort}
               onChange={(event) => updateParam('sort', event.target.value)}
-              className="mt-3 w-full rounded-md border border-border bg-bg px-4 py-3 text-foreground outline-none transition focus:border-accent"
+              className="mt-3 w-full rounded-md border border-border bg-bg px-4 py-3 text-foreground outline-none transition focus:border-foreground"
             >
               <option value="latest">Latest</option>
               <option value="oldest">Oldest</option>
@@ -227,7 +228,7 @@ export function Blog() {
           <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">
             <div className="rounded-lg border border-border bg-surface p-4">
               <label className="flex items-center gap-3 text-muted" htmlFor="blog-search">
-                <Search size={18} className="text-accent" />
+                <Search size={18} className="text-foreground" />
                 <span className="font-display text-sm font-bold uppercase tracking-[0.16em]">
                   Search
                 </span>
@@ -239,13 +240,13 @@ export function Blog() {
                 whileFocus={{ scale: 1.015 }}
                 transition={{ type: 'spring', stiffness: 260, damping: 24 }}
                 placeholder="Search title or tags"
-                className="mt-3 w-full rounded-md border border-border bg-bg px-4 py-3 text-foreground outline-none transition placeholder:text-muted focus:border-accent"
+                className="mt-3 w-full rounded-md border border-border bg-bg px-4 py-3 text-foreground outline-none transition placeholder:text-muted focus:border-foreground"
               />
             </div>
 
             <div className="rounded-lg border border-border bg-surface p-4">
               <div className="mb-4 flex items-center gap-3 text-muted">
-                <Filter size={18} className="text-accent" />
+                <Filter size={18} className="text-foreground" />
                 <span className="font-display text-sm font-bold uppercase tracking-[0.16em]">
                   Category
                 </span>
@@ -257,8 +258,8 @@ export function Blog() {
                     type="button"
                     onClick={() => updateParam('category', item)}
                     className={cn(
-                      'rounded-full border border-border px-3 py-2 text-left text-sm font-semibold text-muted transition hover:border-accent hover:text-foreground',
-                      category === item && 'border-accent bg-accent text-black hover:text-black',
+                      'rounded-full border border-border px-3 py-2 text-left text-sm font-semibold text-muted transition hover:border-foreground hover:text-foreground',
+                      category === item && 'border-accent bg-accent text-bg hover:text-bg',
                     )}
                   >
                     {item}
@@ -277,7 +278,7 @@ export function Blog() {
                     type="button"
                     onClick={() => updateParam('tag', '')}
                     aria-label="Clear tag filter"
-                    className="text-accent"
+                    className="text-foreground"
                   >
                     <X size={16} />
                   </button>
@@ -291,8 +292,8 @@ export function Blog() {
                     onClick={() => updateParam('tag', tag)}
                     whileTap={{ scale: 0.94 }}
                     className={cn(
-                      'rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-accent hover:text-foreground',
-                      activeTag === tag && 'border-accent bg-accent text-black hover:text-black',
+                      'rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted transition hover:border-foreground hover:text-foreground',
+                      activeTag === tag && 'border-accent bg-accent text-bg hover:text-bg',
                     )}
                   >
                     {tag}
@@ -307,7 +308,7 @@ export function Blog() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted transition hover:border-accent hover:text-foreground"
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold text-muted transition hover:border-foreground hover:text-foreground"
               >
                 <X size={16} />
                 Clear filters
@@ -335,7 +336,7 @@ export function Blog() {
                 className="grid min-h-80 place-items-center rounded-lg border border-dashed border-border bg-surface text-center"
               >
                 <div>
-                  <SearchX className="mx-auto text-accent" size={40} />
+                  <SearchX className="mx-auto text-foreground" size={40} />
                   <p className="mt-4 font-display text-2xl font-bold text-foreground">
                     No posts found
                   </p>
