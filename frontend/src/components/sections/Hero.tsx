@@ -48,7 +48,7 @@ export function Hero() {
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ type: "spring", stiffness: 170, damping: 20 }}
-              className="block text-4xl sm:text-6xl lg:text-7xl xl:text-8xl"
+              className="block text-5xl sm:text-6xl lg:text-7xl xl:text-8xl"
             >
               HAY, I'M
             </motion.span>
@@ -60,7 +60,7 @@ export function Hero() {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ type: "spring", stiffness: 170, damping: 20 }}
-                className="relative inline-block text-5xl sm:text-7xl lg:text-8xl xl:text-[6.8rem]"
+                className="relative inline-block text-6xl sm:text-7xl lg:text-8xl xl:text-[6.8rem]"
               >
                 ALOK
                 <motion.svg
@@ -86,7 +86,7 @@ export function Hero() {
                   visible: { opacity: 1, y: 0 },
                 }}
                 transition={{ type: "spring", stiffness: 170, damping: 20 }}
-                className="ml-0 mt-2 block text-5xl sm:text-7xl lg:ml-4 lg:mt-0 lg:inline-block lg:text-8xl xl:text-[6.8rem]"
+                className="ml-0 mt-2 block text-6xl sm:text-7xl lg:ml-4 lg:mt-0 lg:inline-block lg:text-8xl xl:text-[6.8rem]"
               >
                 HOTTA
               </motion.span>
