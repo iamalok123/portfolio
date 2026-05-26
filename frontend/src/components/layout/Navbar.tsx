@@ -11,7 +11,10 @@ const navItems = [
   { label: 'Projects', sectionId: 'projects' },
   { label: 'Blog', sectionId: 'blog' },
   { label: 'Contact', sectionId: 'contact' },
-]
+  { label: 'Resume', path: '/resume' },
+] as const
+
+type NavItem = (typeof navItems)[number]
 
 // ─── Lenis scroll-to helper ─────────────────────────────────────────────────
 // App.tsx exposes the Lenis instance on window.lenis.
@@ -78,9 +81,11 @@ export function Navbar() {
   // Derive active section for non-home pages
   const displayActiveSection = location.pathname.startsWith('/blog')
     ? 'blog'
-    : location.pathname.startsWith('/projects')
-      ? 'projects'
-      : activeSection
+    : location.pathname.startsWith('/resume')
+      ? 'resume'
+      : location.pathname.startsWith('/project')
+        ? 'projects'
+        : activeSection
 
   // ── Scroll header background ───────────────────────────────────────────────
   useMotionValueEvent(scrollY, 'change', (latest) => {
@@ -93,6 +98,7 @@ export function Navbar() {
 
     const handleScroll = () => {
       const sections = navItems
+        .filter((item) => 'sectionId' in item)
         .map((item) => document.getElementById(item.sectionId))
         .filter((s): s is HTMLElement => Boolean(s))
 
@@ -160,6 +166,12 @@ export function Navbar() {
     [isOnHome, navigate],
   )
 
+  const handleRouteClick = useCallback((e: React.MouseEvent, path: string) => {
+    e.preventDefault()
+    setIsMobileOpen(false)
+    navigate(path)
+  }, [navigate])
+
   // ── Nav background ────────────────────────────────────────────────────────
   const navBackground = useMemo(
     () =>
@@ -170,14 +182,18 @@ export function Navbar() {
   )
 
   // ── Render a single desktop nav link ──────────────────────────────────────
-  const renderNavLink = (item: (typeof navItems)[number], index: number) => {
-    const isActive = displayActiveSection === item.sectionId
+  const renderNavLink = (item: NavItem, index: number) => {
+    const isRouteItem = 'path' in item
+    const activeKey = isRouteItem ? item.path.replace('/', '') : item.sectionId
+    const isActive = displayActiveSection === activeKey
 
     return (
       <motion.a
-        key={item.sectionId}
-        href={`/#${item.sectionId}`}
-        onClick={(e) => handleNavClick(e, item.sectionId)}
+        key={item.label}
+        href={isRouteItem ? item.path : `/#${item.sectionId}`}
+        onClick={(e) =>
+          isRouteItem ? handleRouteClick(e, item.path) : handleNavClick(e, item.sectionId)
+        }
         className={cn(
           'group relative py-2 text-sm font-medium text-muted transition-colors hover:text-foreground',
           isActive && 'text-accent',
@@ -290,9 +306,13 @@ export function Navbar() {
             >
               {navItems.map((item) => (
                 <motion.a
-                  key={item.sectionId}
-                  href={`/#${item.sectionId}`}
-                  onClick={(e) => handleNavClick(e, item.sectionId)}
+                  key={item.label}
+                  href={'path' in item ? item.path : `/#${item.sectionId}`}
+                  onClick={(e) =>
+                    'path' in item
+                      ? handleRouteClick(e, item.path)
+                      : handleNavClick(e, item.sectionId)
+                  }
                   variants={{
                     closed: { opacity: 0, x: 42 },
                     open: { opacity: 1, x: 0 },
@@ -300,7 +320,8 @@ export function Navbar() {
                   transition={{ type: 'spring', stiffness: 220, damping: 24 }}
                   className={cn(
                     'border-b border-border pb-5 font-display text-4xl font-extrabold text-foreground',
-                    displayActiveSection === item.sectionId && 'text-accent',
+                    displayActiveSection === ('path' in item ? item.path.replace('/', '') : item.sectionId) &&
+                      'text-accent',
                   )}
                 >
                   {item.label}

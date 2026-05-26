@@ -8,8 +8,8 @@
  * HOW TO UPDATE CONTENT
  * ═══════════════════════════════════════════════════════════════════════════════
  *
- * 1. Projects: edit PROJECTS below. `order` controls display order. `tags`
- *    drive the project filters. `techStack` drives the small tech bubbles.
+ * 1. Projects: edit PROJECTS below. `order` controls display order.
+ *    `techStack` drives the small tech bubbles.
  *
  * 2. Project images: put files in backend/assets/project and use
  *    projectImage('file-name.png'). Leave coverImage empty for the frontend
@@ -118,7 +118,6 @@ import { Project } from '../models/Project.js'
 type ProjectSeed = {
   title: string
   desc: string
-  tags: string[]
   techStack: string[]
   liveUrl: string
   githubUrl: string
@@ -151,7 +150,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "Zephyr",
     desc: "AI website builder that turns prompts into editable, production-minded web experiences.",
-    tags: ["AI/ML", "Full-Stack", "React", "TypeScript", "API"],
     techStack: [
       "TypeScript",
       "React",
@@ -169,7 +167,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "StudyFlow",
     desc: "AI-powered document learning platform with contextual chat, quizzes, flashcards, and mindmap generation.",
-    tags: ["Full-Stack", "RAG", "AI/ML", "React", "API"],
     techStack: ["React", "Express", "RAG", "Gemini", "MongoDB"],
     liveUrl: "https://studyflow-ai-alpha.vercel.app",
     githubUrl: "https://github.com/iamalok123/studyflow-mern-fullstack",
@@ -179,7 +176,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "KIA MEDIA",
     desc: "Freelancing (Portfolio Website build for KIA MEDIA) with a focus on clean design and responsive layouts.",
-    tags: ["Frontend", "Open Source"],
     techStack: ["React", "Vite", "Tailwind"],
     liveUrl: "https://kia-mediaworks.vercel.app",
     githubUrl: "https://github.com/iamalok123/kia_media",
@@ -189,7 +185,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "Dev Events",
     desc: "Modern event management platform with ticket booking, analytics, and interactive event discovery.",
-    tags: ["Frontend"],
     techStack: ["Next.js", "React"],
     liveUrl: "https://dev-events-nextjs16-mauve.vercel.app",
     githubUrl: "https://github.com/iamalok123/dev-events-nextjs16",
@@ -199,7 +194,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "ByteChat",
     desc: "Realtime chat app with authentication, presence states, and responsive conversation views.",
-    tags: ["Full-Stack", "Frontend", "Backend"],
     techStack: ["React", "Socket.io", "Node.js"],
     liveUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     githubUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
@@ -209,7 +203,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "Expense Tracker",
     desc: "Personal finance management platform with expense analytics, income tracking, and interactive visual dashboards.",
-    tags: ["Open Source"],
     techStack: ["JavaScript", "React.js", "Node.js", "MongoDB"],
     liveUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     githubUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
@@ -219,7 +212,6 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "Elevate AI",
     desc: "Professional leadership planning platform prototype featuring mentorship programs, competency tracking, and performance insights.",
-    tags: ["Open Source"],
     techStack: ["JavaScript", "React.js", "Node.js", "MongoDB"],
     liveUrl: "https://elevate-ai-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/elevate-ai",
@@ -960,6 +952,7 @@ async function syncProjects() {
   const projectTitles = projects.map((project) => project.title)
 
   await Project.deleteMany({ title: { $nin: projectTitles } })
+  await Project.updateMany({}, { $unset: { tags: 1 } }, { strict: false })
 
   const updatedProjects = await Promise.all(
     projects.map((project) =>

@@ -15,7 +15,7 @@ const MessageSchema = new Schema<IMessage>(
     subject: {
       type: String,
       required: true,
-      enum: ['Internship', 'Project', 'Freelance', 'Other'],
+      enum: ['Internship', 'Project', 'Freelance', 'Hire', 'Other'],
     },
     message: { type: String, required: true, trim: true, minlength: 20 },
   },

@@ -3,6 +3,8 @@ import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { PageTransition } from '../components/layout/PageTransition'
 
+const MotionLink = motion(Link)
+
 export function NotFound() {
   return (
     <PageTransition>
@@ -49,13 +51,17 @@ export function NotFound() {
             transition={{ delay: 0.35, duration: 0.5 }}
             className="mt-10 flex items-center justify-center gap-4"
           >
-            <Link
+            <MotionLink
               to="/"
-              className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 font-display text-sm font-extrabold uppercase tracking-[0.18em] text-bg transition hover:scale-105 active:scale-95"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+              style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+              className="inline-flex items-center gap-2 rounded-full border border-transparent px-7 py-3.5 font-display text-sm font-extrabold uppercase tracking-[0.18em] shadow-[0_18px_50px_rgba(0,0,0,0.14)] transition"
             >
               <ArrowLeft size={16} />
               Back Home
-            </Link>
+            </MotionLink>
           </motion.div>
         </motion.div>
       </section>

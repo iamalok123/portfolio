@@ -80,11 +80,11 @@ export function About() {
           </div>
           <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-border bg-surface px-5 py-3 text-sm font-medium text-foreground">
             <span className="relative flex size-3">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-foreground opacity-30" />
-              <span className="relative inline-flex size-3 rounded-full bg-foreground" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+              <span className="relative inline-flex size-3 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(34,197,94,0.85)]" />
             </span>
             Currently Building
-            <span className="font-display font-bold text-accent">{ABOUT_CONTENT.currentBuild}</span>
+            <span className="font-display font-bold text-accent pl-8">{ABOUT_CONTENT.currentBuild}</span>
           </div>
         </motion.div>
 

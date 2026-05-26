@@ -2,106 +2,6 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { SKILL_GROUPS, SKILL_ORBIT } from '../../data/skills'
 
-function TechGlyph({ glyph = 'square', mark }: { glyph?: string; mark: string }) {
-  if (glyph === 'react') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <circle cx="16" cy="16" r="2.4" fill="currentColor" />
-        <ellipse cx="16" cy="16" rx="12" ry="4.8" fill="none" stroke="currentColor" strokeWidth="1.8" />
-        <ellipse
-          cx="16"
-          cy="16"
-          rx="12"
-          ry="4.8"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          transform="rotate(60 16 16)"
-        />
-        <ellipse
-          cx="16"
-          cy="16"
-          rx="12"
-          ry="4.8"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          transform="rotate(120 16 16)"
-        />
-      </svg>
-    )
-  }
-
-  if (glyph === 'tailwind') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <path
-          d="M8 13.5c2-5.3 5.4-7.2 10.2-5.6 2.8.9 4.8 3 6.8 3.3 2 .3 3.6-.6 5-2.7-2 5.3-5.4 7.2-10.2 5.6-2.8-.9-4.8-3-6.8-3.3-2-.3-3.6.6-5 2.7Zm-6 9c2-5.3 5.4-7.2 10.2-5.6 2.8.9 4.8 3 6.8 3.3 2 .3 3.6-.6 5-2.7-2 5.3-5.4 7.2-10.2 5.6-2.8-.9-4.8-3-6.8-3.3-2-.3-3.6.6-5 2.7Z"
-          fill="currentColor"
-        />
-      </svg>
-    )
-  }
-
-  if (glyph === 'node') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <path
-          d="M16 2.8 27.4 9.4v13.2L16 29.2 4.6 22.6V9.4L16 2.8Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-        <path d="M11 20.2V12h2.1l5.8 5.8V12H21v8.2h-2.1l-5.8-5.8v5.8H11Z" fill="currentColor" />
-      </svg>
-    )
-  }
-
-  if (glyph === 'docker') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <path d="M6 16h4v4H6v-4Zm5 0h4v4h-4v-4Zm5 0h4v4h-4v-4Zm-5-5h4v4h-4v-4Zm5 0h4v4h-4v-4Zm5 5h4v4h-4v-4Z" fill="currentColor" />
-        <path d="M4 21h22.5c-.8 4.1-4.2 6.2-10.1 6.2H12C7.3 27.2 4.7 25.2 4 21Z" fill="currentColor" />
-        <path d="M25 14c2 0 3.4.8 4.2 2.3-1.6.5-3.1.4-4.5-.2L25 14Z" fill="currentColor" />
-      </svg>
-    )
-  }
-
-  if (glyph === 'mongodb') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <path
-          d="M16 2c5 4.4 7.4 8.5 7.2 12.5-.2 5-3.4 8.9-6.1 11.2L16 30l-1.1-4.3c-2.8-2.4-6-6.3-6.1-11.2C8.6 10.5 11 6.4 16 2Z"
-          fill="currentColor"
-        />
-        <path d="M16 6v20" stroke="var(--bg)" strokeWidth="1.4" strokeLinecap="round" />
-      </svg>
-    )
-  }
-
-  if (glyph === 'vercel') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <path d="M16 5 30 27H2L16 5Z" fill="currentColor" />
-      </svg>
-    )
-  }
-
-  if (glyph === 'git') {
-    return (
-      <svg viewBox="0 0 32 32" className="size-4" aria-hidden="true">
-        <path d="M16 3 29 16 16 29 3 16 16 3Z" fill="none" stroke="currentColor" strokeWidth="2" />
-        <circle cx="12" cy="12" r="2" fill="currentColor" />
-        <circle cx="20" cy="20" r="2" fill="currentColor" />
-        <path d="M13.5 13.5 18.5 18.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      </svg>
-    )
-  }
-
-  return <span className="font-mono text-[10px] font-bold uppercase tracking-normal">{mark}</span>
-}
-
 export function Skills() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
 
@@ -124,7 +24,7 @@ export function Skills() {
         </motion.div>
 
         <motion.div
-          className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4"
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
           variants={{
@@ -181,13 +81,13 @@ export function Skills() {
               </div>
 
               <motion.div
-                className="grid gap-2.5 sm:grid-cols-2"
+                className="flex flex-wrap items-start gap-2.5"
                 variants={{
                   visible: { transition: { staggerChildren: 0.035 } },
                   hidden: {},
                 }}
               >
-                {skills.map(({ label, mark, glyph }) => (
+                {skills.map(({ label, Icon }) => (
                   <motion.span
                     key={label}
                     variants={{
@@ -196,19 +96,19 @@ export function Skills() {
                     }}
                     whileHover="hover"
                     transition={{ type: 'spring', stiffness: 240, damping: 20 }}
-                    className="group/skill inline-flex min-w-0 items-center gap-2 rounded-full border border-border bg-surface-2/70 px-3 py-2 text-sm font-medium text-foreground transition hover:border-foreground/45 hover:bg-bg"
+                    className="group/skill inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-border bg-surface-2/70 px-3 py-2 text-sm font-medium text-foreground transition hover:border-foreground/45 hover:bg-bg"
                   >
                     <motion.span
                       variants={{ hover: { x: 2, scale: 1.04 } }}
                       transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-                      className="grid h-7 min-w-7 shrink-0 place-items-center rounded-full border border-border bg-bg px-1.5 font-mono text-[10px] font-bold uppercase tracking-normal text-foreground"
+                      className="grid h-7 min-w-7 shrink-0 place-items-center rounded-full border border-border bg-bg text-foreground"
                     >
-                      <TechGlyph glyph={glyph} mark={mark} />
+                      <Icon className="size-4" aria-hidden="true" />
                     </motion.span>
                     <motion.span
                       variants={{ hover: { x: 2 } }}
                       transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-                      className="truncate"
+                      className="whitespace-nowrap"
                     >
                       {label}
                     </motion.span>

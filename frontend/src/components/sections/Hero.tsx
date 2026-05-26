@@ -11,7 +11,7 @@ export function Hero() {
       <div className="hero-grain pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_72%_22%,color-mix(in_srgb,var(--accent)_18%,transparent),transparent_28rem)]" />
 
-      <div className="mx-auto grid min-h-[calc(100svh-8.75rem)] w-full max-w-7xl items-center gap-10 px-6 pb-10 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-14 lg:mt-0">
+      <div className="mx-auto grid min-h-[calc(100svh-10.75rem)] w-full max-w-7xl items-center gap-12 px-6 pb-8 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:px-10 lg:pb-19 lg:mt-0">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -21,18 +21,21 @@ export function Hero() {
           }}
           className="mx-auto w-full max-w-3xl text-center lg:mx-0 lg:text-left"
         >
-          <motion.p
+          <motion.div
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 },
             }}
-            className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.22em] text-muted sm:text-xs lg:justify-start"
+            className="flex flex-wrap items-center justify-center gap-3 lg:justify-start"
           >
-            <span className="truncate">
-              Working remotely from Bhubaneswar, India
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/75 px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.16em] text-foreground shadow-sm backdrop-blur-md sm:text-[0.68rem]">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-40" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-400 shadow-[0_0_16px_rgba(34,197,94,0.8)]" />
+              </span>
+              Available for freelance / internships
             </span>
-            <span className="h-4 w-0.5 shrink-0 animate-pulse bg-accent" />
-          </motion.p>
+          </motion.div>
 
           <h1
             aria-label="HAY, I'M ALOK HOTTA"
@@ -62,7 +65,7 @@ export function Hero() {
                 ALOK
                 <motion.svg
                   viewBox="0 0 260 22"
-                  className="absolute -bottom-1 left-0 h-3 w-full text-accent sm:-bottom-2 sm:h-4"
+                  className="absolute -bottom-3.5 left-0 h-3 w-full text-accent sm:-bottom-2 sm:h-4"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
@@ -99,7 +102,7 @@ export function Hero() {
               stiffness: 180,
               damping: 22,
             }}
-            className="mx-auto mt-6 max-w-2xl text-base leading-7 text-muted sm:text-xl sm:leading-8 lg:mx-0"
+            className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted sm:text-xl sm:leading-8 lg:mx-0 lg:mt-6"
           >
             Full-Stack AI Developer building scalable product solutions.
           </motion.p>
@@ -113,7 +116,7 @@ export function Hero() {
               stiffness: 180,
               damping: 22,
             }}
-            className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center lg:justify-start"
+            className="mt-7 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center lg:justify-start"
           >
             <a
               href="#projects"
@@ -137,47 +140,36 @@ export function Hero() {
               Download Resume
               <ArrowDownToLine size={18} />
             </a>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.85,
-              type: "spring",
-              stiffness: 180,
-              damping: 22,
-            }}
-            className="mt-6 flex items-center justify-center gap-3 lg:justify-start"
-          >
-            {[
-              {
-                label: "GitHub",
-                href: "https://github.com/iamalok123",
-                Icon: Github,
-              },
-              {
-                label: "LinkedIn",
-                href: "https://linkedin.com/in/alok-hotta",
-                Icon: Linkedin,
-              },
-              { label: "X", href: "https://x.com/_alok_h", Icon: TwitterX },
-            ].map(({ label, href, Icon }) => (
-              <a
-                key={label}
-                href={href}
-                aria-label={label}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  backgroundColor: "var(--foreground)",
-                  color: "var(--bg)",
-                }}
-                className="grid size-12 place-items-center rounded-md transition hover:-translate-y-1"
-              >
-                <Icon size={20} />
-              </a>
-            ))}
+            <div className="flex items-center justify-center gap-3 pt-1 sm:basis-full lg:basis-auto lg:pt-0">
+              {[
+                {
+                  label: "GitHub",
+                  href: "https://github.com/iamalok123",
+                  Icon: Github,
+                },
+                {
+                  label: "LinkedIn",
+                  href: "https://linkedin.com/in/alok-hotta",
+                  Icon: Linkedin,
+                },
+                { label: "X", href: "https://x.com/_alok_h", Icon: TwitterX },
+              ].map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    backgroundColor: "var(--foreground)",
+                    color: "var(--bg)",
+                  }}
+                  className="grid size-11 place-items-center rounded-md transition hover:-translate-y-1 sm:size-12"
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
 

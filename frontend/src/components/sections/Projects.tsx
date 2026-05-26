@@ -5,21 +5,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/axios'
 import { resolveAssetUrl } from '../../lib/assets'
-import { cn } from '../../lib/utils'
 import type { Project } from '../../types'
 
 const MotionLink = motion(Link)
-
-const filters = [
-  'All',
-  'Full-Stack',
-  'Frontend',
-  'AI/ML',
-  'Open Source',
-  'React',
-  'Node.js',
-  'TypeScript',
-]
 
 function SkeletonCard() {
   return (
@@ -114,7 +102,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
-  const [activeFilter, setActiveFilter] = useState('All')
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -144,18 +131,10 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
     }
   }, [])
 
-  const filteredProjects = useMemo(() => {
+  const visibleProjects = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order)
-
-    if (activeFilter === 'All') {
-      return ordered
-    }
-
-    return ordered.filter(
-      (project) =>
-        project.tags.includes(activeFilter) || project.techStack.includes(activeFilter)
-    )
-  }, [activeFilter, projects])
+    return showViewAll ? ordered.slice(0, 3) : ordered
+  }, [projects, showViewAll])
 
   return (
     <section id="projects" className="py-24 sm:py-32">
@@ -169,31 +148,6 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
               Projects Built To Ship.
             </h2>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2 lg:max-w-[50%] lg:justify-end">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() => setActiveFilter(filter)}
-                className={cn(
-                  'relative shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition',
-                  activeFilter === filter
-                    ? 'border-transparent text-bg'
-                    : 'border-border bg-surface text-muted hover:text-foreground'
-                )}
-              >
-                {activeFilter === filter ? (
-                  <motion.span
-                    layoutId="active-project-filter"
-                    className="absolute inset-0 rounded-full bg-accent"
-                    transition={{ type: 'spring', stiffness: 360, damping: 30 }}
-                  />
-                ) : null}
-                <span className="relative z-10">{filter}</span>
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="mt-12">
@@ -203,10 +157,10 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
                 <SkeletonCard key={index} />
               ))}
             </div>
-          ) : filteredProjects.length > 0 ? (
+          ) : visibleProjects.length > 0 ? (
             <motion.div layout className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
-                {filteredProjects.map((project, index) => (
+                {visibleProjects.map((project, index) => (
                   <ProjectCard key={project._id} project={project} index={index} />
                 ))}
               </AnimatePresence>
@@ -230,7 +184,7 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
         {showViewAll ? (
           <div className="mt-10 flex justify-center">
             <MotionLink
-              to="/projects"
+              to="/project"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 360, damping: 22 }}

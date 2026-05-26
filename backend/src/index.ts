@@ -74,11 +74,13 @@ app.use(errorHandler)
 // ─── Start ────────────────────────────────────────────────────────────────────
 const PORT = Number(process.env.PORT ?? 5000)
 
-// Start HTTP server immediately — always reachable on port 5000
-app.listen(PORT, () => {
-  console.log(`🚀  Portfolio API running on http://localhost:${PORT}`)
-  console.log(`📌  Environment: ${process.env.NODE_ENV ?? 'development'}`)
-})
+if (!process.env.VERCEL) {
+  // Start HTTP server locally. Vercel imports the Express app as a function.
+  app.listen(PORT, () => {
+    console.log(`🚀  Portfolio API running on http://localhost:${PORT}`)
+    console.log(`📌  Environment: ${process.env.NODE_ENV ?? 'development'}`)
+  })
+}
 
 // Connect to MongoDB in background — server stays up even if DB is down
 connectDB().catch((err) => {

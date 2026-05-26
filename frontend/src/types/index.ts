@@ -14,7 +14,6 @@ export interface Project {
   _id: string
   title: string
   desc: string
-  tags: string[]
   techStack: string[]
   liveUrl: string
   githubUrl: string
