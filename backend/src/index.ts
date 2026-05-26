@@ -54,8 +54,26 @@ app.use(
 )
 
 // ─── Health check ─────────────────────────────────────────────────────────────
+app.get('/', (_req, res) => {
+  res.json({
+    success: true,
+    service: 'Portfolio API',
+    status: 'ok',
+    endpoints: {
+      health: '/health',
+      blogs: '/api/blogs',
+      projects: '/api/projects',
+      contact: '/api/contact',
+    },
+  })
+})
+
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+app.get(['/favicon.ico', '/favicon.png'], (_req, res) => {
+  res.status(204).end()
 })
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
