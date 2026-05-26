@@ -130,26 +130,52 @@ export function BlogPost() {
       return
     }
 
-    const headings = toc
-      .map((item) => document.getElementById(item.id))
-      .filter((heading): heading is HTMLElement => Boolean(heading))
+    // Offset accounts for the sticky navbar so "current section" begins
+    // right below it, not behind it.
+    const SCROLL_OFFSET = 112
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+    let rafId = 0
 
-        if (visible?.target.id) {
-          setActiveHeading(visible.target.id)
+    const updateActiveHeading = () => {
+      const scrollY = window.scrollY + SCROLL_OFFSET
+
+      // Resolve heading elements fresh each tick so dynamically-rendered
+      // markdown headings are always found.
+      const headingEls = toc
+        .map((item) => document.getElementById(item.id))
+        .filter((el): el is HTMLElement => Boolean(el))
+
+      if (!headingEls.length) return
+
+      // Walk headings top-to-bottom.  The "active" heading is the last
+      // one whose top edge has scrolled past the offset line.
+      let activeId = headingEls[0].id
+
+      for (const el of headingEls) {
+        if (el.offsetTop <= scrollY) {
+          activeId = el.id
+        } else {
+          break
         }
-      },
-      { rootMargin: '-30% 0px -58% 0px', threshold: [0.1, 0.4, 0.7] },
-    )
+      }
 
-    headings.forEach((heading) => observer.observe(heading))
+      setActiveHeading((prev) => (prev === activeId ? prev : activeId))
+    }
 
-    return () => observer.disconnect()
+    const onScroll = () => {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(updateActiveHeading)
+    }
+
+    // Run once immediately so the capsule is correct on mount / deep-link.
+    updateActiveHeading()
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(rafId)
+    }
   }, [toc])
 
   useEffect(() => {
@@ -244,7 +270,9 @@ export function BlogPost() {
 
   const handleTocClick = (id: string) => {
     setIsTocOpen(false)
-    window.setTimeout(() => scrollToHeading(id), 80)
+    // Wait for the capsule close animation to finish before scrolling,
+    // otherwise the scroll fights the layout animation visually.
+    window.setTimeout(() => scrollToHeading(id), 340)
   }
 
   const handleShare = async () => {
@@ -406,6 +434,7 @@ export function BlogPost() {
                   <div className="fixed inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom))] z-80 flex justify-center px-4 sm:bottom-6">
                     <motion.div
                       layout
+                      transition={{ layout: { type: 'spring', stiffness: 400, damping: 34, mass: 0.8 } }}
                       role={isTocOpen ? 'dialog' : undefined}
                       aria-modal={isTocOpen ? 'true' : undefined}
                       aria-label={isTocOpen ? 'Table of contents' : undefined}
@@ -419,9 +448,8 @@ export function BlogPost() {
                           <motion.div
                             key="toc-panel"
                             initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 8 }}
-                            transition={{ duration: 0.18 }}
+                            animate={{ opacity: 1, y: 0, transition: { duration: 0.2 } }}
+                            exit={{ opacity: 0, y: 6, transition: { duration: 0.12 } }}
                             className="border-b border-border px-4 pb-4 pt-4 sm:px-5"
                           >
                             <p className="font-display text-xs font-bold uppercase tracking-[0.16em] text-muted">

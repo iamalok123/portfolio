@@ -124,9 +124,9 @@ export function Hero() {
             className="mt-6 flex items-center justify-center gap-3 lg:justify-start"
           >
             {[
-              { label: 'GitHub', href: 'https://github.com/alok', Icon: Github },
-              { label: 'LinkedIn', href: 'https://linkedin.com/in/alok', Icon: Linkedin },
-              { label: 'X', href: 'https://x.com', Icon: TwitterX },
+              { label: 'GitHub', href: 'https://github.com/iamalok123', Icon: Github },
+              { label: 'LinkedIn', href: 'https://linkedin.com/in/alok-hotta', Icon: Linkedin },
+              { label: 'X', href: 'https://x.com/_alok_h', Icon: TwitterX },
             ].map(({ label, href, Icon }) => (
               <a
                 key={label}

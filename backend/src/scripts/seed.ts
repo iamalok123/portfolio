@@ -4,22 +4,110 @@
  * Run from backend:
  *   npm run seed
  *
- * How to update content:
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * HOW TO UPDATE CONTENT
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
  * 1. Projects: edit PROJECTS below. `order` controls display order. `tags`
  *    drive the project filters. `techStack` drives the small tech bubbles.
+ *
  * 2. Project images: put files in backend/assets/project and use
  *    projectImage('file-name.png'). Leave coverImage empty for the frontend
  *    fallback artwork.
+ *
  * 3. Blogs: edit BLOGS below. `slug` controls the URL: /blog/your-slug.
  *    Keep slugs stable when updating a post so old links keep working.
+ *
  * 4. Blog images: put files in backend/assets/blog and use
  *    blogImage('file-name.png'). Leave coverImage empty for fallback artwork.
- * 5. Blog content is Markdown. Headings become the table of contents on the
- *    blog detail page, and fenced code blocks get the copy button in the UI.
- * 6. This file is the source of truth. Records removed from PROJECTS/BLOGS
+ *
+ * 5. This file is the source of truth. Records removed from PROJECTS/BLOGS
  *    are removed from the database the next time this seed runs.
  *
  * Make sure MONGO_URI is set in your .env file before running.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * BLOG CONTENT GUIDE — Heading Rules for the Capsule TOC
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
+ * Blog content is Markdown. The heading structure directly drives the floating
+ * capsule table-of-contents (TOC) on the blog detail page.
+ *
+ * HEADING HIERARCHY:
+ * ──────────────────
+ *   # Title           → Rendered as the page <h1>. Stripped from the article
+ *                        body automatically. Every post MUST start with this.
+ *
+ *   ## Section         → Main sections. These appear as TOP-LEVEL items in the
+ *                        capsule TOC. Use these to divide the post into major
+ *                        ideas. Aim for 4–10 per post for a useful TOC.
+ *
+ *   ### Subsection     → Child items. These appear INDENTED under their parent
+ *                        ## in the capsule TOC. Use these to break a section
+ *                        into focused points.
+ *
+ * RULES:
+ * ──────
+ *   ✓  Every ## and ### heading text MUST be unique within the post.
+ *      (Duplicate text creates duplicate slugs and breaks TOC navigation.)
+ *
+ *   ✓  Use at least 4 ## headings so the capsule TOC is navigable.
+ *
+ *   ✓  Keep heading text short (2–6 words). Long headings truncate in the
+ *      capsule pill.
+ *
+ *   ✓  Place a blank line before and after every heading.
+ *
+ *   ✗  Do NOT use #### or deeper — the TOC only tracks ## and ###.
+ *
+ *   ✗  Do NOT put markdown formatting inside headings (bold, code, links).
+ *
+ * FENCED CODE BLOCKS:
+ * ───────────────────
+ *   Wrap code in triple backticks with a language tag. The UI adds a copy
+ *   button automatically.
+ *
+ *   ```ts
+ *   const x = 1
+ *   ```
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * NEW BLOG TEMPLATE — Copy and paste this into the BLOGS array
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
+ *   {
+ *     title: 'Your Post Title',
+ *     slug: 'your-post-title',
+ *     tags: ['Tag1', 'Tag2'],
+ *     readTime: 6,
+ *     publishedAt: new Date('2026-06-01'),
+ *     coverImage: '',
+ *     content: `# Your Post Title
+ *
+ * Opening paragraph — hook the reader in 1–2 sentences.
+ *
+ * ## First Main Section
+ *
+ * Content for this section.
+ *
+ * ## Second Main Section
+ *
+ * Content for this section.
+ *
+ * ### A Subsection
+ *
+ * Deeper detail under the second section.
+ *
+ * ## Third Main Section
+ *
+ * Content for this section.
+ *
+ * ## Closing Section
+ *
+ * Wrap up the post with a takeaway.`,
+ *   },
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════
  */
 
 import 'dotenv/config'
@@ -122,7 +210,12 @@ const PROJECTS: ProjectSeed[] = [
   },
 ]
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// BLOGS
+// ═══════════════════════════════════════════════════════════════════════════════
+
 const BLOGS: BlogSeed[] = [
+  // ─── Blog 1 ────────────────────────────────────────────────────────────────
   {
     title: "AI Can't Save Bad Engineering",
     slug: 'ai-cant-save-bad-engineering',
@@ -292,6 +385,8 @@ It should not make unclear thinking look productive.
 
 The goal is not to avoid tools. The goal is to keep your judgment sharp while using powerful tools well.`,
   },
+
+  // ─── Blog 2 ────────────────────────────────────────────────────────────────
   {
     title: 'How I Approach LeetCode Without Burning Out',
     slug: 'leetcode-without-burning-out',
@@ -340,6 +435,8 @@ Review days are where most growth happens for me.
 
 If I solve a problem once and never revisit it, I usually remember the feeling of the solution but not the reasoning. When I revisit it after a few days, I can see whether the pattern actually stuck.
 
+### What I Note After Each Failure
+
 I keep a short note for every failed problem:
 
 - What was the missed observation?
@@ -357,6 +454,8 @@ In practice, I can spend unlimited time polishing a solution. In a contest, I ne
 
 That pressure teaches decision-making.
 
+### Upsolving After Contests
+
 The best contest habit I have built is simple: after the contest, I upsolve only the problems that teach a reusable idea. Not every missed problem deserves equal time.
 
 ## My Current Rule
@@ -365,6 +464,8 @@ I would rather solve fewer problems and deeply understand them than chase a stre
 
 Consistency should create confidence, not anxiety.`,
   },
+
+  // ─── Blog 3 ────────────────────────────────────────────────────────────────
   {
     title: 'Designing a MERN Portfolio That Feels Like a Product',
     slug: 'mern-portfolio-like-a-product',
@@ -403,15 +504,13 @@ app.use('/api/projects', projectRoutes)
 app.use('/api/contact', contactRoutes)
 \`\`\`
 
-## Final Thought
-
-The best portfolio is not the loudest one. It is the one that makes your work easy to trust.
-
 ## Content Ownership
 
 One architecture decision matters a lot: dynamic content should have one source of truth.
 
 If projects live in frontend mock files and also in backend seed files, the UI starts lying. One page shows one reality, another page shows another. That is not just messy code; it creates a confusing editing workflow.
+
+### Where Each Type Belongs
 
 For this portfolio, I prefer:
 
@@ -430,8 +529,14 @@ The writing page should filter smoothly. Project cards should have consistent me
 
 None of these details are individually impressive.
 
-Together, they make the portfolio feel trustworthy.`,
+Together, they make the portfolio feel trustworthy.
+
+## Final Thought
+
+The best portfolio is not the loudest one. It is the one that makes your work easy to trust.`,
   },
+
+  // ─── Blog 4 ────────────────────────────────────────────────────────────────
   {
     title: 'Preparing for Open Source Programs as a Student',
     slug: 'preparing-for-open-source-programs',
@@ -447,6 +552,17 @@ Open source programs reward preparation long before the application opens.
 
 A good repository is active, beginner-readable, and aligned with your skills. Look for recent merged PRs, issue discussions, and clear contribution docs.
 
+### Signals of a Healthy Repo
+
+Before you invest time, check for these:
+
+- Recent merged pull requests from outside contributors.
+- Maintainer responses on issues within a reasonable timeframe.
+- A CONTRIBUTING.md or clear setup instructions.
+- Tests or at least repeatable checks.
+
+These signals tell you whether your effort has a reasonable chance of landing.
+
 ## Build Trust Early
 
 Start small:
@@ -458,13 +574,37 @@ Start small:
 
 Small useful contributions compound faster than one oversized unfinished PR.
 
+### From Small PRs to Real Trust
+
+Trust with maintainers is built over weeks, not in a single large patch. Each small, well-scoped contribution shows that you can follow the project's workflow, communicate clearly, and ship reliably.
+
+By the time applications open, you should already be a familiar name in the repository.
+
 ## Proposal Quality
 
 A strong proposal explains the problem, current behavior, planned milestones, risks, and communication rhythm.
 
 Mentors are not only choosing an idea. They are choosing whether they can trust your execution.
-`,
+
+### What Makes a Proposal Stand Out
+
+- A clear problem statement grounded in the codebase.
+- Milestones that are specific and testable.
+- Honest risk assessment with mitigation plans.
+- Evidence that you have already explored the relevant code.
+
+## Timeline and Commitment
+
+Be realistic about the time you can dedicate. Overcommitting in the proposal and underdelivering during the program is the most common failure mode.
+
+Plan for unexpected complexity. The first milestone always takes longer than you think.
+
+## After the Program
+
+The program is a beginning, not an end. The best participants continue contributing, reviewing, and mentoring others in the community long after the program finishes.`,
   },
+
+  // ─── Blog 5 ────────────────────────────────────────────────────────────────
   {
     title: 'Backend-First Content Architecture for a Portfolio',
     slug: 'backend-first-content-architecture',
@@ -484,6 +624,8 @@ Duplicate data feels harmless at first.
 
 One file has project cards for the homepage. Another seed file has projects for the API. Then the UI changes, the seed is forgotten, and the backend starts returning a different portfolio than the frontend preview.
 
+### Three Problems It Creates
+
 That split creates three problems:
 
 - The editing workflow becomes unclear.
@@ -497,6 +639,8 @@ The fix is simple: choose one owner.
 For a personal portfolio, a seed file is often enough.
 
 It gives you version control, reviewable changes, repeatable local setup, and no admin dashboard to maintain. You can still migrate later to a CMS or editor when the content volume demands it.
+
+### Discipline Over Tooling
 
 The important part is discipline.
 
@@ -541,6 +685,8 @@ The backend owns content.
 
 The frontend owns experience.`,
   },
+
+  // ─── Blog 6 ────────────────────────────────────────────────────────────────
   {
     title: 'Designing RAG Notes That Actually Help Students',
     slug: 'designing-rag-notes-for-students',
@@ -559,6 +705,8 @@ If the answer is fast but vague, it does not help. If it sounds confident but ca
 Students do not upload a PDF because they want embeddings.
 
 They upload it because they have a test, a confusing chapter, or a deadline.
+
+### The Loop That Matters
 
 The product should support that flow:
 
@@ -588,7 +736,11 @@ First, it lets the student verify the response.
 
 Second, it teaches the student where to look in the original material.
 
+### Good Citations vs Bad Citations
+
 The best study tools do not replace reading. They reduce the cost of finding the right place to read.
+
+A bad citation links to a 40-page PDF. A good citation links to the exact paragraph and highlights the relevant sentence.
 
 ## Failure States
 
@@ -604,6 +756,8 @@ The goal is not a chatbot.
 
 The goal is a study workspace where AI helps students move from confusion to understanding with the source still visible.`,
   },
+
+  // ─── Blog 7 ────────────────────────────────────────────────────────────────
   {
     title: 'What I Look For Before Contributing to Open Source',
     slug: 'what-i-check-before-open-source-contribution',
@@ -664,6 +818,8 @@ It is about learning how real teams communicate through code, reviews, issues, a
 
 That skill is valuable far beyond one repository.`,
   },
+
+  // ─── Blog 8 ────────────────────────────────────────────────────────────────
   {
     title: 'Building Realtime Features Without Making the UI Chaotic',
     slug: 'building-realtime-features-without-chaos',
@@ -693,6 +849,8 @@ Realtime data can cause layout jumps.
 
 Messages arrive. Counts change. Avatars appear. Status labels update.
 
+### Preventing Layout Shifts
+
 The solution is to reserve space for common dynamic elements and avoid using content size as the only layout rule. Stable dimensions make the app feel calm even while data is changing.
 
 ## Optimistic UI
@@ -720,6 +878,8 @@ The best realtime UI feels predictable.
 
 It updates quickly, but it does not surprise the user. It keeps the page steady, preserves context, and only asks for attention when attention is actually needed.`,
   },
+
+  // ─── Blog 9 ────────────────────────────────────────────────────────────────
   {
     title: 'Frontend Polish That Makes Developer Tools Feel Professional',
     slug: 'frontend-polish-for-developer-tools',
@@ -772,6 +932,10 @@ It is about confidence.
 The user should feel that the interface will not jump, hide important information, or waste their time.`,
   },
 ]
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Sync logic — do not edit unless changing the seed strategy.
+// ═══════════════════════════════════════════════════════════════════════════════
 
 async function syncProjects() {
   const projects = PROJECTS.map(withImageAlias).sort((a, b) => a.order - b.order)

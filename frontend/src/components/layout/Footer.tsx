@@ -1,10 +1,11 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowUpRight, BriefcaseBusiness, MessagesSquare } from 'lucide-react'
-import { Github } from 'react-bootstrap-icons'
+import { ArrowUpRight } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
+import { Github, Linkedin, TwitterX } from 'react-bootstrap-icons'
+
 
 const NAV_LINKS = [
   { label: 'About', href: '/#about' },
@@ -14,12 +15,12 @@ const NAV_LINKS = [
 ]
 
 const SOCIAL_LINKS: { label: string; href: string; Icon: ComponentType<{ size?: number; className?: string }> }[] = [
-  { label: 'GitHub', href: 'https://github.com', Icon: Github as ComponentType<{ size?: number; className?: string }> },
-  { label: 'LinkedIn', href: 'https://linkedin.com', Icon: BriefcaseBusiness },
-  { label: 'Twitter', href: 'https://x.com', Icon: MessagesSquare },
+  { label: 'GitHub', href: 'https://github.com/iamalok123', Icon: Github as ComponentType<{ size?: number; className?: string }> },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/alok-hotta', Icon: Linkedin },
+  { label: 'Twitter', href: 'https://x.com/_alok_h', Icon: TwitterX },
   {
     label: 'LeetCode',
-    href: 'https://leetcode.com',
+    href: 'https://leetcode.com/u/_alok_123/',
     Icon: () => (
       <svg
         viewBox="0 0 24 24"
@@ -127,11 +128,7 @@ export function Footer() {
         <div className="mt-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
           <p className="text-sm text-muted">
             Designed &amp; Built by{' '}
-            <span className="font-semibold text-foreground">Alok Kumar</span>
-          </p>
-
-          <p className="text-sm text-muted">
-            Built with <span className="font-semibold text-foreground">React</span> + TypeScript
+            <span className="font-semibold text-foreground">Alok Hotta</span>
           </p>
 
           <div className="flex items-center gap-4">
