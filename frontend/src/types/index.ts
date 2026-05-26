@@ -4,7 +4,6 @@ export interface Blog {
   slug: string
   content: string
   tags: string[]
-  category: string
   readTime: number
   publishedAt: string
   image?: string

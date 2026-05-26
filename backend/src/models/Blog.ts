@@ -5,7 +5,6 @@ export interface IBlog extends Document {
   slug: string
   content: string
   tags: string[]
-  category: string
   readTime: number
   publishedAt: Date
   image?: string
@@ -28,7 +27,6 @@ const BlogSchema = new Schema<IBlog>(
     slug: { type: String, unique: true, index: true },
     content: { type: String, required: true },
     tags: { type: [String], default: [] },
-    category: { type: String, required: true, trim: true },
     readTime: { type: Number, required: true, min: 1 },
     publishedAt: { type: Date, default: Date.now },
     image: { type: String },

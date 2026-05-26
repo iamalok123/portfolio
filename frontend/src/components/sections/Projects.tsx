@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ExternalLink, GitFork, Globe, SearchX } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { PROJECTS_DATA } from '../../data/projects'
 import { api } from '../../lib/axios'
 import { resolveAssetUrl } from '../../lib/assets'
 import { cn } from '../../lib/utils'
@@ -115,7 +114,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
   const [activeFilter, setActiveFilter] = useState('All')
-  const [projects, setProjects] = useState<Project[]>(PROJECTS_DATA)
+  const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -124,15 +123,13 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
     api
       .get<{ success: boolean; data: Project[] }>('/projects')
       .then((res) => {
-        if (isActive && res.data.success) {
-          if (res.data.data.length > 0) {
-            setProjects(res.data.data)
-          }
+        if (isActive && res.data.success && Array.isArray(res.data.data)) {
+          setProjects(res.data.data)
         }
       })
       .catch(() => {
         if (isActive) {
-          setProjects(PROJECTS_DATA)
+          setProjects([])
         }
       })
       .finally(() => {

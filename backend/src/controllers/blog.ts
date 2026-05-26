@@ -10,11 +10,10 @@ export async function getBlogs(req: Request, res: Response, next: NextFunction):
   }
 
   try {
-    const { tag, category, q, sort } = req.query as Record<string, string | undefined>
+    const { tag, q, sort } = req.query as Record<string, string | undefined>
 
     const filter: Record<string, unknown> = {}
     if (tag) filter['tags'] = { $in: [tag] }
-    if (category) filter['category'] = { $regex: new RegExp(category, 'i') }
     if (q) {
       filter['$or'] = [
         { title: { $regex: new RegExp(q, 'i') } },

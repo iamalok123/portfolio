@@ -8,7 +8,6 @@ import rehypeSlug from 'rehype-slug'
 import remarkGfm from 'remark-gfm'
 import { PageTransition } from '../components/layout/PageTransition'
 import { BlogCoverArt } from '../components/ui/BlogCoverArt'
-import { BLOGS_MOCK } from '../data/blogs'
 import { extractToc, slugify } from '../lib/blog'
 import { api } from '../lib/axios'
 import { resolveAssetUrl } from '../lib/assets'
@@ -35,6 +34,7 @@ function getTextFromChildren(children: unknown): string {
 
 function RelatedCard({ blog }: { blog: Blog }) {
   const coverImage = resolveAssetUrl(blog.coverImage || blog.image)
+  const primaryTag = blog.tags[0]
 
   return (
     <Link
@@ -42,7 +42,11 @@ function RelatedCard({ blog }: { blog: Blog }) {
       className="group block rounded-lg border border-border bg-surface p-4 transition hover:-translate-y-1 hover:border-foreground/30"
     >
       <BlogCoverArt title={blog.title} imageSrc={coverImage} compact className="rounded-md" />
-      <p className="mt-4 text-xs font-bold uppercase tracking-[0.16em] text-muted">{blog.category}</p>
+      {primaryTag ? (
+        <p className="mt-4 text-xs font-bold uppercase tracking-[0.16em] text-muted">
+          {primaryTag}
+        </p>
+      ) : null}
       <h3 className="mt-2 font-display text-xl font-bold leading-tight text-foreground transition group-hover:text-muted">
         {blog.title}
       </h3>
@@ -80,9 +84,8 @@ function CopyableCodeBlock({ children }: { children?: ReactNode }) {
 
 export function BlogPost() {
   const { slug } = useParams()
-  const [post, setPost] = useState<Blog | null>(
-    () => BLOGS_MOCK.find((blog) => blog.slug === slug) ?? null,
-  )
+  const [post, setPost] = useState<Blog | null>(null)
+  const [relatedPosts, setRelatedPosts] = useState<Blog[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeHeading, setActiveHeading] = useState('')
   const [showBackToTop, setShowBackToTop] = useState(false)
@@ -103,7 +106,7 @@ export function BlogPost() {
       })
       .catch(() => {
         if (isActive) {
-          setPost(BLOGS_MOCK.find((blog) => blog.slug === slug) ?? null)
+          setPost(null)
         }
       })
       .finally(() => {
@@ -116,6 +119,44 @@ export function BlogPost() {
       isActive = false
     }
   }, [slug])
+
+  useEffect(() => {
+    if (!post) {
+      setRelatedPosts([])
+      return
+    }
+
+    let isActive = true
+
+    api
+      .get<Blog[] | { success: boolean; data: Blog[] }>('/blogs')
+      .then((response) => {
+        const posts = Array.isArray(response.data) ? response.data : response.data.data
+
+        if (isActive && Array.isArray(posts)) {
+          const postTags = new Set(post.tags)
+          const related = posts
+            .filter((blog) => blog.slug !== post.slug)
+            .sort((a, b) => {
+              const aScore = a.tags.filter((tag) => postTags.has(tag)).length
+              const bScore = b.tags.filter((tag) => postTags.has(tag)).length
+              return bScore - aScore
+            })
+            .slice(0, 3)
+
+          setRelatedPosts(related)
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setRelatedPosts([])
+        }
+      })
+
+    return () => {
+      isActive = false
+    }
+  }, [post])
 
   const toc = useMemo(() => (post ? extractToc(post.content) : []), [post])
 
@@ -202,17 +243,6 @@ export function BlogPost() {
         .find((block) => block && !block.startsWith('#') && !block.startsWith('-')) ?? ''
     )
   }, [articleContent])
-
-  const relatedPosts = useMemo(() => {
-    if (!post) {
-      return []
-    }
-
-    return BLOGS_MOCK.filter((blog) => blog.slug !== post.slug && blog.category === post.category).slice(
-      0,
-      3,
-    )
-  }, [post])
 
   const handleShare = async () => {
     if (!post) return
@@ -303,9 +333,6 @@ export function BlogPost() {
             <span className="inline-flex items-center gap-2">
               <Clock3 size={18} />
               {post.readTime} min read
-            </span>
-            <span className="rounded-full border border-border px-3 py-1 text-xs font-bold uppercase tracking-[0.14em]">
-              {post.category}
             </span>
           </div>
           <button
