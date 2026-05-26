@@ -11,7 +11,7 @@ export function Hero() {
       <div className="hero-grain pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_72%_22%,color-mix(in_srgb,var(--accent)_18%,transparent),transparent_28rem)]" />
 
-      <div className="mx-auto grid min-h-[calc(100svh-10.75rem)] w-full max-w-7xl items-center gap-12 px-6 pb-20 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:px-10 lg:pb-19 lg:mt-0">
+      <div className="mx-auto grid min-h-[calc(100svh-10.75rem)] w-full max-w-7xl items-center gap-12 px-6 pb-22 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:px-10 lg:pb-22 lg:mt-0">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -140,7 +140,7 @@ export function Hero() {
               Download Resume
               <ArrowDownToLine size={18} />
             </a>
-            <div className="flex items-center justify-center gap-5 pt-7 sm:basis-full lg:basis-auto lg:pt-4 lg:pl-1.5">
+            <div className="flex items-center justify-center gap-6 pt-8 sm:basis-full lg:basis-auto lg:pt-8 lg:pl-2">
               {[
                 {
                   label: "GitHub",
