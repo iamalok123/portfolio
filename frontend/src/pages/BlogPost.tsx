@@ -1,6 +1,7 @@
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import { ArrowLeft, ArrowUp, CalendarDays, Check, Clock3, Copy, Hash } from 'lucide-react'
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import { Link, useParams } from 'react-router-dom'
 import rehypeHighlight from 'rehype-highlight'
@@ -15,6 +16,15 @@ import { cn } from '../lib/utils'
 import type { Blog } from '../types'
 
 type BlogResponse = Blog | { success: boolean; data: Blog }
+type LenisScroll = {
+  scrollTo: (target: HTMLElement | string, opts?: object) => void
+  start?: () => void
+  stop?: () => void
+}
+
+function getLenis() {
+  return (window as Window & { lenis?: LenisScroll }).lenis
+}
 
 function getTextFromChildren(children: unknown): string {
   if (typeof children === 'string') {
@@ -30,31 +40,6 @@ function getTextFromChildren(children: unknown): string {
   }
 
   return ''
-}
-
-function RelatedCard({ blog }: { blog: Blog }) {
-  const coverImage = resolveAssetUrl(blog.coverImage || blog.image)
-  const primaryTag = blog.tags[0]
-
-  return (
-    <Link
-      to={`/blog/${blog.slug}`}
-      className="group block rounded-lg border border-border bg-surface p-4 transition hover:-translate-y-1 hover:border-foreground/30"
-    >
-      <BlogCoverArt title={blog.title} imageSrc={coverImage} compact className="rounded-md" />
-      {primaryTag ? (
-        <p className="mt-4 text-xs font-bold uppercase tracking-[0.16em] text-muted">
-          {primaryTag}
-        </p>
-      ) : null}
-      <h3 className="mt-2 font-display text-xl font-bold leading-tight text-foreground transition group-hover:text-muted">
-        {blog.title}
-      </h3>
-      <p className="mt-3 text-xs font-medium uppercase tracking-[0.14em] text-muted">
-        {blog.readTime} min read
-      </p>
-    </Link>
-  )
 }
 
 function CopyableCodeBlock({ children }: { children?: ReactNode }) {
@@ -85,12 +70,30 @@ function CopyableCodeBlock({ children }: { children?: ReactNode }) {
 export function BlogPost() {
   const { slug } = useParams()
   const [post, setPost] = useState<Blog | null>(null)
-  const [relatedPosts, setRelatedPosts] = useState<Blog[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeHeading, setActiveHeading] = useState('')
+  const [isTocOpen, setIsTocOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
   const { scrollYProgress } = useScroll()
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })
+
+  const scrollToHeading = useCallback((id: string) => {
+    const heading = document.getElementById(id)
+    if (!heading) return
+
+    const lenis = getLenis()
+
+    if (lenis) {
+      lenis.scrollTo(heading, {
+        offset: -96,
+        duration: 1,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      })
+      return
+    }
+
+    heading.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
 
   useEffect(() => {
     let isActive = true
@@ -119,44 +122,6 @@ export function BlogPost() {
       isActive = false
     }
   }, [slug])
-
-  useEffect(() => {
-    if (!post) {
-      setRelatedPosts([])
-      return
-    }
-
-    let isActive = true
-
-    api
-      .get<Blog[] | { success: boolean; data: Blog[] }>('/blogs')
-      .then((response) => {
-        const posts = Array.isArray(response.data) ? response.data : response.data.data
-
-        if (isActive && Array.isArray(posts)) {
-          const postTags = new Set(post.tags)
-          const related = posts
-            .filter((blog) => blog.slug !== post.slug)
-            .sort((a, b) => {
-              const aScore = a.tags.filter((tag) => postTags.has(tag)).length
-              const bScore = b.tags.filter((tag) => postTags.has(tag)).length
-              return bScore - aScore
-            })
-            .slice(0, 3)
-
-          setRelatedPosts(related)
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setRelatedPosts([])
-        }
-      })
-
-    return () => {
-      isActive = false
-    }
-  }, [post])
 
   const toc = useMemo(() => (post ? extractToc(post.content) : []), [post])
 
@@ -196,6 +161,35 @@ export function BlogPost() {
 
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    if (!isTocOpen) {
+      return
+    }
+
+    const lenis = getLenis()
+    const previousBodyOverflow = document.body.style.overflow
+    const previousHtmlOverflow = document.documentElement.style.overflow
+
+    lenis?.stop?.()
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsTocOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', closeOnEscape)
+
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape)
+      document.body.style.overflow = previousBodyOverflow
+      document.documentElement.style.overflow = previousHtmlOverflow
+      lenis?.start?.()
+    }
+  }, [isTocOpen])
 
   const components: Components = {
     h2: ({ children, ...props }) => {
@@ -243,6 +237,15 @@ export function BlogPost() {
         .find((block) => block && !block.startsWith('#') && !block.startsWith('-')) ?? ''
     )
   }, [articleContent])
+
+  const currentTocItem = useMemo(() => {
+    return toc.find((item) => item.id === activeHeading) ?? toc[0]
+  }, [activeHeading, toc])
+
+  const handleTocClick = (id: string) => {
+    setIsTocOpen(false)
+    window.setTimeout(() => scrollToHeading(id), 80)
+  }
 
   const handleShare = async () => {
     if (!post) return
@@ -294,12 +297,7 @@ export function BlogPost() {
 
   return (
     <PageTransition>
-      <motion.div
-        style={{ scaleX: progressScale }}
-        className="fixed left-0 top-0 z-70 h-1 w-full origin-left bg-accent"
-      />
-
-      <article className="mx-auto min-h-svh w-full max-w-5xl px-6 pb-24 pt-32 sm:px-8 lg:px-10">
+      <article className="mx-auto min-h-svh w-full max-w-5xl px-6 pb-40 pt-32 sm:px-8 sm:pb-44 lg:px-10">
         <Link
           className="inline-flex items-center gap-2 text-sm font-semibold text-muted transition hover:text-foreground"
           to="/blog"
@@ -356,66 +354,158 @@ export function BlogPost() {
           ))}
         </div>
 
-        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_19rem]">
-          <div className="prose prose-portfolio max-w-none">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeSlug, rehypeHighlight]}
-              components={components}
-            >
-              {articleContent}
-            </ReactMarkdown>
-          </div>
-
-          <aside className="hidden lg:block">
-            <div className="sticky top-28 max-h-[calc(100svh-8rem)] overflow-y-auto rounded-3xl border border-border bg-surface p-5 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
-              <p className="font-display text-sm font-bold uppercase tracking-[0.16em] text-muted">
-                Table of Contents
-              </p>
-              <nav className="mt-4 space-y-2">
-                {toc.map((item) => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    className={cn(
-                      'block rounded-lg px-3 py-2 text-sm font-semibold text-muted transition hover:bg-surface-2 hover:text-foreground',
-                      item.level === 3 ? 'pl-6' : 'pl-3',
-                      activeHeading === item.id && 'bg-surface-2 text-foreground',
-                    )}
-                  >
-                    {item.text}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </aside>
+        <div className="prose prose-portfolio mt-12 max-w-none">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeSlug, rehypeHighlight]}
+            components={components}
+          >
+            {articleContent}
+          </ReactMarkdown>
         </div>
 
-        {relatedPosts.length > 0 ? (
-          <section className="mt-20 border-t border-border pt-12">
-            <h2 className="font-display text-3xl font-extrabold text-foreground">Related Posts</h2>
-            <div className="mt-6 grid gap-5 md:grid-cols-3">
-              {relatedPosts.map((related) => (
-                <RelatedCard key={related._id} blog={related} />
-              ))}
-            </div>
-          </section>
-        ) : null}
       </article>
 
-      {showBackToTop ? (
-        <motion.button
-          type="button"
-          aria-label="Back to top"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 16 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-50 grid size-12 place-items-center rounded-full bg-accent text-bg shadow-xl"
-        >
-          <ArrowUp size={20} />
-        </motion.button>
-      ) : null}
+      {typeof document !== 'undefined'
+        ? createPortal(
+            <>
+              {showBackToTop ? (
+                <motion.button
+                  type="button"
+                  aria-label="Back to top"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 16 }}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className={cn(
+                    'fixed right-6 z-50 grid size-12 place-items-center rounded-full bg-accent text-bg shadow-xl',
+                    toc.length > 0 ? 'bottom-24 sm:bottom-28' : 'bottom-6',
+                  )}
+                >
+                  <ArrowUp size={20} />
+                </motion.button>
+              ) : null}
+
+              {toc.length > 0 ? (
+                <>
+                  <AnimatePresence>
+                    {isTocOpen ? (
+                      <motion.button
+                        type="button"
+                        aria-label="Close table of contents"
+                        data-cursor="transparent"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsTocOpen(false)}
+                        className="fixed inset-0 z-70 bg-bg/55 backdrop-blur-lg"
+                      />
+                    ) : null}
+                  </AnimatePresence>
+
+                  <div className="fixed inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom))] z-80 flex justify-center px-4 sm:bottom-6">
+                    <motion.div
+                      layout
+                      role={isTocOpen ? 'dialog' : undefined}
+                      aria-modal={isTocOpen ? 'true' : undefined}
+                      aria-label={isTocOpen ? 'Table of contents' : undefined}
+                      className={cn(
+                        'w-[min(calc(100vw-2rem),30rem)] overflow-hidden rounded-[1.75rem] border border-border bg-surface/95 text-foreground shadow-[0_24px_80px_rgba(0,0,0,0.2)] backdrop-blur-xl dark:shadow-[0_24px_90px_rgba(0,0,0,0.55)]',
+                        isTocOpen ? 'max-h-[72svh] sm:max-h-[70svh]' : 'max-h-16',
+                      )}
+                    >
+                      <AnimatePresence initial={false}>
+                        {isTocOpen ? (
+                          <motion.div
+                            key="toc-panel"
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 8 }}
+                            transition={{ duration: 0.18 }}
+                            className="border-b border-border px-4 pb-4 pt-4 sm:px-5"
+                          >
+                            <p className="font-display text-xs font-bold uppercase tracking-[0.16em] text-muted">
+                              Table of Contents
+                            </p>
+                            <nav
+                              id="blog-post-toc-menu"
+                              aria-label="Article sections"
+                              data-lenis-prevent
+                              className="mt-3 max-h-[calc(72svh-8.75rem)] space-y-1 overflow-y-auto overscroll-contain pr-1 sm:max-h-[calc(70svh-9rem)]"
+                            >
+                              {toc.map((item) => {
+                                const isActive = activeHeading === item.id
+
+                                return (
+                                  <button
+                                    key={item.id}
+                                    type="button"
+                                    onClick={() => handleTocClick(item.id)}
+                                    className={cn(
+                                      'flex min-h-10 w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-muted transition hover:bg-surface-2 hover:text-foreground hover:shadow-[0_12px_30px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_12px_34px_rgba(0,0,0,0.35)] sm:text-base',
+                                      item.level === 3 && 'pl-6 opacity-80',
+                                      isActive &&
+                                        'bg-surface-2 text-foreground shadow-[0_12px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_12px_34px_rgba(0,0,0,0.35)]',
+                                    )}
+                                  >
+                                    <span>{item.text}</span>
+                                    {isActive ? (
+                                      <span className="size-2 shrink-0 rounded-full bg-foreground" />
+                                    ) : null}
+                                  </button>
+                                )
+                              })}
+                            </nav>
+                          </motion.div>
+                        ) : null}
+                      </AnimatePresence>
+
+                      <button
+                        type="button"
+                        aria-expanded={isTocOpen}
+                        aria-controls="blog-post-toc-menu"
+                        onClick={() => setIsTocOpen((value) => !value)}
+                        className="flex min-h-14 w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-surface-2 sm:px-5"
+                      >
+                        <span className="size-2.5 shrink-0 rounded-full bg-foreground" />
+                        <span className="min-w-0 flex-1 truncate text-sm font-bold text-foreground sm:text-base">
+                          {currentTocItem?.text ?? 'Table of Contents'}
+                        </span>
+                        <svg
+                          viewBox="0 0 36 36"
+                          aria-hidden="true"
+                          className="size-9 shrink-0 -rotate-90 text-foreground"
+                        >
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="14"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeOpacity="0.2"
+                            strokeWidth="4"
+                          />
+                          <motion.circle
+                            cx="18"
+                            cy="18"
+                            r="14"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeWidth="4"
+                            pathLength="1"
+                            style={{ pathLength: progressScale }}
+                          />
+                        </svg>
+                      </button>
+                    </motion.div>
+                  </div>
+                </>
+              ) : null}
+            </>,
+            document.body,
+          )
+        : null}
     </PageTransition>
   )
 }

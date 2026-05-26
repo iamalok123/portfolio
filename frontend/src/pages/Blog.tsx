@@ -398,7 +398,7 @@ export function Blog() {
         <div className="mt-10 rounded-lg border border-border bg-surface p-3 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:gap-4">
             <div className="flex items-center gap-3 text-muted">
-              <Filter size={17} className="shrink-0 text-foreground sm:size-[18px]" />
+              <Filter size={17} className="shrink-0 text-foreground sm:size-4.5" />
               <span className="font-display text-xs font-bold uppercase tracking-[0.16em] sm:text-sm">
                 Explore by topic
               </span>

@@ -8,7 +8,7 @@ export function Hero() {
       <div className="hero-grain pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_72%_22%,color-mix(in_srgb,var(--accent)_18%,transparent),transparent_28rem)]" />
 
-      <div className="mx-auto grid min-h-[calc(100svh-8.75rem)] w-full max-w-7xl items-center gap-10 px-6 pb-8 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-14 lg:pt-14">
+      <div className="mx-auto grid min-h-[calc(100svh-8.75rem)] w-full max-w-7xl items-center gap-10 px-6 pb-10 pt-8 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:pb-14 lg:mt-0">
         <motion.div
           initial="hidden"
           animate="visible"

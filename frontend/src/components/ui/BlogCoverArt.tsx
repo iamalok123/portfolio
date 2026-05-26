@@ -28,7 +28,7 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
             alt=""
             loading="lazy"
             onError={() => setFailedImageSrc(imageSrc ?? '')}
-            className="absolute inset-0 size-full object-cover grayscale"
+            className="absolute inset-0 size-full object-contain grayscale"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/70 via-[#111111]/10 to-transparent" />
           <p className="relative mt-auto max-w-[88%] text-center text-[clamp(1.2rem,5vw,3.6rem)] font-black uppercase leading-[0.95] tracking-[-0.04em] text-white">

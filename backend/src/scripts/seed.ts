@@ -258,7 +258,39 @@ AI can speed up the work, but it cannot save bad engineering.
 
 The tool is powerful.
 
-The responsibility is still yours.`,
+The responsibility is still yours.
+
+## How I Use AI Without Losing Ownership
+
+I like using AI as a second pair of hands, not as the driver.
+
+Before asking for code, I write down the shape of the problem: what data enters, what data leaves, which files own the behavior, and what could break if I am wrong.
+
+Then I ask for options, not final answers.
+
+The difference is important. Options keep the decision with the engineer. Final answers make it too easy to paste code that does not belong in the system.
+
+## Review Is Where Engineering Happens
+
+The real test of generated code is the review.
+
+I look for these things:
+
+- Does the change fit the existing architecture?
+- Does it make state ownership clearer or more confusing?
+- Does it handle failure cases explicitly?
+- Is the behavior easy to test?
+- Will another developer understand the decision next month?
+
+When the answer is no, I rewrite the patch until it feels native to the project.
+
+## The Standard I Want
+
+AI should make good engineers faster.
+
+It should not make unclear thinking look productive.
+
+The goal is not to avoid tools. The goal is to keep your judgment sharp while using powerful tools well.`,
   },
   {
     title: 'How I Approach LeetCode Without Burning Out',
@@ -300,7 +332,38 @@ This makes the next similar problem less mysterious.
 
 Some days are for hard problems. Some days are for review. Both count.
 
-The point is not to grind forever. The point is to become reliable under pressure.`,
+The point is not to grind forever. The point is to become reliable under pressure.
+
+## Review Days Matter
+
+Review days are where most growth happens for me.
+
+If I solve a problem once and never revisit it, I usually remember the feeling of the solution but not the reasoning. When I revisit it after a few days, I can see whether the pattern actually stuck.
+
+I keep a short note for every failed problem:
+
+- What was the missed observation?
+- Which constraint mattered most?
+- What pattern would have revealed the solution earlier?
+- What bug did I introduce during implementation?
+
+These notes are more useful than raw problem counts.
+
+## Contest Pressure
+
+Contests expose different weaknesses than practice.
+
+In practice, I can spend unlimited time polishing a solution. In a contest, I need to choose when to continue, when to skip, and when to protect the score I already have.
+
+That pressure teaches decision-making.
+
+The best contest habit I have built is simple: after the contest, I upsolve only the problems that teach a reusable idea. Not every missed problem deserves equal time.
+
+## My Current Rule
+
+I would rather solve fewer problems and deeply understand them than chase a streak that makes me tired.
+
+Consistency should create confidence, not anxiety.`,
   },
   {
     title: 'Designing a MERN Portfolio That Feels Like a Product',
@@ -342,7 +405,32 @@ app.use('/api/contact', contactRoutes)
 
 ## Final Thought
 
-The best portfolio is not the loudest one. It is the one that makes your work easy to trust.`,
+The best portfolio is not the loudest one. It is the one that makes your work easy to trust.
+
+## Content Ownership
+
+One architecture decision matters a lot: dynamic content should have one source of truth.
+
+If projects live in frontend mock files and also in backend seed files, the UI starts lying. One page shows one reality, another page shows another. That is not just messy code; it creates a confusing editing workflow.
+
+For this portfolio, I prefer:
+
+- Backend seed for projects and writing.
+- Frontend data files for stable profile content.
+- API calls for anything that behaves like content.
+- Shared TypeScript types for the frontend contract.
+
+That keeps the design flexible without turning the portfolio into a full CMS too early.
+
+## Product Details
+
+Small details make the site feel built instead of assembled.
+
+The writing page should filter smoothly. Project cards should have consistent metadata. The article page should make long posts easy to navigate. Loading and empty states should still look intentional.
+
+None of these details are individually impressive.
+
+Together, they make the portfolio feel trustworthy.`,
   },
   {
     title: 'Preparing for Open Source Programs as a Student',
@@ -376,6 +464,312 @@ A strong proposal explains the problem, current behavior, planned milestones, ri
 
 Mentors are not only choosing an idea. They are choosing whether they can trust your execution.
 `,
+  },
+  {
+    title: 'Backend-First Content Architecture for a Portfolio',
+    slug: 'backend-first-content-architecture',
+    tags: ['Backend', 'MongoDB', 'API', 'Architecture'],
+    readTime: 7,
+    publishedAt: new Date('2026-01-28'),
+    coverImage: '',
+    content: `# Backend-First Content Architecture for a Portfolio
+
+A portfolio can start as static data, but it should not stay that way forever.
+
+Once projects and blog posts become editable content, the backend should own them. The frontend should render the experience, not carry a second copy of the same data.
+
+## The Problem With Duplicate Data
+
+Duplicate data feels harmless at first.
+
+One file has project cards for the homepage. Another seed file has projects for the API. Then the UI changes, the seed is forgotten, and the backend starts returning a different portfolio than the frontend preview.
+
+That split creates three problems:
+
+- The editing workflow becomes unclear.
+- The API contract becomes untrusted.
+- The deployed site depends on whichever data path a page happens to use.
+
+The fix is simple: choose one owner.
+
+## Seed Files as Content Source
+
+For a personal portfolio, a seed file is often enough.
+
+It gives you version control, reviewable changes, repeatable local setup, and no admin dashboard to maintain. You can still migrate later to a CMS or editor when the content volume demands it.
+
+The important part is discipline.
+
+If content is dynamic, the frontend should fetch it.
+
+If content is static identity information, the frontend can keep it locally.
+
+## API Shape
+
+I prefer boring API shapes:
+
+\`\`\`ts
+GET /api/projects
+GET /api/blogs
+GET /api/blogs/:slug
+\`\`\`
+
+The frontend should not know how content is stored. It only needs stable fields: title, slug, tags, read time, publish date, markdown content, and image paths.
+
+## Frontend Responsibility
+
+The frontend still has real work.
+
+It owns:
+
+- Loading states.
+- Empty states.
+- Filtering.
+- Responsive cards.
+- Article navigation.
+- Asset URL resolution.
+
+But it should not own the actual blog records.
+
+## Why This Scales
+
+This approach is small, but it scales surprisingly far.
+
+You can add search, pagination, markdown rendering, image assets, and scheduled content without changing the basic mental model.
+
+The backend owns content.
+
+The frontend owns experience.`,
+  },
+  {
+    title: 'Designing RAG Notes That Actually Help Students',
+    slug: 'designing-rag-notes-for-students',
+    tags: ['AI', 'RAG', 'Product', 'StudyFlow'],
+    readTime: 8,
+    publishedAt: new Date('2025-12-18'),
+    coverImage: '',
+    content: `# Designing RAG Notes That Actually Help Students
+
+RAG sounds technical, but the product question is simple: can a student trust the answer?
+
+If the answer is fast but vague, it does not help. If it sounds confident but cannot point back to the source, it is dangerous. A useful study assistant needs retrieval, citations, and a workflow that matches how students actually revise.
+
+## Start With the Study Flow
+
+Students do not upload a PDF because they want embeddings.
+
+They upload it because they have a test, a confusing chapter, or a deadline.
+
+The product should support that flow:
+
+- Upload notes.
+- Ask a focused question.
+- See a short answer.
+- Jump to the source paragraph.
+- Save useful answers for revision.
+
+The AI is only one part of the loop.
+
+## Chunking Is a Product Decision
+
+Chunking is not just backend plumbing.
+
+If chunks are too large, answers become noisy. If chunks are too small, context disappears. For study material, I like chunks that preserve headings, examples, and definitions together.
+
+A good chunk should feel like a meaningful study card.
+
+## Citations Build Trust
+
+Every answer should show where it came from.
+
+That does two things:
+
+First, it lets the student verify the response.
+
+Second, it teaches the student where to look in the original material.
+
+The best study tools do not replace reading. They reduce the cost of finding the right place to read.
+
+## Failure States
+
+A RAG app should be honest when it does not know.
+
+If retrieval confidence is weak, the UI should say so. If the document does not contain the answer, the system should avoid inventing one.
+
+Honest failure is better than polished hallucination.
+
+## The Goal
+
+The goal is not a chatbot.
+
+The goal is a study workspace where AI helps students move from confusion to understanding with the source still visible.`,
+  },
+  {
+    title: 'What I Look For Before Contributing to Open Source',
+    slug: 'what-i-check-before-open-source-contribution',
+    tags: ['Open Source', 'GitHub', 'Community', 'Career'],
+    readTime: 6,
+    publishedAt: new Date('2025-11-07'),
+    coverImage: '',
+    content: `# What I Look For Before Contributing to Open Source
+
+Before I contribute to a repository, I read the project like a product.
+
+The code matters, but the health of the community matters too. A technically interesting repository can still be a bad place to start if issues are stale, maintainers are absent, or contribution paths are unclear.
+
+## Repository Health
+
+I check a few signals first:
+
+- Recent merged pull requests.
+- Maintainer responses on issues.
+- Clear setup instructions.
+- Tests or at least repeatable checks.
+- Issues with enough context to reproduce.
+
+These signals tell me whether my effort has a reasonable chance of becoming useful.
+
+## Start Smaller Than You Want
+
+The first contribution should usually be small.
+
+That does not mean meaningless. It means focused.
+
+A documentation fix, a reproduced bug, a small test, or a narrow UI improvement can teach you the project workflow without overwhelming the maintainers.
+
+Trust compounds.
+
+## Read Before Asking
+
+Good questions come from reading.
+
+Before asking for help, I try to understand the folder structure, the failing behavior, and what I have already attempted. A precise question is easier to answer and shows respect for the maintainer's time.
+
+## The Pull Request Shape
+
+A strong pull request explains:
+
+- What changed.
+- Why it changed.
+- How it was tested.
+- What tradeoff was made.
+
+The code is only part of the contribution. The explanation is what helps maintainers review it confidently.
+
+## Long-Term Mindset
+
+Open source is not just about getting merged.
+
+It is about learning how real teams communicate through code, reviews, issues, and constraints.
+
+That skill is valuable far beyond one repository.`,
+  },
+  {
+    title: 'Building Realtime Features Without Making the UI Chaotic',
+    slug: 'building-realtime-features-without-chaos',
+    tags: ['Realtime', 'Frontend', 'Socket.io', 'UX'],
+    readTime: 7,
+    publishedAt: new Date('2025-10-02'),
+    coverImage: '',
+    content: `# Building Realtime Features Without Making the UI Chaotic
+
+Realtime features are exciting because they make software feel alive.
+
+They are also easy to overdo.
+
+If every event creates motion, badges, sounds, and layout changes, the interface becomes stressful. A good realtime UI should make updates visible without stealing the user's focus.
+
+## Decide What Deserves Attention
+
+Not every event is equally important.
+
+A new message in the active chat should appear immediately. A typing indicator can be subtle. A presence update can be quiet. A background sync should often be invisible.
+
+The UI should reflect priority.
+
+## Stable Layouts Matter
+
+Realtime data can cause layout jumps.
+
+Messages arrive. Counts change. Avatars appear. Status labels update.
+
+The solution is to reserve space for common dynamic elements and avoid using content size as the only layout rule. Stable dimensions make the app feel calm even while data is changing.
+
+## Optimistic UI
+
+Optimistic UI can make a product feel fast, but it needs an honest rollback path.
+
+When a user sends a message, I like showing it immediately with a pending state. If the server confirms it, the pending state disappears. If it fails, the message stays visible with a retry action.
+
+Never silently lose user input.
+
+## Connection States
+
+Realtime apps need clear connection states:
+
+- Connected.
+- Reconnecting.
+- Offline.
+- Failed to send.
+
+These states should be visible but not dramatic.
+
+## The Best Realtime UI
+
+The best realtime UI feels predictable.
+
+It updates quickly, but it does not surprise the user. It keeps the page steady, preserves context, and only asks for attention when attention is actually needed.`,
+  },
+  {
+    title: 'Frontend Polish That Makes Developer Tools Feel Professional',
+    slug: 'frontend-polish-for-developer-tools',
+    tags: ['Frontend', 'Design', 'React', 'UX'],
+    readTime: 6,
+    publishedAt: new Date('2025-09-14'),
+    coverImage: '',
+    content: `# Frontend Polish That Makes Developer Tools Feel Professional
+
+Developer tools do not need to be flashy.
+
+They need to be clear, fast, and predictable. The best interfaces for technical users respect attention. They let people scan, compare, decide, and move.
+
+## Density With Order
+
+A developer tool can show a lot of information, but it needs hierarchy.
+
+I like using compact typography, restrained borders, and clear spacing instead of oversized cards everywhere. The interface should feel dense enough for work but not crowded.
+
+## Controls Should Match Intent
+
+Buttons are for actions.
+
+Tabs are for views.
+
+Toggles are for binary settings.
+
+Menus are for option sets.
+
+When controls match user expectations, the UI feels easier without needing extra explanation.
+
+## Motion Should Clarify
+
+Motion is useful when it explains where something came from or what changed.
+
+It becomes distracting when every hover, filter, and page transition competes for attention. In tools, I prefer short transitions and stable layouts.
+
+## Empty States
+
+Empty states should be useful.
+
+They should tell the user what happened and what action is available next. They should not feel like marketing panels inside a work surface.
+
+## The Professional Feeling
+
+Professional UI is not only about colors.
+
+It is about confidence.
+
+The user should feel that the interface will not jump, hide important information, or waste their time.`,
   },
 ]
 
