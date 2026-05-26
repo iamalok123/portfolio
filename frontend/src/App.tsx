@@ -6,7 +6,7 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
 import { CustomCursor } from './components/ui/CustomCursor'
-import { LoadingScreen } from './components/ui/LoadingScreen'
+import { LoadingScreen, PremiumLoader } from './components/ui/LoadingScreen'
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar'
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
@@ -32,13 +32,8 @@ function RouteFallback() {
       aria-live="polite"
       aria-busy="true"
     >
-      <div className="flex w-full max-w-sm flex-col items-center text-center">
-        <p className="break-all font-display text-2xl font-extrabold text-foreground sm:text-3xl">
-          alokhotta.site
-        </p>
-        <div className="mt-4 h-1 w-40 max-w-[64vw] overflow-hidden rounded-full bg-surface-2">
-          <div className="h-full w-1/2 animate-pulse rounded-full bg-accent" />
-        </div>
+      <div className="flex flex-col items-center gap-8">
+        <PremiumLoader compact />
       </div>
     </div>
   )
