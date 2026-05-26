@@ -1,10 +1,10 @@
 import type { Request, Response, NextFunction } from 'express'
 import { Blog } from '../models/Blog.js'
-import { isDBConnected } from '../config/db.js'
+import { ensureDBConnected } from '../config/db.js'
 
 // ─── GET /api/blogs ───────────────────────────────────────────────────────────
 export async function getBlogs(req: Request, res: Response, next: NextFunction): Promise<void> {
-  if (!isDBConnected()) {
+  if (!(await ensureDBConnected())) {
     res.status(503).json({ success: false, message: 'Database unavailable', data: [] })
     return
   }
@@ -34,7 +34,7 @@ export async function getBlogs(req: Request, res: Response, next: NextFunction):
 
 // ─── GET /api/blogs/:slug ─────────────────────────────────────────────────────
 export async function getBlog(req: Request, res: Response, next: NextFunction): Promise<void> {
-  if (!isDBConnected()) {
+  if (!(await ensureDBConnected())) {
     res.status(503).json({ success: false, message: 'Database unavailable' })
     return
   }

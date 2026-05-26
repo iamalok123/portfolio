@@ -4,7 +4,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { connectDB } from './config/db.js'
+import { connectDB, getDBState, isDBConnected } from './config/db.js'
 import blogRoutes from './routes/blog.js'
 import projectRoutes from './routes/project.js'
 import contactRoutes from './routes/contact.js'
@@ -18,14 +18,22 @@ const assetDir = path.resolve(__dirname, '../../assets')
 app.use(helmet())
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
-const allowedOrigins = (process.env.CLIENT_URL ?? 'http://localhost:5173').split(',').map((o) =>
-  o.trim(),
-)
+const allowedOrigins = (process.env.CLIENT_URL ?? 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/$/, ''))
+  .filter(Boolean)
+
+const vercelPortfolioPreviewPattern = /^https:\/\/portfolio-[a-z0-9-]+\.vercel\.app$/i
+
+function isAllowedOrigin(origin: string): boolean {
+  const normalizedOrigin = origin.replace(/\/$/, '')
+  return allowedOrigins.includes(normalizedOrigin) || vercelPortfolioPreviewPattern.test(normalizedOrigin)
+}
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || isAllowedOrigin(origin)) {
         callback(null, true)
       } else {
         callback(new Error(`CORS: Origin ${origin} not allowed`))
@@ -69,7 +77,14 @@ app.get('/', (_req, res) => {
 })
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+  res.json({
+    status: 'ok',
+    database: {
+      connected: isDBConnected(),
+      state: getDBState(),
+    },
+    timestamp: new Date().toISOString(),
+  })
 })
 
 app.get(['/favicon.ico', '/favicon.png'], (_req, res) => {
