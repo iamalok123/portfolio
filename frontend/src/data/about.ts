@@ -12,26 +12,26 @@ export const ABOUT_CONTENT = {
 }
 
 export const ABOUT_STATS = [
-  { value: 700, suffix: '+', label: 'Problems Solved' },
+  { value: 700, suffix: '+ CP', label: 'Problems Solved' },
   { value: 8.9, suffix: '', label: 'CGPA', decimals: 1 },
-  { value: 1, suffix: 'st Place', label: 'SIH 2025' },
+  { value: 1, suffix: 'st Place', label: 'In COLLEGE SIH 2025' },
   { value: 5, suffix: '+', label: 'Projects Shipped' },
 ]
 
 export const CAPABILITIES = [
   {
-    title: 'Full-Stack Dev',
-    description: 'React, Node, MongoDB, and PostgreSQL systems.',
+    title: "Full-Stack AI Developer",
+    description: "Next.js, React, Express.js, MongoDB, and PostgreSQL systems.",
     Icon: Code2,
   },
   {
-    title: 'AI/ML Integration',
-    description: 'RAG, LangChain, vector DBs, and product workflows.',
+    title: "AI/ML Integration",
+    description: "RAG, LangChain, vector DBs, and product workflows.",
     Icon: BrainCircuit,
   },
   {
-    title: 'Competitive Programming',
-    description: 'C++, LeetCode Knight, and contest-grade problem solving.',
+    title: "Competitive Programming",
+    description: "C++, Knight at LeetCode , and contest-grade problem solving.",
     Icon: Trophy,
   },
-]
+];

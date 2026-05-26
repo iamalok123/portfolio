@@ -4,7 +4,10 @@ import { Github, Linkedin, TwitterX } from 'react-bootstrap-icons'
 
 export function Hero() {
   return (
-    <section id="home" className="relative isolate min-h-svh overflow-hidden pt-20">
+    <section
+      id="home"
+      className="relative isolate min-h-svh overflow-hidden pt-20"
+    >
       <div className="hero-grain pointer-events-none absolute inset-0 -z-10 opacity-60" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_72%_22%,color-mix(in_srgb,var(--accent)_18%,transparent),transparent_28rem)]" />
 
@@ -25,7 +28,9 @@ export function Hero() {
             }}
             className="inline-flex max-w-full items-center justify-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.22em] text-muted sm:text-xs lg:justify-start"
           >
-            <span className="truncate">Working remotely from Bhubaneswar, India</span>
+            <span className="truncate">
+              Working remotely from Bhubaneswar, India
+            </span>
             <span className="h-4 w-0.5 shrink-0 animate-pulse bg-accent" />
           </motion.p>
 
@@ -39,7 +44,7 @@ export function Hero() {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0 },
               }}
-              transition={{ type: 'spring', stiffness: 170, damping: 20 }}
+              transition={{ type: "spring", stiffness: 170, damping: 20 }}
               className="block text-4xl sm:text-6xl lg:text-7xl xl:text-8xl"
             >
               HAY, I'M
@@ -51,7 +56,7 @@ export function Hero() {
                   hidden: { opacity: 0, y: 40 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ type: 'spring', stiffness: 170, damping: 20 }}
+                transition={{ type: "spring", stiffness: 170, damping: 20 }}
                 className="relative inline-block text-5xl sm:text-7xl lg:text-8xl xl:text-[6.8rem]"
               >
                 ALOK
@@ -77,7 +82,7 @@ export function Hero() {
                   hidden: { opacity: 0, y: 40 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ type: 'spring', stiffness: 170, damping: 20 }}
+                transition={{ type: "spring", stiffness: 170, damping: 20 }}
                 className="ml-0 mt-2 block text-5xl sm:text-7xl lg:ml-4 lg:mt-0 lg:inline-block lg:text-8xl xl:text-[6.8rem]"
               >
                 HOTTA
@@ -88,7 +93,12 @@ export function Hero() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, type: 'spring', stiffness: 180, damping: 22 }}
+            transition={{
+              delay: 0.5,
+              type: "spring",
+              stiffness: 180,
+              damping: 22,
+            }}
             className="mx-auto mt-6 max-w-2xl text-base leading-7 text-muted sm:text-xl sm:leading-8 lg:mx-0"
           >
             Full-Stack AI Developer building scalable product solutions.
@@ -97,12 +107,20 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, type: 'spring', stiffness: 180, damping: 22 }}
+            transition={{
+              delay: 0.7,
+              type: "spring",
+              stiffness: 180,
+              damping: 22,
+            }}
             className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center lg:justify-start"
           >
             <a
               href="#projects"
-              style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+              style={{
+                backgroundColor: "var(--foreground)",
+                color: "var(--bg)",
+              }}
               className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] transition hover:scale-105"
             >
               View Projects
@@ -110,6 +128,10 @@ export function Hero() {
             </a>
             <a
               href="/resume.pdf"
+              style={{
+                backgroundColor: "var(--foreground)",
+                color: "var(--bg)",
+              }}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/60 px-6 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] text-foreground transition hover:bg-surface-2"
             >
               Download Resume
@@ -120,13 +142,26 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85, type: 'spring', stiffness: 180, damping: 22 }}
+            transition={{
+              delay: 0.85,
+              type: "spring",
+              stiffness: 180,
+              damping: 22,
+            }}
             className="mt-6 flex items-center justify-center gap-3 lg:justify-start"
           >
             {[
-              { label: 'GitHub', href: 'https://github.com/iamalok123', Icon: Github },
-              { label: 'LinkedIn', href: 'https://linkedin.com/in/alok-hotta', Icon: Linkedin },
-              { label: 'X', href: 'https://x.com/_alok_h', Icon: TwitterX },
+              {
+                label: "GitHub",
+                href: "https://github.com/iamalok123",
+                Icon: Github,
+              },
+              {
+                label: "LinkedIn",
+                href: "https://linkedin.com/in/alok-hotta",
+                Icon: Linkedin,
+              },
+              { label: "X", href: "https://x.com/_alok_h", Icon: TwitterX },
             ].map(({ label, href, Icon }) => (
               <a
                 key={label}
@@ -134,7 +169,10 @@ export function Hero() {
                 aria-label={label}
                 target="_blank"
                 rel="noreferrer"
-                style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
+                style={{
+                  backgroundColor: "var(--foreground)",
+                  color: "var(--bg)",
+                }}
                 className="grid size-12 place-items-center rounded-md transition hover:-translate-y-1"
               >
                 <Icon size={20} />
@@ -146,7 +184,12 @@ export function Hero() {
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: 24 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ delay: 0.3, type: 'spring', stiffness: 140, damping: 18 }}
+          transition={{
+            delay: 0.3,
+            type: "spring",
+            stiffness: 140,
+            damping: 18,
+          }}
           className="relative mx-auto w-full max-w-md lg:justify-self-end"
         >
           <img
@@ -161,12 +204,13 @@ export function Hero() {
         <div className="marquee-track flex w-max gap-10 font-display text-sm font-extrabold uppercase tracking-[0.24em]">
           {Array.from({ length: 2 }).map((_, index) => (
             <span key={index}>
-              FULL-STACK DEVELOPER * REACT / NODE.JS * LEETCODE KNIGHT * SIH 2025 WINNER *
-              OPEN SOURCE CONTRIBUTOR *
+              FULL-STACK AI DEVELOPER * BACKEND DEVELOPER * LEETCODE KNIGHT *
+              SIH 2025 COLLEGE WINNER * OPEN SOURCE CONTRIBUTOR * FREELANCER
+              * TECH BLOGGER 
             </span>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

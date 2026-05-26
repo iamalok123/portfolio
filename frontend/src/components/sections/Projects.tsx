@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ExternalLink, GitFork, Globe, SearchX } from 'lucide-react'
+import { ExternalLink, Globe, SearchX } from 'lucide-react'
+import { Github} from "react-bootstrap-icons";
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/axios'
@@ -83,7 +84,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               aria-label={`${project.title} GitHub`}
               className="grid size-9 place-items-center rounded-full border border-border text-foreground transition hover:border-accent hover:text-accent"
             >
-              <GitFork size={16} />
+              <Github size={16} />
             </a>
             <a
               href={project.liveUrl}
