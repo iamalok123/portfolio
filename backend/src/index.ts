@@ -12,7 +12,7 @@ import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const assetDir = path.resolve(__dirname, '../../assets')
+const assetDir = path.resolve(__dirname, '../assets')
 
 // ─── Security ────────────────────────────────────────────────────────────────
 app.use(helmet())

@@ -1,13 +1,20 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ExternalLink, Globe, SearchX } from 'lucide-react'
-import { Github} from "react-bootstrap-icons";
+import { ChevronDown, ChevronUp, ExternalLink, Filter, Globe, SearchX, X } from 'lucide-react'
+import { Github } from 'react-bootstrap-icons'
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../../lib/axios'
 import { resolveAssetUrl } from '../../lib/assets'
+import { cn } from '../../lib/utils'
 import type { Project } from '../../types'
 
 const MotionLink = motion(Link)
+
+type FilterOption = {
+  label: string
+  type: 'all' | 'tech'
+  count: number
+}
 
 function SkeletonCard() {
   return (
@@ -102,8 +109,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 }
 
 export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showAllTopics, setShowAllTopics] = useState(false)
+  const activeTech = showViewAll ? '' : searchParams.get('tech') ?? ''
 
   useEffect(() => {
     let isActive = true
@@ -131,10 +141,87 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
     }
   }, [])
 
+  const allTech = useMemo(
+    () => Array.from(new Set(projects.flatMap((project) => project.techStack))).sort(),
+    [projects],
+  )
+
+  const filterOptions = useMemo<FilterOption[]>(() => {
+    const techCounts = new Map<string, number>()
+
+    projects.forEach((project) => {
+      project.techStack.forEach((tech) => {
+        techCounts.set(tech, (techCounts.get(tech) ?? 0) + 1)
+      })
+    })
+
+    return [
+      { label: 'All', type: 'all', count: projects.length },
+      ...allTech.map((tech) => ({
+        label: tech,
+        type: 'tech' as const,
+        count: techCounts.get(tech) ?? 0,
+      })),
+    ]
+  }, [allTech, projects])
+
+  const visibleFilterOptions = useMemo(() => {
+    if (showAllTopics) {
+      return filterOptions
+    }
+
+    if (activeTech) {
+      const allOption = filterOptions.find((option) => option.type === 'all')
+      const activeOption = filterOptions.find(
+        (option) => option.type === 'tech' && option.label === activeTech,
+      )
+
+      if (allOption && activeOption) {
+        return [
+          allOption,
+          activeOption,
+          ...filterOptions.filter(
+            (option) => option.label !== allOption.label && option.label !== activeOption.label,
+          ),
+        ]
+      }
+    }
+
+    return filterOptions
+  }, [activeTech, filterOptions, showAllTopics])
+
   const visibleProjects = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order)
-    return showViewAll ? ordered.slice(0, 3) : ordered
-  }, [projects, showViewAll])
+    const filtered = activeTech
+      ? ordered.filter((project) => project.techStack.includes(activeTech))
+      : ordered
+
+    return showViewAll ? filtered.slice(0, 3) : filtered
+  }, [activeTech, projects, showViewAll])
+
+  const updateFilter = (option: FilterOption) => {
+    const next = new URLSearchParams(searchParams)
+
+    next.delete('tech')
+
+    if (option.type === 'tech') {
+      next.set('tech', option.label)
+    }
+
+    setSearchParams(next)
+  }
+
+  const isFilterActive = (option: FilterOption) => {
+    if (option.type === 'all') {
+      return !activeTech
+    }
+
+    return activeTech === option.label
+  }
+
+  const clearFilters = () => {
+    setSearchParams(new URLSearchParams())
+  }
 
   return (
     <section id="projects" className="py-24 sm:py-32">
@@ -150,7 +237,90 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
           </div>
         </div>
 
-        <div className="mt-12">
+        {!showViewAll && (
+          <div className="mt-10 rounded-lg border border-border bg-surface p-3 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:gap-4">
+              <div className="flex items-center gap-3 text-muted">
+                <Filter size={17} className="shrink-0 text-foreground sm:size-4.5" />
+                <span className="font-display text-xs font-bold uppercase tracking-[0.16em] sm:text-sm">
+                  Explore by topic
+                </span>
+              </div>
+              {activeTech && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex w-fit items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:px-4 sm:py-2 sm:text-sm"
+                >
+                  <X size={16} />
+                  Clear filters
+                </button>
+              )}
+            </div>
+
+            <div
+              className={cn(
+                'mt-4 flex min-w-0 gap-2 sm:mt-5 sm:gap-3',
+                showAllTopics ? 'flex-col sm:flex-row sm:items-start' : 'items-start',
+              )}
+            >
+              <div
+                className={cn(
+                  'flex min-w-0 flex-1 gap-2',
+                  showAllTopics ? 'flex-wrap' : 'flex-nowrap overflow-hidden',
+                )}
+              >
+                {visibleFilterOptions.map((option) => {
+                  const isActive = isFilterActive(option)
+
+                  return (
+                    <button
+                      key={`${option.type}-${option.label}`}
+                      type="button"
+                      onClick={() => updateFilter(option)}
+                      className={cn(
+                        'group inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm',
+                        isActive && 'border-accent bg-accent text-bg hover:text-bg',
+                      )}
+                    >
+                      <span>{option.label}</span>
+                      <span
+                        className={cn(
+                          'rounded-full border border-border bg-surface px-1.5 py-0.5 text-[10px] font-bold leading-none text-muted transition sm:px-2 sm:text-[11px]',
+                          isActive && 'border-bg/20 bg-bg/15 text-bg',
+                        )}
+                      >
+                        {option.count}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAllTopics((value) => !value)}
+                className={cn(
+                  'inline-flex min-h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm',
+                  showAllTopics && 'w-fit',
+                )}
+              >
+                {showAllTopics ? (
+                  <>
+                    Show less
+                    <ChevronUp size={16} />
+                  </>
+                ) : (
+                  <>
+                    Show more
+                    <ChevronDown size={16} />
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className={showViewAll ? 'mt-12' : 'mt-8'}>
           {isLoading ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 3 }).map((_, index) => (
@@ -176,6 +346,9 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
                 <p className="mt-4 font-display text-2xl font-bold text-foreground">
                   No projects found
                 </p>
+                {!showViewAll && (
+                  <p className="mt-2 text-sm text-muted">Try a broader stack or reset filters.</p>
+                )}
               </div>
             </motion.div>
           )}
@@ -184,7 +357,7 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
         {showViewAll ? (
           <div className="mt-10 flex justify-center">
             <MotionLink
-              to="/project"
+              to="/projects"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 360, damping: 22 }}
