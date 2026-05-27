@@ -62,6 +62,20 @@
  *
  *   ✗  Do NOT put markdown formatting inside headings (bold, code, links).
  *
+ * READABILITY PATTERN:
+ * ───────────────────
+ *   Use short paragraphs under every heading.
+ *
+ *   Add bullet points when a section introduces multiple ideas:
+ *
+ *   - First practical point.
+ *   - Second practical point.
+ *   - Third practical point.
+ *
+ *   Use ### subheadings when one ## section needs smaller named parts.
+ *   The frontend styles ## as a main section and ### as a subheading, so the
+ *   reader can scan the article structure quickly.
+ *
  * FENCED CODE BLOCKS:
  * ───────────────────
  *   Wrap code in triple backticks with a language tag. The UI adds a copy
@@ -88,19 +102,23 @@
  *
  * ## First Main Section
  *
- * Content for this section.
+ * Start with one short paragraph that introduces this section.
+ *
+ * - A useful point readers can scan quickly.
+ * - Another point that supports the section.
+ * - A final point that makes the takeaway clear.
  *
  * ## Second Main Section
  *
- * Content for this section.
+ * Use this section for the next major idea.
  *
- * ### A Subsection
+ * ### A Focused Subsection
  *
- * Deeper detail under the second section.
+ * Add deeper detail when the main section needs a smaller named part.
  *
  * ## Third Main Section
  *
- * Content for this section.
+ * Keep paragraphs short and break lists into bullets when possible.
  *
  * ## Closing Section
  *
@@ -846,7 +864,8 @@ That skill is valuable far beyond one repository.`,
     readTime: 7,
     publishedAt: new Date('2025-10-02'),
     coverImage: '',
-    content: `# Building Realtime Features Without Making the UI Chaotic
+    content: `
+# Building Realtime Features Without Making the UI Chaotic
 
 Realtime features are exciting because they make software feel alive.
 

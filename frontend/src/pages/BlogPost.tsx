@@ -224,7 +224,7 @@ export function BlogPost() {
 
       return (
         <h2 id={id} {...props}>
-          <a href={`#${id}`} aria-label={`Link to ${text}`}>
+          <a className="heading-anchor" href={`#${id}`} aria-label={`Link to ${text}`}>
             <Hash size={20} />
           </a>
           {children}
@@ -237,7 +237,7 @@ export function BlogPost() {
 
       return (
         <h3 id={id} {...props}>
-          <a href={`#${id}`} aria-label={`Link to ${text}`}>
+          <a className="heading-anchor" href={`#${id}`} aria-label={`Link to ${text}`}>
             <Hash size={17} />
           </a>
           {children}

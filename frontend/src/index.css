@@ -265,32 +265,61 @@ button {
 }
 
 .prose-portfolio h2 {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
+  position: relative;
+  display: block;
   margin: 3rem 0 1rem;
+  padding-top: 0.9rem;
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: 700;
+  letter-spacing: 0;
 }
 
 .prose-portfolio h3 {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
+  position: relative;
+  display: block;
   margin: 2.2rem 0 0.8rem;
+  padding-left: 1.4rem;
   font-size: clamp(1.25rem, 3vw, 1.7rem);
   font-weight: 700;
+  letter-spacing: 0;
 }
 
-.prose-portfolio h2 a,
-.prose-portfolio h3 a {
+.prose-portfolio h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3rem;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--foreground);
+}
+
+.prose-portfolio h3::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: var(--foreground);
+}
+
+.prose-portfolio h2 .heading-anchor,
+.prose-portfolio h3 .heading-anchor {
+  position: absolute;
+  right: calc(100% + 0.65rem);
+  top: 0.12em;
+  display: inline-grid;
+  place-items: center;
   color: var(--accent);
   opacity: 0;
   transition: opacity 180ms ease;
 }
 
-.prose-portfolio h2:hover a,
-.prose-portfolio h3:hover a {
+.prose-portfolio h2:hover .heading-anchor,
+.prose-portfolio h3:hover .heading-anchor {
   opacity: 1;
 }
 

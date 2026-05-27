@@ -28,10 +28,20 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
             alt=""
             loading="lazy"
             onError={() => setFailedImageSrc(imageSrc ?? '')}
-            className="absolute inset-0 size-full object-contain grayscale"
+            className="absolute inset-0 size-full bg-white object-contain grayscale"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111111]/70 via-[#111111]/10 to-transparent" />
-          <p className="relative mt-auto max-w-[88%] text-center text-[clamp(1.2rem,5vw,3.6rem)] font-black uppercase leading-[0.95] tracking-[-0.04em] text-white">
+          <div
+            className={cn(
+              'absolute inset-0 bg-gradient-to-t from-[#111111]/70 via-[#111111]/10 to-transparent',
+              compact && 'sm:hidden',
+            )}
+          />
+          <p
+            className={cn(
+              'relative mt-auto max-w-[88%] text-center font-black uppercase leading-[0.95] tracking-[-0.04em] text-white',
+              compact ? 'text-[clamp(1.2rem,6vw,2rem)] sm:hidden' : 'text-[clamp(1.2rem,5vw,3.6rem)]',
+            )}
+          >
             {title}
           </p>
         </>
@@ -47,7 +57,7 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
           <p
             className={cn(
               'font-semibold uppercase tracking-[-0.02em]',
-              compact ? 'text-[clamp(1.05rem,6vw,2.2rem)]' : 'text-[clamp(1.8rem,7vw,4.2rem)]',
+              compact ? 'text-[clamp(1.05rem,5vw,1.75rem)] sm:text-[1.75rem]' : 'text-[clamp(1.8rem,7vw,4.2rem)]',
             )}
           >
             AI CAN'T SAVE
@@ -55,7 +65,7 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
           <p
             className={cn(
               'mt-1 font-black uppercase tracking-[-0.03em]',
-              compact ? 'text-[clamp(1.25rem,7vw,2.8rem)]' : 'text-[clamp(2rem,8vw,4.8rem)]',
+              compact ? 'text-[clamp(1.25rem,6vw,2.1rem)] sm:text-[2rem]' : 'text-[clamp(2rem,8vw,4.8rem)]',
             )}
           >
             <span className="underline decoration-[#111111] decoration-4 underline-offset-4">BAD</span>{' '}
@@ -63,14 +73,14 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
           </p>
         </div>
       ) : (
-        <div className="relative max-w-[86%] text-center">
+        <div className="relative max-w-[92%] text-center">
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#111111]/45">
             alokhotta.site
           </p>
           <p
             className={cn(
-              'mt-3 font-black uppercase leading-[0.92] tracking-[-0.04em]',
-              compact ? 'text-[clamp(1.3rem,7vw,2.8rem)]' : 'text-[clamp(2rem,8vw,4.6rem)]',
+              'mt-3 break-words font-black uppercase leading-[1.02] tracking-[-0.04em]',
+              compact ? 'text-[clamp(1.2rem,5vw,1.6rem)] sm:text-[1.45rem] xl:text-[1.55rem]' : 'text-[clamp(2rem,8vw,4.6rem)]',
             )}
           >
             {title}
