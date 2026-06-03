@@ -207,7 +207,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://www.alokhotta.site",
     githubUrl: "https://github.com/iamalok123/portfolio",
     coverImage: projectImage("portfolio.png"),
-    order: 3,
+    order: 4,
   },
   {
     title: "KIA Media",
@@ -216,7 +216,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://kia-mediaworks.vercel.app",
     githubUrl: "https://github.com/iamalok123/kia_media",
     coverImage: projectImage("kia-media.png"),
-    order: 4,
+    order: 5,
   },
   {
     title: "Dev Events",
@@ -225,7 +225,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://dev-events-nextjs16-mauve.vercel.app",
     githubUrl: "https://github.com/iamalok123/dev-events-nextjs16",
     coverImage: projectImage("dev-events.png"),
-    order: 5,
+    order: 6,
   },
   {
     title: "Expense Tracker",
@@ -234,7 +234,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     githubUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     coverImage: projectImage("expence-tracker.jpg"),
-    order: 6,
+    order: 7,
   },
   {
     title: "Elevate AI",
@@ -243,7 +243,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://elevate-ai-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/elevate-ai",
     coverImage: projectImage("elevate-ai.jpg"),
-    order: 7,
+    order: 8,
   },
   {
     title: "ByteChat",
@@ -252,7 +252,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     githubUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     coverImage: "",
-    order: 8,
+    order: 9,
   },
 ];
 
