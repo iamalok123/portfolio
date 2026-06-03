@@ -49,7 +49,7 @@ function App() {
     })
 
     // Expose Lenis on window so Navbar's scrollToSection helper can call
-    // lenis.scrollTo() directly for the smoothest possible experience
+    // lenis.scrollTo() directly, and so pages like Resume can pause/resume it
     ;(window as Window & { lenis?: Lenis }).lenis = lenis
 
     let frame = 0

@@ -68,9 +68,10 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
+/* NOTE: pointer-events: none on iframes was intentionally removed.
+   It breaks PDF.js canvas and any embedded viewer inside the page.
+   Lenis scroll-hijacking inside iframes is not needed since we use
+   data-lenis-prevent on scroll containers that should stay native. */
 
 body {
   min-width: 320px;
