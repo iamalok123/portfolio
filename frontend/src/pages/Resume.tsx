@@ -73,10 +73,10 @@ export function Resume() {
             <object
               data={`${resumeUrl}#toolbar=1&navpanes=0`}
               type="application/pdf"
-              className="h-[78svh] min-h-[34rem] w-full bg-surface-2"
+              className="h-[78svh] min-h-136 w-full bg-surface-2"
               aria-label="Alok Hotta resume PDF preview"
             >
-              <div className="grid min-h-[28rem] place-items-center px-6 py-16 text-center">
+              <div className="grid min-h-112 place-items-center px-6 py-16 text-center">
                 <div>
                   <FileText className="mx-auto text-accent" size={38} />
                   <p className="mt-4 font-display text-2xl font-bold text-foreground">
