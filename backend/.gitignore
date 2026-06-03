@@ -30,3 +30,4 @@ yarn-error.log*
 .DS_Store
 .vscode/
 .idea/
+/src/scripts/seed-update.md
