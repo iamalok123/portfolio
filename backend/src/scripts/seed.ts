@@ -57,7 +57,7 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "StudyFlow",
     desc: "AI-powered document learning platform with contextual chat, quizzes, flashcards, and mindmap generation.",
-    techStack: ["React", "Express", "RAG", "Gemini", "MongoDB"],
+    techStack: ["React", "Express", "RAG", "Gemini", "Cloudinary", "MongoDB"],
     liveUrl: "https://studyflow-ai-alpha.vercel.app",
     githubUrl: "https://github.com/iamalok123/studyflow-mern-fullstack",
     coverImage: projectImage("studyflow.png"),
@@ -120,17 +120,51 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "ByteChat",
     desc: "Realtime chat app with authentication, presence states, and responsive conversation views.",
-    techStack: ["React", "Socket.io", "Node.js"],
+    techStack: ["React", "Zustand", "Socket.io", "Node.js", "Cloudinary"],
     liveUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     githubUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
-    coverImage: "",
+    coverImage: projectImage("bytechat.jpg"),
     order: 9,
+  },
+  {
+    title: "N-Queen Visualizer",
+    desc: "Interactive visualization of the N-Queen problem with real-time solving and animation in slow and fast motion.",
+    techStack: ["React", "D3.js"],
+    liveUrl: "https://nqueen.netlify.app/",
+    githubUrl: "https://github.com/iamalok123/N-Queens-Visualiser-/",
+    coverImage: projectImage("n-queen.png"),
+    order: 10,
+  },
+  {
+    title: "Snake Game",
+    desc: "A classic Snake game implemented with javascript and modern web technologies.",
+    techStack: ["HTML", "CSS", "JavaScript"],
+    liveUrl: "https://snake-game-js-v69.vercel.app",
+    githubUrl: "https://github.com/iamalok123/Snake-Game-JS",
+    coverImage: projectImage("snake-game.png"),
+    order: 11,
+  },
+  {
+    title: "Currency Converter",
+    desc: "Realtime currency conversion app with a clean, modern interface.",
+    techStack: ["React", "JavaScript", "Tailwind CSS"],
+    liveUrl: "https://currency-converter-69.netlify.app",
+    githubUrl: "https://github.com/iamalok123/Currency-Converter-Project-React",
+    coverImage: projectImage("currency-converter.png"),
+    order: 12,
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════════════════
+
+
+
+
+// ══════════════════════════════════════════════════════════════════════════════
 // BLOGS
 // ═══════════════════════════════════════════════════════════════════════════════
+
+
+
 
 const BLOGS: BlogSeed[] = [
   // ─── Blog 1 ────────────────────────────────────────────────────────────────
