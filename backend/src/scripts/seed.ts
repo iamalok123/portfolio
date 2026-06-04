@@ -129,7 +129,7 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "N-Queen Visualizer",
     desc: "Interactive visualization of the N-Queen problem with real-time solving and animation in slow and fast motion.",
-    techStack: ["React", "D3.js"],
+    techStack: ["HTML","CSS","JavaScript"],
     liveUrl: "https://nqueen.netlify.app/",
     githubUrl: "https://github.com/iamalok123/N-Queens-Visualiser-/",
     coverImage: projectImage("n-queen.png"),
