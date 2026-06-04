@@ -4,8 +4,8 @@
 Live site: [www.alokhotta.site](https://www.alokhotta.site)
 
 
-A full-stack developer portfolio for showcasing projects, writing, experience,
-skills, and contact details. The frontend is built with React, TypeScript, Vite,
+A Full-stack AI developer portfolio for showcasing projects, writing, experience,
+skills, and contact details. The frontend is built with Next.Js, React, TypeScript, Vite,
 Tailwind CSS, and Framer Motion. The backend serves dynamic project and blog
 content with Express and MongoDB.
 
