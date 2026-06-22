@@ -2,12 +2,20 @@ import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { PageTransition } from '../components/layout/PageTransition'
+import { useSEO } from '../hooks/useSEO'
 
 const MotionLink = motion(Link)
 
 export function NotFound() {
+  useSEO({
+    title: '404 — Page Not Found | Alok Hotta',
+    description: 'The page you are looking for does not exist. Return to Alok Hotta’s portfolio.',
+    noIndex: true,
+  })
+
   return (
     <PageTransition>
+      <main id="main-content">
       <section className="relative isolate grid min-h-svh place-items-center overflow-hidden px-6 text-center">
         {/* Background glow */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,color-mix(in_srgb,var(--accent)_10%,transparent),transparent)]" />
@@ -65,6 +73,7 @@ export function NotFound() {
           </motion.div>
         </motion.div>
       </section>
+      </main>
     </PageTransition>
   )
 }

@@ -17,6 +17,7 @@ import { getBlogExcerpt } from '../lib/blog'
 import { api } from '../lib/axios'
 import { resolveAssetUrl } from '../lib/assets'
 import { cn } from '../lib/utils'
+import { useSEO } from '../hooks/useSEO'
 import type { Blog as BlogType } from '../types'
 
 type SortMode = 'latest' | 'oldest' | 'readTime'
@@ -95,6 +96,13 @@ function BlogCard({ blog, index }: { blog: BlogType; index: number }) {
 }
 
 export function Blog() {
+  useSEO({
+    title: 'Blog | Alok Hotta — Tech Articles & Web Dev Insights',
+    description:
+      'Read tech blogs by Alok Hotta on full-stack development, AI, React, Node.js, TypeScript, system design, and LeetCode. Practical insights from a SIH 2025 winner.',
+    canonical: '/blog',
+  })
+
   const [searchParams, setSearchParams] = useSearchParams()
   const [posts, setPosts] = useState<BlogType[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -309,7 +317,8 @@ export function Blog() {
 
   return (
     <PageTransition>
-      <section className="mx-auto min-h-svh w-full max-w-7xl px-6 pb-24 pt-32 sm:px-8 lg:px-10">
+      <main id="main-content">
+      <section className="mx-auto min-h-svh w-full max-w-7xl px-6 pb-24 pt-32 sm:px-8 lg:px-10" aria-label="Blog posts">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_25rem] lg:items-end">
           <div>
             <p className="font-mono text-sm uppercase tracking-[0.28em] text-muted">
@@ -504,6 +513,7 @@ export function Blog() {
           )}
         </div>
       </section>
+      </main>
     </PageTransition>
   )
 }

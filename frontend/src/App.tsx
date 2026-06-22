@@ -70,6 +70,14 @@ function App() {
 
   return (
     <>
+      {/* ── Skip-to-content (accessibility + SEO) ────────────────────────── */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-999 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:font-bold focus:text-bg focus:outline-none"
+      >
+        Skip to main content
+      </a>
+
       {/* ── Global overlays (above everything) ───────────────────────────────── */}
       <LoadingScreen />
       <CustomCursor />

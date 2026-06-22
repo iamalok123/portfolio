@@ -1,0 +1,11 @@
+# Robots.txt for alokhotta.site
+# Generated: 2026-06
+
+User-agent: *
+Allow: /
+
+# Disallow server/API internals (if ever SSR is added)
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://www.alokhotta.site/sitemap.xml

@@ -14,6 +14,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import { PageTransition } from '../components/layout/PageTransition'
+import { useSEO } from '../hooks/useSEO'
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -23,6 +24,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const RESUME_URL = '/resume.pdf'
 
 export function Resume() {
+  useSEO({
+    title: 'Resume | Alok Hotta — Full-Stack AI Developer',
+    description:
+      "View and download Alok Hotta's resume. Full-Stack AI Developer skilled in Next.js, React, Node.js, TypeScript, MongoDB. LeetCode Knight (1900+). SIH 2025 College Winner. Open to internships & freelance roles.",
+    canonical: '/resume',
+  })
+
   const [numPages, setNumPages] = useState<number>(0)
   const [pageNumber, setPageNumber] = useState(1)
   const [scale, setScale] = useState(1.0)
@@ -63,7 +71,8 @@ export function Resume() {
   return (
     <PageTransition>
       {/* ── Page wrapper: full height, flex column so PDF viewer fills remaining space */}
-      <section className="flex flex-col px-4 pt-24 pb-4 sm:px-6 lg:px-8" style={{ minHeight: '100svh' }}>
+      <main id="main-content">
+      <section className="flex flex-col px-4 pt-24 pb-4 sm:px-6 lg:px-8" style={{ minHeight: '100svh' }} aria-label="Alok Hotta Resume">
 
         {/* ── Compact Header ─────────────────────────────────────────────────────── */}
         <motion.div
@@ -248,6 +257,7 @@ export function Resume() {
           </div>
         </motion.div>
       </section>
+      </main>
     </PageTransition>
   )
 }

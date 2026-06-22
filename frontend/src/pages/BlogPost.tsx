@@ -13,6 +13,7 @@ import { extractToc, slugify } from '../lib/blog'
 import { api } from '../lib/axios'
 import { resolveAssetUrl } from '../lib/assets'
 import { cn } from '../lib/utils'
+import { useSEO } from '../hooks/useSEO'
 import type { Blog } from '../types'
 
 type BlogResponse = Blog | { success: boolean; data: Blog }
@@ -76,6 +77,71 @@ export function BlogPost() {
   const [showBackToTop, setShowBackToTop] = useState(false)
   const { scrollYProgress } = useScroll()
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })
+
+  // ── Dynamic SEO per blog post ──────────────────────────────────────────────
+  const postDescription = useMemo(() => {
+    if (!post) return 'Read tech articles by Alok Hotta on full-stack development, AI, React, Node.js and more.'
+    const firstPara = post.content
+      .replace(/^#\s+.+\n+/, '')
+      .split(/\n{2,}/)
+      .map((b) => b.trim())
+      .find((b) => b && !b.startsWith('#') && !b.startsWith('-')) ?? ''
+    return firstPara.replace(/[*_`#\[\]]/g, '').slice(0, 155)
+  }, [post])
+
+  useSEO({
+    title: post ? `${post.title} | Alok Hotta Blog` : 'Blog Post | Alok Hotta',
+    description: postDescription,
+    canonical: `/blog/${slug}`,
+    ogType: 'article',
+    ogImage: resolveAssetUrl(post?.coverImage || post?.image) || undefined,
+    articlePublishedTime: post?.publishedAt,
+    articleSection: 'Technology',
+    articleTags: post?.tags,
+  })
+
+  // ── JSON-LD BlogPosting structured data ───────────────────────────────────
+  useEffect(() => {
+    if (!post) return
+    const scriptId = 'blogpost-jsonld'
+    let script = document.getElementById(scriptId) as HTMLScriptElement | null
+    if (!script) {
+      script = document.createElement('script')
+      script.id = scriptId
+      script.type = 'application/ld+json'
+      document.head.appendChild(script)
+    }
+    const coverImg = resolveAssetUrl(post.coverImage || post.image)
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: postDescription,
+      image: coverImg || `https://www.alokhotta.site/og-image.png`,
+      datePublished: post.publishedAt,
+      dateModified: post.publishedAt,
+      url: `https://www.alokhotta.site/blog/${post.slug}`,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `https://www.alokhotta.site/blog/${post.slug}` },
+      author: {
+        '@type': 'Person',
+        name: 'Alok Hotta',
+        url: 'https://www.alokhotta.site',
+        sameAs: ['https://github.com/iamalok123', 'https://www.linkedin.com/in/alok-hotta'],
+      },
+      publisher: {
+        '@type': 'Person',
+        name: 'Alok Hotta',
+        url: 'https://www.alokhotta.site',
+        logo: { '@type': 'ImageObject', url: 'https://www.alokhotta.site/photo.png' },
+      },
+      keywords: post.tags.join(', '),
+      timeRequired: `PT${post.readTime}M`,
+    })
+    return () => {
+      const el = document.getElementById(scriptId)
+      if (el) el.remove()
+    }
+  }, [post, postDescription, slug])
 
   const scrollToHeading = useCallback((id: string) => {
     const heading = document.getElementById(id)

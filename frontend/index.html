@@ -1,11 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/photo.png" />
 
-    <!-- Viewport -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Viewport & Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/png" href="/photo.png" />
+    <link rel="apple-touch-icon" href="/photo.png" />
+    <link rel="shortcut icon" href="/photo.png" />
+
+    <!-- Web App Manifest (PWA + discoverability) -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Preconnect for performance (fonts, analytics) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
     <!-- Primary SEO -->
     <title>Alok Hotta | Full-Stack AI Developer</title>
@@ -13,39 +26,103 @@
       name="description"
       content="Alok Kumar — Full-Stack AI Developer building scalable products for the web. Next.js, React, Node.js, TypeScript, MongoDB. LeetCode Knight. SIH 2025 Winner."
     />
-    <meta name="author" content="Alok Kumar" />
-    <meta name="keywords" content="Alok Kumar, Full-Stack AI Developer, React, Node.js, TypeScript, MongoDB, Portfolio, SIH 2025, LeetCode Knight, Bhubaneswar" />
+    <meta name="author" content="Alok Hotta" />
+    <meta
+      name="keywords"
+      content="Alok Hotta, Alok Kumar, Full-Stack Developer, AI Developer, React Developer, Node.js Developer, TypeScript, MongoDB, Next.js, Portfolio, SIH 2025 Winner, LeetCode Knight, Bhubaneswar, India, Web Developer, Freelance Developer, Backend Developer"
+    />
 
-    <!-- Open Graph -->
+    <!-- Robots & Crawl directives -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Geo targeting -->
+    <meta name="geo.region" content="IN-OR" />
+    <meta name="geo.placename" content="Bhubaneswar, Odisha, India" />
+
+    <!-- Rating -->
+    <meta name="rating" content="general" />
+    <meta name="revisit-after" content="7 days" />
+
+    <!-- ═══════════════════════ OPEN GRAPH ═══════════════════════ -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.alokhotta.site/" />
-    <meta property="og:title" content="Alok Kumar | Full-Stack AI Developer" />
+    <meta property="og:title" content="Alok Hotta | Full-Stack AI Developer & SIH 2025 Winner" />
     <meta
       property="og:description"
-      content="Full-Stack AI Developer building scalable products for the web. Next.js, React, Node.js, TypeScript. LeetCode Knight. SIH 2025 Winner."
+      content="Full-Stack AI Developer from Bhubaneswar building scalable web products. Next.js, React, Node.js, TypeScript. LeetCode Knight. SIH 2025 College Winner. Open to freelance & internships."
     />
     <meta property="og:image" content="https://www.alokhotta.site/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Alok Hotta – Full-Stack AI Developer Portfolio" />
     <meta property="og:site_name" content="alokhotta.site" />
+    <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card -->
+    <!-- ═══════════════════════ TWITTER CARD ═══════════════════════ -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@alokhotta" />
-    <meta name="twitter:creator" content="@alokhotta" />
-    <meta name="twitter:title" content="Alok Kumar | Full-Stack AI Developer" />
+    <meta name="twitter:site" content="@_alok_h" />
+    <meta name="twitter:creator" content="@_alok_h" />
+    <meta name="twitter:title" content="Alok Hotta | Full-Stack AI Developer & SIH 2025 Winner" />
     <meta
       name="twitter:description"
-      content="Full-Stack AI Developer building scalable products for the web."
+      content="Full-Stack AI Developer building scalable web products. Next.js, React, Node.js, TypeScript. LeetCode Knight. SIH 2025 Winner. Open to freelance & internships."
     />
     <meta name="twitter:image" content="https://www.alokhotta.site/og-image.png" />
+    <meta name="twitter:image:alt" content="Alok Hotta – Full-Stack AI Developer Portfolio" />
 
-    <!-- Theme color -->
+    <!-- ═══════════════════════ THEME COLOR ═══════════════════════ -->
     <meta name="theme-color" content="#0b0b0b" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="msapplication-TileColor" content="#0b0b0b" />
+    <meta name="color-scheme" content="dark light" />
 
-    <!-- Canonical -->
+    <!-- ═══════════════════════ CANONICAL ═══════════════════════ -->
     <link rel="canonical" href="https://www.alokhotta.site/" />
 
-    <!-- Google Analytics -->
+    <!-- ═══════════════════════ STRUCTURED DATA (JSON-LD) ═══════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Alok Hotta",
+      "alternateName": "Alok Kumar",
+      "url": "https://www.alokhotta.site",
+      "image": "https://www.alokhotta.site/photo.png",
+      "description": "Full-Stack AI Developer from Bhubaneswar, India. Expert in Next.js, React, Node.js, TypeScript, MongoDB. LeetCode Knight (1900+). SIH 2025 College Winner.",
+      "jobTitle": "Full-Stack AI Developer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Freelance / Open to Opportunities"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bhubaneswar",
+        "addressRegion": "Odisha",
+        "addressCountry": "IN"
+      },
+      "sameAs": [
+        "https://github.com/iamalok123",
+        "https://www.linkedin.com/in/alok-hotta",
+        "https://x.com/_alok_h",
+        "https://leetcode.com/u/_alok_123/"
+      ],
+      "knowsAbout": [
+        "Full-Stack Development",
+        "Artificial Intelligence",
+        "React.js",
+        "Next.js",
+        "Node.js",
+        "TypeScript",
+        "MongoDB",
+        "Backend Development",
+        "Web Development"
+      ]
+    }
+    </script>
+
+    <!-- ═══════════════════════ GOOGLE ANALYTICS ═══════════════════════ -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KPND4GP0D5"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

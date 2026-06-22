@@ -194,6 +194,7 @@ export function Navbar() {
         onClick={(e) =>
           isRouteItem ? handleRouteClick(e, item.path) : handleNavClick(e, item.sectionId)
         }
+        aria-current={isActive ? 'page' : undefined}
         className={cn(
           'group relative py-2 text-sm font-medium text-muted transition-colors hover:text-foreground',
           isActive && 'text-accent',
@@ -219,6 +220,7 @@ export function Navbar() {
         initial={{ y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 220, damping: 26 }}
+        aria-label="Main navigation"
         className={cn(
           'fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300',
           navBackground,
