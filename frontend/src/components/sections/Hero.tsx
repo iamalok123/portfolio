@@ -50,7 +50,7 @@ export function Hero() {
               transition={{ type: "spring", stiffness: 170, damping: 20 }}
               className="block text-5xl sm:text-6xl lg:text-7xl xl:text-8xl"
             >
-              HAY, I'M
+              HEY, I'M
             </motion.span>
             <span className="mt-2 block sm:mt-3">
               <motion.span
