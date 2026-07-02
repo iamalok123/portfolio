@@ -53,3 +53,31 @@ export async function getBlog(req: Request, res: Response, next: NextFunction): 
     next(err)
   }
 }
+
+// ─── POST /api/blogs/:slug/view ───────────────────────────────────────────────
+export async function incrementViewCount(req: Request, res: Response, next: NextFunction): Promise<void> {
+  if (!(await ensureDBConnected())) {
+    res.status(503).json({ success: false, message: 'Database unavailable' })
+    return
+  }
+
+  try {
+    const { slug } = req.params
+    
+    // Find and update atomically, returning the updated document
+    const updatedBlog = await Blog.findOneAndUpdate(
+      { slug },
+      { $inc: { views: 1 } },
+      { new: true, runValidators: true }
+    ).lean()
+
+    if (!updatedBlog) {
+      res.status(404).json({ success: false, message: 'Blog post not found' })
+      return
+    }
+
+    res.json({ success: true, data: updatedBlog.views })
+  } catch (err) {
+    next(err)
+  }
+}

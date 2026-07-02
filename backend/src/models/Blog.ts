@@ -9,6 +9,7 @@ export interface IBlog extends Document {
   publishedAt: Date
   image?: string
   coverImage?: string
+  views: number
 }
 
 /** Simple slug generator — converts "My Blog Post" → "my-blog-post" */
@@ -31,6 +32,7 @@ const BlogSchema = new Schema<IBlog>(
     publishedAt: { type: Date, default: Date.now },
     image: { type: String },
     coverImage: { type: String },
+    views: { type: Number, default: 0 },
   },
   { timestamps: true },
 )

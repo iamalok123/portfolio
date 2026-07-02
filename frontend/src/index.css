@@ -300,7 +300,8 @@ button {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.62em;
+  top: 50%;
+  transform: translateY(-50%);
   width: 0.48rem;
   height: 0.48rem;
   border-radius: 999px;
@@ -389,6 +390,97 @@ button {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
 }
 
+.prose-portfolio hr {
+  margin: 3rem 0;
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border) 20%,
+    var(--border) 80%,
+    transparent
+  );
+  position: relative;
+}
+
+.prose-portfolio hr::after {
+  content: '···';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  padding: 0 0.75rem;
+  color: var(--border);
+  font-size: 1rem;
+  letter-spacing: 0.25em;
+}
+
+.prose-portfolio strong {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.prose-portfolio em {
+  color: color-mix(in srgb, var(--foreground) 80%, transparent);
+  font-style: italic;
+}
+
+.prose-portfolio strong em,
+.prose-portfolio em strong {
+  color: var(--foreground);
+  font-style: italic;
+  font-weight: 700;
+}
+
+.prose-portfolio mark {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--foreground);
+  border-radius: 0.2em;
+  padding: 0.05em 0.25em;
+}
+
+.prose-portfolio table {
+  width: 100%;
+  margin: 2rem 0;
+  border-collapse: collapse;
+  font-size: 0.97rem;
+  overflow: hidden;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border);
+}
+
+.prose-portfolio thead {
+  background: var(--surface-2);
+}
+
+.prose-portfolio th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: var(--foreground);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.prose-portfolio td {
+  padding: 0.7rem 1rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.prose-portfolio tr:last-child td {
+  border-bottom: none;
+}
+
+.prose-portfolio tbody tr:hover {
+  background: var(--surface-2);
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -409,8 +501,7 @@ button {
   }
 }
 
-/* ─── Noise texture overlay ──────────────────────────────────────────────────
-   Creates a premium film grain feel over the entire page */
+
 body::after {
   content: '';
   pointer-events: none;
@@ -422,7 +513,6 @@ body::after {
   mix-blend-mode: soft-light;
 }
 
-/* ─── Custom cursor — hide default on desktop (non-touch) ────────────────────*/
 @media (hover: hover) and (pointer: fine) {
   *,
   *::before,
@@ -431,7 +521,6 @@ body::after {
   }
 }
 
-/* ─── 404 Glitch Effect ───────────────────────────────────────────────────── */
 .glitch-text {
   position: relative;
   display: inline-block;
@@ -475,7 +564,6 @@ body::after {
   97%           { transform: translate(2px, 0);    opacity: 0.9; }
 }
 
-/* ─── Scroll Progress Bar — full width base ──────────────────────────────────*/
 .scroll-progress-bar {
   width: 100vw;
 }

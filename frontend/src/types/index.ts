@@ -8,6 +8,7 @@ export interface Blog {
   publishedAt: string
   image?: string
   coverImage?: string
+  views?: number
 }
 
 export interface Project {

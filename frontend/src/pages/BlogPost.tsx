@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
-import { ArrowLeft, ArrowUp, CalendarDays, Check, Clock3, Copy, Hash } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { ArrowLeft, ArrowUp, CalendarDays, Check, Clock3, Copy, Hash, Eye, Share2 } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useState, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import { Link, useParams } from 'react-router-dom'
@@ -75,6 +75,11 @@ export function BlogPost() {
   const [activeHeading, setActiveHeading] = useState('')
   const [isTocOpen, setIsTocOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
+  const [viewsCount, setViewsCount] = useState<number | null>(null)
+  const [hasViewed, setHasViewed] = useState(false)
+  
+  const bottomRef = useRef<HTMLDivElement>(null)
+  
   const { scrollYProgress } = useScroll()
   const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 24 })
 
@@ -171,6 +176,7 @@ export function BlogPost() {
 
         if (isActive && nextPost?._id) {
           setPost(nextPost)
+          setViewsCount(nextPost.views ?? 0)
         }
       })
       .catch(() => {
@@ -188,6 +194,41 @@ export function BlogPost() {
       isActive = false
     }
   }, [slug])
+
+  // ── Intersection Observer to trigger view increment ───────────────────────
+  useEffect(() => {
+    if (!post || hasViewed) return
+
+    const viewedKey = `viewed_blog_${post.slug}`
+    if (localStorage.getItem(viewedKey)) {
+      setHasViewed(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasViewed(true)
+          localStorage.setItem(viewedKey, 'true')
+          
+          api.post(`/blogs/${post.slug}/view`).then((res) => {
+            if (res.data?.success) {
+              setViewsCount(res.data.data)
+            }
+          }).catch(console.error)
+          
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (bottomRef.current) {
+      observer.observe(bottomRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [post, hasViewed])
 
   const toc = useMemo(() => (post ? extractToc(post.content) : []), [post])
 
@@ -317,6 +358,17 @@ export function BlogPost() {
     ),
     img: ({ ...props }) => <img loading="lazy" {...props} />,
     pre: ({ children }) => <CopyableCodeBlock>{children}</CopyableCodeBlock>,
+    hr: () => <hr aria-hidden="true" />,
+    table: ({ children, ...props }) => (
+      <div className="overflow-x-auto">
+        <table {...props}>{children}</table>
+      </div>
+    ),
+    thead: ({ children, ...props }) => <thead {...props}>{children}</thead>,
+    tbody: ({ children, ...props }) => <tbody {...props}>{children}</tbody>,
+    tr: ({ children, ...props }) => <tr {...props}>{children}</tr>,
+    th: ({ children, ...props }) => <th {...props}>{children}</th>,
+    td: ({ children, ...props }) => <td {...props}>{children}</td>,
   }
 
   const articleContent = useMemo(() => post?.content.replace(/^#\s+.+\n+/, '') ?? '', [post])
@@ -347,7 +399,31 @@ export function BlogPost() {
     const shareUrl = window.location.href
 
     if (navigator.share) {
-      await navigator.share({ title: post.title, url: shareUrl })
+      const shareData: ShareData = {
+        title: post.title,
+        text: description,
+        url: shareUrl,
+      }
+
+      try {
+        if (coverImage) {
+          const response = await fetch(coverImage)
+          const blob = await response.blob()
+          const file = new File([blob], 'cover.jpg', { type: blob.type })
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            shareData.files = [file]
+          }
+        }
+      } catch (e) {
+        // If fetching the image fails (e.g. CORS), we just share without the image
+        console.error('Failed to attach image to share payload', e)
+      }
+
+      try {
+        await navigator.share(shareData)
+      } catch (e) {
+        console.error('Error sharing', e)
+      }
       return
     }
 
@@ -430,9 +506,10 @@ export function BlogPost() {
           <button
             type="button"
             onClick={handleShare}
-            className="rounded-xl border border-border px-5 py-3 font-semibold text-foreground transition hover:bg-accent hover:text-bg"
+            className="flex items-center gap-2 rounded-xl border border-border px-5 py-3 font-semibold text-white transition hover:bg-accent hover:text-bg"
           >
             Share
+            <Share2 size={16} />
           </button>
         </div>
 
@@ -456,6 +533,16 @@ export function BlogPost() {
           >
             {articleContent}
           </ReactMarkdown>
+        </div>
+
+        {/* View Count at bottom left */}
+        <div ref={bottomRef} className="mt-16 flex items-center gap-2 text-sm font-medium text-muted">
+          <Eye size={18} />
+          {viewsCount !== null ? (
+            <span>{viewsCount.toLocaleString()} {viewsCount === 1 ? 'view' : 'views'}</span>
+          ) : (
+            <span className="h-5 w-16 animate-pulse rounded bg-surface-2" />
+          )}
         </div>
 
       </article>
