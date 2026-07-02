@@ -10,7 +10,7 @@ import { Skills } from '../components/sections/Skills'
 
 export function Home() {
   useSEO({
-    title: 'Alok Hotta | Full-Stack AI Developer & SIH 2025 Winner',
+    title: 'Alok Hotta | Full-Stack AI Developer',
     description:
       'Alok Hotta — Full-Stack AI Developer from Bhubaneswar building scalable web products. Expert in Next.js, React, Node.js, TypeScript & MongoDB. LeetCode Knight (1900+). SIH 2025 College Winner. Open to freelance & internships.',
     canonical: '/',

@@ -99,7 +99,7 @@ export function Blog() {
   useSEO({
     title: 'Blog | Alok Hotta — Tech Articles & Web Dev Insights',
     description:
-      'Read tech blogs by Alok Hotta on full-stack development, AI, React, Node.js, TypeScript, system design, and LeetCode. Practical insights from a SIH 2025 winner.',
+      'Read tech blogs by Alok Hotta on full-stack development, AI, React, Node.js, TypeScript, system design, and LeetCode. Practical insights from a SIH 2025 College winner.',
     canonical: '/blog',
   })
 
