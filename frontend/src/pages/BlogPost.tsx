@@ -401,6 +401,7 @@ export function BlogPost() {
     if (navigator.share) {
       const shareData: ShareData = {
         title: post.title,
+        text: `${post.title}\n\n${description}\n\n`,
         url: shareUrl,
       }
 
