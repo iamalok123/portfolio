@@ -16,35 +16,25 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
   return (
     <div
       className={cn(
-        'editorial-cover relative isolate flex aspect-video overflow-hidden rounded-lg border border-border text-[#111111]',
-        compact ? 'items-center justify-center p-5' : 'items-center justify-center p-8 sm:p-12',
+        'relative isolate flex overflow-hidden rounded-lg',
+        !showImage && 'editorial-cover border border-border text-[#111111]',
+        compact && !showImage ? 'aspect-4/3 sm:aspect-video items-center justify-center p-4 sm:p-5' : '',
+        compact && showImage ? 'w-full' : '',
+        !compact && !showImage ? 'w-full items-center justify-center p-8 sm:p-16 min-h-[280px] sm:min-h-[360px]' : '',
         className,
       )}
     >
       {showImage ? (
-        <>
           <img
             src={imageSrc}
-            alt=""
+            alt={title}
             loading="lazy"
             onError={() => setFailedImageSrc(imageSrc ?? '')}
-            className="absolute inset-0 size-full bg-white object-contain grayscale"
-          />
-          <div
             className={cn(
-              'absolute inset-0 bg-gradient-to-t from-[#111111]/70 via-[#111111]/10 to-transparent',
-              compact && 'sm:hidden',
+              'w-full h-auto object-contain',
+              !compact && 'max-h-[60vh]'
             )}
           />
-          <p
-            className={cn(
-              'relative mt-auto max-w-[88%] text-center font-black uppercase leading-[0.95] tracking-[-0.04em] text-white',
-              compact ? 'text-[clamp(1.2rem,6vw,2rem)] sm:hidden' : 'text-[clamp(1.2rem,5vw,3.6rem)]',
-            )}
-          >
-            {title}
-          </p>
-        </>
       ) : (
         <>
       <div className="pointer-events-none absolute right-[10%] top-[12%] h-[38%] w-[26%] opacity-35">
@@ -57,7 +47,7 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
           <p
             className={cn(
               'font-semibold uppercase tracking-[-0.02em]',
-              compact ? 'text-[clamp(1.05rem,5vw,1.75rem)] sm:text-[1.75rem]' : 'text-[clamp(1.8rem,7vw,4.2rem)]',
+              compact ? 'text-[clamp(0.95rem,4vw,1.75rem)] sm:text-[1.75rem]' : 'text-[clamp(1.5rem,7vw,4.2rem)]',
             )}
           >
             AI CAN'T SAVE
@@ -65,7 +55,7 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
           <p
             className={cn(
               'mt-1 font-black uppercase tracking-[-0.03em]',
-              compact ? 'text-[clamp(1.25rem,6vw,2.1rem)] sm:text-[2rem]' : 'text-[clamp(2rem,8vw,4.8rem)]',
+              compact ? 'text-[clamp(1.15rem,5vw,2.1rem)] sm:text-[2rem]' : 'text-[clamp(1.8rem,8vw,4.8rem)]',
             )}
           >
             <span className="underline decoration-[#111111] decoration-4 underline-offset-4">BAD</span>{' '}
@@ -79,8 +69,8 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
           </p>
           <p
             className={cn(
-              'mt-3 break-words font-black uppercase leading-[1.02] tracking-[-0.04em]',
-              compact ? 'text-[clamp(1.2rem,5vw,1.6rem)] sm:text-[1.45rem] xl:text-[1.55rem]' : 'text-[clamp(2rem,8vw,4.6rem)]',
+              'mt-3 wrap-break-word font-black uppercase leading-[1.02] tracking-[-0.04em]',
+              compact ? 'text-[clamp(1.1rem,4vw,1.6rem)] sm:text-[1.45rem] xl:text-[1.55rem]' : 'text-[clamp(1.6rem,6vw,4.6rem)]',
             )}
           >
             {title}
