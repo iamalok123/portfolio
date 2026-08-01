@@ -66,10 +66,10 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "Social AI",
     desc: "Built Social AI, an AI-powered social media management platform that helps creators and agencies generate content, schedule posts, automate publishing, and collaborate across multiple social networks.",
-    techStack: ["Next.js", "TypeScript", "PostgreSQL", "Inngest", "Insforge", "Clerk", "shadcn/ui"],
-    liveUrl: "https://github.com/iamalok123/social-media-scheduler-nextjs16",
-    githubUrl: "https://github.com/iamalok123/social-media-scheduler-nextjs16",
-    coverImage: projectImage("socialai.png"),
+    techStack: ["React.js", "TypeScript", "Node.js", "Express.js", "Zernio", "MongoDB", "Cloudinary", "Gemini", "Cloudflare Workers AI"],
+    liveUrl: "https://social-ai-v69.vercel.app",
+    githubUrl: "https://github.com/iamalok123/social-ai_mern_fullstack",
+    coverImage: projectImage("social-ai.png"),
     order: 3,
   },
   {
@@ -91,13 +91,22 @@ const PROJECTS: ProjectSeed[] = [
     order: 5,
   },
   {
+    title: "Social AI",
+    desc: "Built Social AI, an AI-powered social media management platform that helps creators and agencies generate content, schedule posts, automate publishing, and collaborate across multiple social networks.",
+    techStack: ["Next.js", "TypeScript", "PostgreSQL", "Inngest", "Insforge", "Clerk", "shadcn/ui"],
+    liveUrl: "https://github.com/iamalok123/social-media-scheduler-nextjs16",
+    githubUrl: "https://github.com/iamalok123/social-media-scheduler-nextjs16",
+    coverImage: projectImage("socialai.png"),
+    order: 6,
+  },
+  {
     title: "Dev Events",
     desc: "Modern event management platform with ticket booking, analytics, and interactive event discovery.",
     techStack: ["Next.js", "React"],
     liveUrl: "https://dev-events-nextjs16-mauve.vercel.app",
     githubUrl: "https://github.com/iamalok123/dev-events-nextjs16",
     coverImage: projectImage("dev-events.png"),
-    order: 6,
+    order: 7,
   },
   {
     title: "Expense Tracker",
@@ -106,7 +115,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     githubUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     coverImage: projectImage("expence-tracker.jpg"),
-    order: 7,
+    order: 8,
   },
   {
     title: "Elevate AI",
@@ -115,7 +124,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://elevate-ai-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/elevate-ai",
     coverImage: projectImage("elevate-ai.jpg"),
-    order: 8,
+    order: 9,
   },
   {
     title: "ByteChat",
@@ -124,7 +133,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     githubUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     coverImage: projectImage("bytechat.jpg"),
-    order: 9,
+    order: 10,
   },
   {
     title: "N-Queen Visualizer",
@@ -133,7 +142,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://nqueen.netlify.app/",
     githubUrl: "https://github.com/iamalok123/N-Queens-Visualiser-/",
     coverImage: projectImage("n-queen.png"),
-    order: 10,
+    order: 11,
   },
   {
     title: "Snake Game",
@@ -142,7 +151,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://snake-game-js-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/Snake-Game-JS",
     coverImage: projectImage("snake-game.png"),
-    order: 11,
+    order: 12,
   },
   {
     title: "Currency Converter",
@@ -151,7 +160,7 @@ const PROJECTS: ProjectSeed[] = [
     liveUrl: "https://currency-converter-69.netlify.app",
     githubUrl: "https://github.com/iamalok123/Currency-Converter-Project-React",
     coverImage: projectImage("currency-converter.png"),
-    order: 12,
+    order: 13,
   },
 ];
 
@@ -174,7 +183,7 @@ const BLOGS: BlogSeed[] = [
     tags: ['AI', 'Engineering', 'Systems', 'Fundamentals'],
     readTime: 12,
     publishedAt: new Date('2026-05-25'),
-    coverImage: '',
+    coverImage: blogImage("AI_Cant_Save_Bad Engineering.png"),
     content: `# AI Can't Save Bad Engineering
 
 There's a version of this conversation happening in every engineering team right now.
@@ -2157,15 +2166,15 @@ Understanding the "why" behind the tools, not just the "how to call the API," ha
 
 async function syncProjects() {
   const projects = PROJECTS.map(withImageAlias).sort((a, b) => a.order - b.order)
-  const projectTitles = projects.map((project) => project.title)
+  const projectOrders = projects.map((project) => project.order)
 
-  await Project.deleteMany({ title: { $nin: projectTitles } })
+  await Project.deleteMany({ order: { $nin: projectOrders } })
   await Project.updateMany({}, { $unset: { tags: 1 } }, { strict: false })
 
   const updatedProjects = await Promise.all(
     projects.map((project) =>
       Project.findOneAndUpdate(
-        { title: project.title },
+        { order: project.order },
         { $set: project },
         { returnDocument: 'after', runValidators: true, setDefaultsOnInsert: true, upsert: true },
       ),
