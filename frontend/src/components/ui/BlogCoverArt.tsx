@@ -20,7 +20,7 @@ export function BlogCoverArt({ title, imageSrc, compact = false, className }: Bl
         !showImage && 'editorial-cover border border-border text-[#111111]',
         compact && !showImage ? 'aspect-4/3 sm:aspect-video items-center justify-center p-4 sm:p-5' : '',
         compact && showImage ? 'w-full' : '',
-        !compact && !showImage ? 'w-full items-center justify-center p-8 sm:p-16 min-h-[280px] sm:min-h-[360px]' : '',
+        !compact && !showImage ? 'w-full items-center justify-center p-8 sm:p-16 min-h-70 sm:min-h-90' : '',
         className,
       )}
     >
