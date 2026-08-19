@@ -11,7 +11,7 @@ const NAV_LINKS = [
   { label: 'About', href: '/#about' },
   { label: 'Projects', href: '/#projects' },
   { label: 'Blog', href: '/#blog' },
-  { label: 'Contact', href: '/#contact' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 const SOCIAL_LINKS: { label: string; href: string; Icon: ComponentType<{ size?: number; className?: string }> }[] = [

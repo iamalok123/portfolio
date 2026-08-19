@@ -83,3 +83,11 @@ temp/
 
 .hintrc
 DEPLOYMENT.md
+
+
+# AI agent skills — local only
+.agent/
+.agents/
+.gemini/
+.qoder/
+.impeccable/

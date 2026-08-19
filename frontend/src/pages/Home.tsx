@@ -2,11 +2,11 @@ import { useSEO } from '../hooks/useSEO'
 import { PageTransition } from '../components/layout/PageTransition'
 import { About } from '../components/sections/About'
 import { BlogPreview } from '../components/sections/BlogPreview'
-import { Contact } from '../components/sections/Contact'
 import { Experience } from '../components/sections/Experience'
 import { Hero } from '../components/sections/Hero'
 import { Projects } from '../components/sections/Projects'
 import { Skills } from '../components/sections/Skills'
+import { WorkTogetherCTA } from '../components/sections/WorkTogetherCTA'
 
 export function Home() {
   useSEO({
@@ -25,7 +25,7 @@ export function Home() {
         <Projects />
         <Experience />
         <BlogPreview />
-        <Contact />
+        <WorkTogetherCTA />
       </main>
     </PageTransition>
   )

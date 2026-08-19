@@ -20,9 +20,7 @@ import { cn } from '../../lib/utils'
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
-  subject: z.enum(['Internship', 'Project', 'Freelance', 'Other'], {
-    message: 'Please select a subject',
-  }),
+  subject: z.string().min(2, 'Subject must be at least 2 characters'),
   message: z.string().min(20, 'Message must be at least 20 characters'),
   honeypot: z.string().max(0).optional(), // anti-spam
 })
@@ -261,8 +259,6 @@ export function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden py-24 sm:py-32">
-      <div className="absolute inset-x-0 top-0 h-px bg-border" />
-
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_100%,color-mix(in_srgb,var(--accent)_8%,transparent),transparent)]" />
 
@@ -376,37 +372,19 @@ export function Contact() {
               />
             </motion.div>
 
-            {/* Subject dropdown */}
+            {/* Subject input */}
             <motion.div
               variants={fieldVariants}
               transition={{ type: "spring", stiffness: 150, damping: 22 }}
-              className="relative mt-4"
+              className="mt-4"
             >
-              <select
+              <FloatingInput
                 id="contact-subject"
-                defaultValue=""
-                className={cn(
-                  "w-full appearance-none rounded-lg border bg-surface-2 px-4 py-4 text-sm outline-none transition-all",
-                  errors.subject
-                    ? "border-foreground text-foreground"
-                    : "border-border text-foreground focus:border-accent focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_14%,transparent)]",
-                )}
+                label="Subject"
+                error={errors.subject?.message}
+                value={watchedValues.subject ?? ""}
                 {...register("subject")}
-              >
-                <option value="" disabled className="text-muted">
-                  Subject — Internship, Project, Freelance, Other
-                </option>
-                {["Internship", "Project", "Freelance", "Other"].map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-              {errors.subject ? (
-                <p className="mt-1.5 text-xs text-foreground">
-                  {errors.subject.message}
-                </p>
-              ) : null}
+              />
             </motion.div>
 
             <motion.div

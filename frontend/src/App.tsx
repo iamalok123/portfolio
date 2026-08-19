@@ -20,6 +20,9 @@ const Projects = lazy(() =>
 const Resume = lazy(() =>
   import('./pages/Resume').then((module) => ({ default: module.Resume })),
 )
+const Contact = lazy(() =>
+  import('./pages/Contact').then((module) => ({ default: module.Contact })),
+)
 const NotFound = lazy(() =>
   import('./pages/NotFound').then((module) => ({ default: module.NotFound })),
 )
@@ -110,6 +113,7 @@ function App() {
               <Route path="/project" element={<Projects />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/resume" element={<Resume />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

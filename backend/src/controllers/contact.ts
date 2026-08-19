@@ -30,6 +30,7 @@ export async function sendMessage(
 
     const trimmedName = name.trim()
     const trimmedEmail = email.trim().toLowerCase()
+    const trimmedSubject = subject.trim()
     const trimmedMessage = message.trim()
 
     if (trimmedName.length < 2) {
@@ -40,8 +41,8 @@ export async function sendMessage(
       res.status(400).json({ success: false, message: 'Invalid email address' })
       return
     }
-    if (!['Internship', 'Project', 'Freelance', 'Other'].includes(subject)) {
-      res.status(400).json({ success: false, message: 'Invalid subject' })
+    if (trimmedSubject.length < 2) {
+      res.status(400).json({ success: false, message: 'Subject must be at least 2 characters' })
       return
     }
     if (trimmedMessage.length < 20) {

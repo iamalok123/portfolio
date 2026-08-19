@@ -10,7 +10,7 @@ const navItems = [
   { label: 'About', sectionId: 'about' },
   { label: 'Projects', sectionId: 'projects' },
   { label: 'Blog', sectionId: 'blog' },
-  { label: 'Contact', sectionId: 'contact' },
+  { label: 'Contact', path: '/contact' },
   { label: 'Resume', path: '/resume' },
 ] as const
 
@@ -83,9 +83,11 @@ export function Navbar() {
     ? 'blog'
     : location.pathname.startsWith('/resume')
       ? 'resume'
-      : location.pathname.startsWith('/project')
-        ? 'projects'
-        : activeSection
+      : location.pathname.startsWith('/contact')
+        ? 'contact'
+        : location.pathname.startsWith('/project')
+          ? 'projects'
+          : activeSection
 
   // ── Scroll header background ───────────────────────────────────────────────
   useMotionValueEvent(scrollY, 'change', (latest) => {
@@ -243,8 +245,8 @@ export function Navbar() {
           <div className="hidden items-center gap-3 lg:flex">
             <ThemeToggle />
             <motion.a
-              href="/#contact"
-              onClick={(e) => handleNavClick(e, 'contact')}
+              href="/contact"
+              onClick={(e) => handleRouteClick(e, '/contact')}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 360, damping: 22 }}
@@ -332,8 +334,8 @@ export function Navbar() {
             </motion.div>
 
             <motion.a
-              href="/#contact"
-              onClick={(e) => handleNavClick(e, 'contact')}
+              href="/contact"
+              onClick={(e) => handleRouteClick(e, '/contact')}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 220, damping: 24, delay: 0.5 }}
