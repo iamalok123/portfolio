@@ -73,6 +73,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [hoveredSection, setHoveredSection] = useState<string | null>(null)
   // Store a pending scroll target when we navigate to '/' from another page
   const pendingScroll = useRef<string | null>(null)
 
@@ -89,6 +90,7 @@ export function Navbar() {
           ? 'projects'
           : activeSection
 
+  const effectiveActive = hoveredSection ?? displayActiveSection 
   // ── Scroll header background ───────────────────────────────────────────────
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50)
@@ -183,11 +185,12 @@ export function Navbar() {
     [isScrolled],
   )
 
-  // ── Render a single desktop nav link ──────────────────────────────────────
+  // ── Render a single desktop nav link with Apple liquid glass capsule ──────
   const renderNavLink = (item: NavItem, index: number) => {
     const isRouteItem = 'path' in item
     const activeKey = isRouteItem ? item.path.replace('/', '') : item.sectionId
     const isActive = displayActiveSection === activeKey
+    const isHighlighted = effectiveActive === activeKey
 
     return (
       <motion.a
@@ -196,22 +199,32 @@ export function Navbar() {
         onClick={(e) =>
           isRouteItem ? handleRouteClick(e, item.path) : handleNavClick(e, item.sectionId)
         }
+        onMouseEnter={() => setHoveredSection(activeKey)}
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          'group relative py-2 text-sm font-medium text-muted transition-colors hover:text-foreground',
-          isActive && 'text-accent',
+          'relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none',
+          isActive ? 'text-foreground font-semibold' : 'text-muted hover:text-foreground',
         )}
         initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 220, damping: 24, delay: index * 0.02 }}
       >
-        {item.label}
-        <span
-          className={cn(
-            'absolute inset-x-0 -bottom-0.5 h-px origin-left bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100',
-            isActive ? 'scale-x-100' : 'scale-x-0'
-          )}
-        />
+        {isHighlighted ? (
+          <motion.div
+            layoutId="navbar-liquid-glass-pill"
+            className="absolute inset-0 rounded-full border border-black/10 bg-black/5 shadow-[0_2px_12px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.6)] backdrop-blur-md dark:border-white/15 dark:bg-white/12 dark:shadow-[0_4px_20px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.25)]"
+            transition={{
+              type: 'spring',
+              stiffness: 420,
+              damping: 32,
+              mass: 0.7,
+            }}
+          >
+            {/* Apple liquid glass specular sheen */}
+            <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-full bg-linear-to-b from-white/35 to-transparent opacity-80 dark:from-white/20" />
+          </motion.div>
+        ) : null}
+        <span className="relative z-10">{item.label}</span>
       </motion.a>
     )
   }
@@ -238,7 +251,10 @@ export function Navbar() {
             <span className="text-accent">]</span>
           </Link>
 
-          <div className="hidden items-center gap-8 rounded-full border border-border bg-surface/45 px-7 py-2.5 backdrop-blur-md lg:flex">
+          <div
+            onMouseLeave={() => setHoveredSection(null)}
+            className="hidden items-center gap-1 rounded-full border border-border/80 bg-surface/50 p-1.5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-surface/40 lg:flex"
+          >
             {navItems.map(renderNavLink)}
           </div>
 
