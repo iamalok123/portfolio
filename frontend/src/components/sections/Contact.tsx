@@ -8,8 +8,9 @@ import {
   SendHorizonal,
 } from 'lucide-react'
 import { Github, Linkedin } from 'react-bootstrap-icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
+import { useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useInView } from 'react-intersection-observer'
 import { z } from 'zod'
@@ -214,6 +215,7 @@ const fieldVariants = {
 }
 
 export function Contact() {
+  const [searchParams] = useSearchParams()
   const [status, setStatus] = useState<FormStatus>('idle')
   const { ref: leftRef, inView: leftInView } = useInView({
     triggerOnce: true,
@@ -229,10 +231,22 @@ export function Contact() {
     handleSubmit,
     reset,
     control,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      subject: searchParams.get('subject') ?? '',
+      message: searchParams.get('message') ?? '',
+    },
   })
+
+  useEffect(() => {
+    const subjectParam = searchParams.get('subject')
+    const messageParam = searchParams.get('message')
+    if (subjectParam) setValue('subject', subjectParam, { shouldValidate: true })
+    if (messageParam) setValue('message', messageParam, { shouldValidate: true })
+  }, [searchParams, setValue])
 
   const watchedValues = useWatch({ control })
 
