@@ -57,7 +57,14 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "StudyFlow",
     desc: "AI-powered document learning platform with contextual chat, quizzes, flashcards, and mindmap generation.",
-    techStack: ["React", "Express", "RAG", "Gemini", "Cloudinary", "MongoDB"],
+    techStack: [
+      "React.js", 
+      "Express.js", 
+      "RAG", 
+      "Gemini", 
+      "Cloudinary", 
+      "MongoDB"
+    ],
     liveUrl: "https://studyflow-ai-alpha.vercel.app",
     githubUrl: "https://github.com/iamalok123/studyflow-mern-fullstack",
     coverImage: projectImage("studyflow.png"),
@@ -66,7 +73,17 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "Social AI",
     desc: "Built Social AI, an AI-powered social media management platform that helps creators and agencies generate content, schedule posts, automate publishing, and collaborate across multiple social networks.",
-    techStack: ["React.js", "TypeScript", "Node.js", "Express.js", "Zernio", "MongoDB", "Cloudinary", "Gemini", "Cloudflare Workers AI"],
+    techStack: [
+      "React.js", 
+      "TypeScript", 
+      "Node.js", 
+      "Express.js", 
+      "Zernio", 
+      "MongoDB", 
+      "Cloudinary", 
+      "Gemini", 
+      "Cloudflare Workers AI"
+    ],
     liveUrl: "https://social-ai-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/social-ai_mern_fullstack",
     coverImage: projectImage("social-ai.png"),
@@ -75,7 +92,12 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "My Portfolio",
     desc: "A sleek, modern portfolio showcasing projects and writing with a focus on clean design and responsive layouts.",
-    techStack: ["React", "TypeScript", "Framer Motion", "Express"],
+    techStack: [
+      "React", 
+      "TypeScript", 
+      "Framer Motion", 
+      "Express"
+    ],
     liveUrl: "https://www.alokhotta.site",
     githubUrl: "https://github.com/iamalok123/portfolio",
     coverImage: projectImage("portfolio.png"),
@@ -84,85 +106,152 @@ const PROJECTS: ProjectSeed[] = [
   {
     title: "KIA Media",
     desc: "Freelancing (Portfolio Website build for KIA Media Networks) with a focus on clean design and responsive layouts.",
-    techStack: ["React", "Vite", "Tailwind"],
+    techStack: [
+      "React", 
+      "Vite", 
+      "Tailwind"
+    ],
     liveUrl: "https://kia-mediaworks.vercel.app",
     githubUrl: "https://github.com/iamalok123/kia_media",
     coverImage: projectImage("kia-media.png"),
     order: 5,
   },
   {
-    title: "Social AI",
+    title: "CareIQ",
+    desc: "CareIQ is an AI-powered coverage-aware hospital care navigation platform. I built this project for the (GE Health Care - Precison Care Hackathon 2026).",
+    techStack: [
+      "React.js", 
+      "TypeScript", 
+      "Supabase - PostgreSQL", 
+      "Express.js", 
+      "Gemini"
+    ],
+    liveUrl: "https://care-iq-v1.vercel.app",
+    githubUrl: "https://github.com/iamalok123/Care-IQ",
+    coverImage: projectImage("careiq.png"),
+    order: 6,
+  },
+  {
+    title: "Social AI - NextJS",
     desc: "Built Social AI, an AI-powered social media management platform that helps creators and agencies generate content, schedule posts, automate publishing, and collaborate across multiple social networks.",
-    techStack: ["Next.js", "TypeScript", "PostgreSQL", "Inngest", "Insforge", "Clerk", "shadcn/ui"],
+    techStack: [
+      "Next.js", 
+      "TypeScript", 
+      "PostgreSQL", 
+      "Inngest", 
+      "Insforge", 
+      "Clerk", 
+      "shadcn/ui"
+    ],
     liveUrl: "https://github.com/iamalok123/social-media-scheduler-nextjs16",
     githubUrl: "https://github.com/iamalok123/social-media-scheduler-nextjs16",
     coverImage: projectImage("socialai.png"),
-    order: 6,
+    order: 7,
   },
   {
     title: "Dev Events",
     desc: "Modern event management platform with ticket booking, analytics, and interactive event discovery.",
-    techStack: ["Next.js", "React"],
+    techStack: [
+      "Next.js", 
+      "React"
+    ],
     liveUrl: "https://dev-events-nextjs16-mauve.vercel.app",
     githubUrl: "https://github.com/iamalok123/dev-events-nextjs16",
     coverImage: projectImage("dev-events.png"),
-    order: 7,
+    order: 8,
   },
   {
     title: "Expense Tracker",
     desc: "Personal finance management platform with expense analytics, income tracking, and interactive visual dashboards.",
-    techStack: ["JavaScript", "React.js", "Node.js", "MongoDB"],
+    techStack: [
+      "JavaScript", 
+      "React.js", 
+      "Node.js", 
+      "MongoDB"
+    ],
     liveUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     githubUrl: "https://github.com/iamalok123/expence-tracker-fullstack-mern",
     coverImage: projectImage("expence-tracker.jpg"),
-    order: 8,
+    order: 9,
   },
   {
     title: "Elevate AI",
     desc: "Professional leadership planning platform prototype featuring mentorship programs, competency tracking, and performance insights.",
-    techStack: ["JavaScript", "React.js", "Node.js", "MongoDB"],
+    techStack: [
+      "JavaScript", 
+      "React.js", 
+      "Node.js", 
+      "MongoDB"
+    ],
     liveUrl: "https://elevate-ai-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/elevate-ai",
     coverImage: projectImage("elevate-ai.jpg"),
-    order: 9,
+    order: 10,
   },
   {
     title: "ByteChat",
     desc: "Realtime chat app with authentication, presence states, and responsive conversation views.",
-    techStack: ["React", "Zustand", "Socket.io", "Node.js", "Cloudinary"],
+    techStack: [
+      "React", 
+      "Zustand", 
+      "Socket.io", 
+      "Node.js", 
+      "Cloudinary"
+    ],
     liveUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     githubUrl: "https://github.com/iamalok123/realtime_chatapp_mern",
     coverImage: projectImage("bytechat.jpg"),
-    order: 10,
+    order: 11,
   },
   {
     title: "N-Queen Visualizer",
     desc: "Interactive visualization of the N-Queen problem with real-time solving and animation in slow and fast motion.",
-    techStack: ["HTML","CSS","JavaScript"],
+    techStack: [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
     liveUrl: "https://nqueen.netlify.app/",
     githubUrl: "https://github.com/iamalok123/N-Queens-Visualiser-/",
     coverImage: projectImage("n-queen.png"),
-    order: 11,
+    order: 12,
   },
   {
     title: "Snake Game",
     desc: "A classic Snake game implemented with javascript and modern web technologies.",
-    techStack: ["HTML", "CSS", "JavaScript"],
+    techStack: [
+      "HTML", 
+      "CSS", 
+      "JavaScript"
+    ],
     liveUrl: "https://snake-game-js-v69.vercel.app",
     githubUrl: "https://github.com/iamalok123/Snake-Game-JS",
     coverImage: projectImage("snake-game.png"),
-    order: 12,
+    order: 13,
   },
   {
     title: "Currency Converter",
     desc: "Realtime currency conversion app with a clean, modern interface.",
-    techStack: ["React", "JavaScript", "Tailwind CSS"],
+    techStack: [
+      "React", 
+      "JavaScript", 
+      "Tailwind CSS"
+    ],
     liveUrl: "https://currency-converter-69.netlify.app",
     githubUrl: "https://github.com/iamalok123/Currency-Converter-Project-React",
     coverImage: projectImage("currency-converter.png"),
-    order: 13,
+    order: 14,
   },
 ];
+
+
+
+
+
+
+
+
+
 
 
 
