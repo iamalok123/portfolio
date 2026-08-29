@@ -5,7 +5,8 @@ import { Toaster } from 'react-hot-toast'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
-import { LoadingScreen, PremiumLoader } from './components/ui/LoadingScreen'
+import { BouncingDots } from './components/ui/BouncingDots'
+import { LoadingScreen } from './components/ui/LoadingScreen'
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar'
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
@@ -34,8 +35,8 @@ function RouteFallback() {
       aria-live="polite"
       aria-busy="true"
     >
-      <div className="flex flex-col items-center gap-8">
-        <PremiumLoader compact />
+      <div className="flex flex-col items-center gap-4 text-foreground">
+        <BouncingDots className="w-14 py-2 text-foreground" dots={3} />
       </div>
     </div>
   )

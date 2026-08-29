@@ -5,7 +5,6 @@ import {
   Download,
   ExternalLink,
   FileText,
-  Loader2,
   ZoomIn,
   ZoomOut,
 } from 'lucide-react'
@@ -14,6 +13,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import { PageTransition } from '../components/layout/PageTransition'
+import { BouncingDots } from '../components/ui/BouncingDots'
 import { useSEO } from '../hooks/useSEO'
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -230,8 +230,8 @@ export function Resume() {
             ) : (
               <div className="flex flex-col items-center py-4 gap-3">
                 {isLoading && (
-                  <div className="flex flex-col items-center gap-2 py-20">
-                    <Loader2 className="animate-spin text-muted" size={28} />
+                  <div className="flex flex-col items-center gap-3 py-20 text-foreground">
+                    <BouncingDots className="w-10 text-foreground" dots={3} />
                     <p className="font-mono text-xs uppercase tracking-widest text-muted">
                       Loading PDF…
                     </p>
