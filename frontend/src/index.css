@@ -24,9 +24,6 @@
   --muted: #666666;
   --accent: #0a0a0a;
   --border: rgba(10, 10, 10, 0.12);
-  --cursor-dot: #0a0a0a;
-  --cursor-expanded: #ffffff;
-  --cursor-ring: rgba(10, 10, 10, 0.42);
 }
 
 .dark {
@@ -38,9 +35,6 @@
   --muted: #a5a5a5;
   --accent: #f7f7f7;
   --border: rgba(255, 255, 255, 0.12);
-  --cursor-dot: #f7f7f7;
-  --cursor-expanded: #f7f7f7;
-  --cursor-ring: rgba(247, 247, 247, 0.4);
 }
 
 *,
@@ -513,13 +507,6 @@ body::after {
   mix-blend-mode: soft-light;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  *,
-  *::before,
-  *::after {
-    cursor: none !important;
-  }
-}
 
 .glitch-text {
   position: relative;

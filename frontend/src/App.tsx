@@ -5,7 +5,6 @@ import { Toaster } from 'react-hot-toast'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
-import { CustomCursor } from './components/ui/CustomCursor'
 import { LoadingScreen, PremiumLoader } from './components/ui/LoadingScreen'
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar'
 
@@ -83,7 +82,6 @@ function App() {
 
       {/* ── Global overlays (above everything) ───────────────────────────────── */}
       <LoadingScreen />
-      <CustomCursor />
       <ScrollProgressBar />
 
       <div className="min-h-svh bg-bg text-foreground">

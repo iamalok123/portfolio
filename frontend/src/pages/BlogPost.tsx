@@ -560,7 +560,6 @@ export function BlogPost() {
                     <motion.button
                       type="button"
                       aria-label="Close table of contents"
-                      data-cursor="transparent"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}

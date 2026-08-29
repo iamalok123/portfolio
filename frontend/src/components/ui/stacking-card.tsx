@@ -95,7 +95,6 @@ export const Card = ({
             <div className="pt-5 sm:pt-6">
               <Link
                 to={link}
-                data-cursor="transparent"
                 className="group/btn inline-flex items-center gap-2 rounded-full border border-border/80 bg-surface-2/80 px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-[0.16em] text-foreground backdrop-blur-md transition-all duration-300 hover:border-foreground/40 hover:bg-foreground/10 hover:text-foreground hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] dark:border-white/12 dark:bg-white/5 dark:hover:border-white/35 dark:hover:bg-white/10 dark:hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
               >
                 <span>{ctaText}</span>

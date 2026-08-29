@@ -14,7 +14,6 @@ A modern, high-performance, full-stack developer portfolio and technical blog bu
 - **⚡ Interactive Home & Hero Section:** Dynamic headline animation, status badge, tech stack highlights, quick stats counter, and call-to-action buttons.
 - **🎨 Rich Design & Smooth Micro-Interactions:** 
   - Smooth wheel scrolling via `@studio-freight/lenis`.
-  - Custom animated cursor effect with toggle capability (`CustomCursor`).
   - Top reading/page scroll progress bar (`ScrollProgressBar`).
   - Fluid entrance animations using `framer-motion` and `AnimatePresence`.
   - Accessible design with "Skip to main content" links and focus outlines.
@@ -89,7 +88,7 @@ portfolio/
 │   │   ├── components/
 │   │   │   ├── layout/            # Navbar, Footer, PageTransition
 │   │   │   ├── sections/          # Hero, About, Skills, Projects, Experience, BlogPreview, Contact
-│   │   │   └── ui/                # CustomCursor, ScrollProgressBar, LoadingScreen, BlogCoverArt
+│   │   │   └── ui/                # ScrollProgressBar, LoadingScreen, BlogCoverArt
 │   │   ├── data/                  # Static fallbacks (about, experience, skills)
 │   │   ├── hooks/                 # Custom React hooks (useSEO)
 │   │   ├── lib/                   # API clients (axios) & helper functions
