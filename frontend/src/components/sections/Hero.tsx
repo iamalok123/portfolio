@@ -180,11 +180,18 @@ export function Hero() {
           }}
           className="relative mx-auto w-full max-w-md lg:justify-self-end"
         >
-          <img
-            src="/photo.png"
-            alt="Alok Hotta"
-            className="mx-auto aspect-3/4 max-h-[66svh] w-full max-w-sm rounded-2xl border border-border object-cover object-[center_5%] grayscale shadow-[0_24px_90px_rgba(0,0,0,0.22)]"
-          />
+          <picture>
+            <source srcSet="/photo.webp" type="image/webp" />
+            <img
+              src="/photo.png"
+              alt="Alok Hotta"
+              width={384}
+              height={512}
+              loading="eager"
+              fetchPriority="high"
+              className="mx-auto aspect-3/4 max-h-[66svh] w-full max-w-sm rounded-2xl border border-border object-cover object-[center_5%] grayscale shadow-[0_24px_90px_rgba(0,0,0,0.22)]"
+            />
+          </picture>
         </motion.div>
       </div>
 

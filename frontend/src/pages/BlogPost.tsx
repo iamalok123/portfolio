@@ -14,6 +14,7 @@ import { api } from '../lib/axios'
 import { resolveAssetUrl } from '../lib/assets'
 import { cn } from '../lib/utils'
 import { useSEO } from '../hooks/useSEO'
+import { STATIC_BLOGS } from '../data/blogs'
 import type { Blog } from '../types'
 
 type BlogResponse = Blog | { success: boolean; data: Blog }
@@ -70,8 +71,9 @@ function CopyableCodeBlock({ children }: { children?: ReactNode }) {
 
 export function BlogPost() {
   const { slug } = useParams()
-  const [post, setPost] = useState<Blog | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const fallbackInitial = useMemo(() => STATIC_BLOGS.find((b) => b.slug === slug) ?? null, [slug])
+  const [post, setPost] = useState<Blog | null>(fallbackInitial)
+  const [isLoading, setIsLoading] = useState(!fallbackInitial)
   const [activeHeading, setActiveHeading] = useState('')
   const [isTocOpen, setIsTocOpen] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
@@ -177,10 +179,12 @@ export function BlogPost() {
         if (isActive && nextPost?._id) {
           setPost(nextPost)
           setViewsCount(nextPost.views ?? 0)
+        } else if (isActive && !fallbackInitial) {
+          setPost(null)
         }
       })
       .catch(() => {
-        if (isActive) {
+        if (isActive && !fallbackInitial) {
           setPost(null)
         }
       })

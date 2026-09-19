@@ -9,11 +9,13 @@ import { api } from '../../lib/axios'
 import type { Blog } from '../../types'
 import { BlogCoverArt } from '../ui/BlogCoverArt'
 
+import { STATIC_BLOGS } from '../../data/blogs'
+
 const MotionLink = motion(Link)
 
 export function BlogPreview() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 })
-  const [previewBlogs, setPreviewBlogs] = useState<Blog[]>([])
+  const [previewBlogs, setPreviewBlogs] = useState<Blog[]>(STATIC_BLOGS.slice(0, 3))
 
   useEffect(() => {
     let isActive = true
@@ -21,15 +23,15 @@ export function BlogPreview() {
     api
       .get<Blog[] | { success: boolean; data: Blog[] }>('/blogs')
       .then((response) => {
-        const posts = Array.isArray(response.data) ? response.data : response.data.data
+        const posts = Array.isArray(response.data) ? response.data : response.data?.data
 
-        if (isActive && Array.isArray(posts)) {
+        if (isActive && Array.isArray(posts) && posts.length > 0) {
           setPreviewBlogs(posts.slice(0, 3))
         }
       })
       .catch(() => {
         if (isActive) {
-          setPreviewBlogs([])
+          setPreviewBlogs(STATIC_BLOGS.slice(0, 3))
         }
       })
 

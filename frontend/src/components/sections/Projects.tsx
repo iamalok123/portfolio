@@ -1,11 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronDown, ChevronUp, ExternalLink, Filter, Globe, SearchX, X } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, ChevronUp, ExternalLink, Filter, Globe, SearchX, X } from 'lucide-react'
 import { Github } from 'react-bootstrap-icons'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../../lib/axios'
 import { resolveAssetUrl } from '../../lib/assets'
 import { cn } from '../../lib/utils'
+import { STATIC_PROJECTS } from '../../data/projects'
+import { ProjectCaseStudyModal } from '../ui/ProjectCaseStudyModal'
 import type { Project } from '../../types'
 
 const MotionLink = motion(Link)
@@ -27,7 +29,15 @@ function SkeletonCard() {
   )
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({
+  project,
+  index,
+  onOpenCaseStudy,
+}: {
+  project: Project
+  index: number
+  onOpenCaseStudy: (project: Project) => void
+}) {
   const coverImage = resolveAssetUrl(project.coverImage || project.image)
   const [failedImageSrc, setFailedImageSrc] = useState('')
   const showCoverImage = Boolean(coverImage && failedImageSrc !== coverImage)
@@ -93,7 +103,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
         </div>
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted">{project.desc}</p>
-        <div className="mt-auto pt-5 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {project.techStack.map((tech) => (
             <span
               key={tech}
@@ -103,6 +113,26 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             </span>
           ))}
         </div>
+
+        {/* Case Study Bar */}
+        <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
+          {project.caseStudy ? (
+            <button
+              type="button"
+              onClick={() => onOpenCaseStudy(project)}
+              className="inline-flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-[0.14em] text-accent transition hover:opacity-75"
+            >
+              <span>Case Study</span>
+              <ArrowUpRight size={13} />
+            </button>
+          ) : (
+            <span className="font-mono text-xs text-muted">Project #{project.order}</span>
+          )}
+
+          <span className="text-[11px] text-muted uppercase tracking-wider">
+            {project.techStack[0]}
+          </span>
+        </div>
       </div>
     </motion.article>
   )
@@ -110,10 +140,17 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [projects, setProjects] = useState<Project[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [projects, setProjects] = useState<Project[]>(STATIC_PROJECTS)
+  const [isLoading, setIsLoading] = useState(false)
   const [showAllTopics, setShowAllTopics] = useState(false)
+  const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null)
+  const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false)
   const activeTech = showViewAll ? '' : searchParams.get('tech') ?? ''
+
+  const handleOpenCaseStudy = (proj: Project) => {
+    setSelectedCaseStudy(proj)
+    setIsCaseStudyOpen(true)
+  }
 
   useEffect(() => {
     let isActive = true
@@ -121,13 +158,21 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
     api
       .get<{ success: boolean; data: Project[] }>('/projects')
       .then((res) => {
-        if (isActive && res.data.success && Array.isArray(res.data.data)) {
-          setProjects(res.data.data)
+        if (isActive && res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          // Merge API data with any local case studies
+          const merged = res.data.data.map((p) => {
+            const staticMatch = STATIC_PROJECTS.find(
+              (sp) => sp.title.toLowerCase() === p.title.toLowerCase() || sp._id === p._id
+            )
+            return staticMatch?.caseStudy ? { ...p, caseStudy: staticMatch.caseStudy } : p
+          })
+          setProjects(merged)
         }
       })
       .catch(() => {
         if (isActive) {
-          setProjects([])
+          // Fall back gracefully to local static projects on error or cold-start
+          setProjects(STATIC_PROJECTS)
         }
       })
       .finally(() => {
@@ -331,7 +376,12 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
             <motion.div layout className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {visibleProjects.map((project, index) => (
-                  <ProjectCard key={project._id} project={project} index={index} />
+                  <ProjectCard
+                    key={project._id}
+                    project={project}
+                    index={index}
+                    onOpenCaseStudy={handleOpenCaseStudy}
+                  />
                 ))}
               </AnimatePresence>
             </motion.div>
@@ -368,6 +418,13 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
             </MotionLink>
           </div>
         ) : null}
+
+        {/* Interactive Case Study Modal */}
+        <ProjectCaseStudyModal
+          project={selectedCaseStudy}
+          isOpen={isCaseStudyOpen}
+          onClose={() => setIsCaseStudyOpen(false)}
+        />
       </div>
     </section>
   )

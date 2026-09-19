@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  ArrowUpRight,
+  Calendar,
   Check,
   Copy,
   Loader2,
@@ -325,6 +327,32 @@ export function Contact() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Quick Schedule Callout */}
+          <div className="mt-8 rounded-xl border border-border/80 bg-surface-2/60 p-5 backdrop-blur-sm transition-all hover:border-accent/40">
+            <div className="flex items-start gap-3.5">
+              <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-accent text-bg shadow-sm">
+                <Calendar size={18} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="font-display text-sm font-extrabold uppercase tracking-[0.14em] text-foreground">
+                  Prefer a Quick Chat?
+                </h4>
+                <p className="mt-1 text-xs leading-5 text-muted">
+                  Skip the back-and-forth emails. Book a direct 15-minute intro or technical sync on my calendar.
+                </p>
+                <a
+                  href="https://cal.com/alok-hotta"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3.5 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-all hover:border-foreground hover:bg-surface-2"
+                >
+                  Schedule on Cal.com
+                  <ArrowUpRight size={14} />
+                </a>
+              </div>
+            </div>
           </div>
         </motion.div>
 

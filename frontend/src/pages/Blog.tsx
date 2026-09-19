@@ -95,6 +95,8 @@ function BlogCard({ blog, index }: { blog: BlogType; index: number }) {
   )
 }
 
+import { STATIC_BLOGS } from '../data/blogs'
+
 export function Blog() {
   useSEO({
     title: 'Blog | Alok Hotta — Tech Articles & Web Dev Insights',
@@ -104,8 +106,8 @@ export function Blog() {
   })
 
   const [searchParams, setSearchParams] = useSearchParams()
-  const [posts, setPosts] = useState<BlogType[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [posts, setPosts] = useState<BlogType[]>(STATIC_BLOGS)
+  const [isLoading, setIsLoading] = useState(false)
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
   const [showAllTopics, setShowAllTopics] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
@@ -123,13 +125,13 @@ export function Blog() {
       .then((response) => {
         const nextPosts = Array.isArray(response.data) ? response.data : response.data.data
 
-        if (isActive && Array.isArray(nextPosts)) {
+        if (isActive && Array.isArray(nextPosts) && nextPosts.length > 0) {
           setPosts(nextPosts)
         }
       })
       .catch(() => {
         if (isActive) {
-          setPosts([])
+          setPosts(STATIC_BLOGS)
         }
       })
       .finally(() => {

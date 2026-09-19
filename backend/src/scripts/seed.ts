@@ -27,7 +27,10 @@ type BlogSeed = {
   image?: string
 }
 
-const assetPath = (folder: 'blog' | 'project', fileName: string) => `/assets/${folder}/${fileName}`
+const assetPath = (folder: 'blog' | 'project', fileName: string) => {
+  const webpName = fileName.replace(/\.(png|jpg|jpeg)$/i, '.webp')
+  return `/assets/${folder}/${webpName}`
+}
 const projectImage = (fileName: string) => assetPath('project', fileName)
 const blogImage = (fileName: string) => assetPath('blog', fileName)
 

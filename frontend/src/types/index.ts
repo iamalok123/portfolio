@@ -11,6 +11,14 @@ export interface Blog {
   views?: number
 }
 
+export interface CaseStudy {
+  tagline: string
+  problem: string
+  architecture: string[]
+  challenges: string[]
+  outcomes: string[]
+}
+
 export interface Project {
   _id: string
   title: string
@@ -21,4 +29,5 @@ export interface Project {
   image?: string
   coverImage?: string
   order: number
+  caseStudy?: CaseStudy
 }
