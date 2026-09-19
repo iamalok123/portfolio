@@ -126,20 +126,6 @@ export function BlogPreview() {
             </motion.article>
           ))}
         </motion.div>
-
-        <div className="mt-10 flex justify-center">
-          <MotionLink
-            to="/blogs"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 360, damping: 22 }}
-            style={{ backgroundColor: 'var(--foreground)', color: 'var(--bg)' }}
-            className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-display text-sm font-bold uppercase tracking-[0.16em]"
-          >
-            Read More
-            <ArrowUpRight size={17} />
-          </MotionLink>
-        </div>
       </div>
     </section>
   )

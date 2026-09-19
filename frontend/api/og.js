@@ -34,9 +34,18 @@ export default async function handler(req, res) {
         ? blogData.content.substring(0, 160).replace(/[^a-zA-Z0-9 ]/g, '') + '...' 
         : 'Read this article by Alok Hotta.';
       
-      const imageUrl = blogData.coverImage 
-        ? (blogData.coverImage.startsWith('http') ? blogData.coverImage : `${apiUrl.replace('/api', '')}/assets/blog/${blogData.coverImage}`)
-        : `${baseUrl}/og-image.png`;
+      const rawCover = blogData.coverImage || blogData.image;
+      let imageUrl = `${baseUrl}/og-image.png`;
+      if (rawCover) {
+        if (rawCover.startsWith('http')) {
+          imageUrl = rawCover;
+        } else {
+          const cleanPath = rawCover.startsWith('/')
+            ? rawCover
+            : `/assets/blog/${rawCover}`;
+          imageUrl = `${apiUrl.replace(/\/api\/?$/, '')}${cleanPath}`;
+        }
+      }
 
       // Replace Title
       html = html.replace(

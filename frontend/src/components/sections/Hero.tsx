@@ -38,7 +38,7 @@ export function Hero() {
           </motion.div>
 
           <h1
-            aria-label="HAY, I'M ALOK HOTTA"
+            aria-label="HEY, I'M ALOK HOTTA"
             className="mt-6 max-w-4xl font-display font-extrabold uppercase leading-[0.9] tracking-normal text-foreground"
           >
             <motion.span
@@ -121,23 +121,19 @@ export function Hero() {
             <a
               href="#projects"
               style={{
-                backgroundColor: "var(--foreground)",
-                color: "var(--bg)",
+                backgroundColor: 'var(--foreground)',
+                color: 'var(--bg)',
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] transition hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] transition-transform duration-200 hover:scale-105"
             >
               View Projects
               <ArrowUpRight size={18} />
             </a>
             <a
-              href="/resume.pdf"
-              style={{
-                backgroundColor: "var(--foreground)",
-                color: "var(--bg)",
-              }}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/60 px-6 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] text-foreground transition hover:bg-surface-2"
+              href="/resume"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface/80 px-6 py-3 font-display text-sm font-extrabold uppercase tracking-[0.16em] text-foreground backdrop-blur-sm transition-all duration-200 hover:border-foreground hover:bg-surface-2"
             >
-              Download Resume
+              View Resume
               <ArrowDownToLine size={18} />
             </a>
             <div className="flex items-center justify-center gap-6 pt-8 sm:basis-full lg:basis-auto lg:pt-8 lg:pl-2">

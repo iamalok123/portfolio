@@ -61,8 +61,8 @@ export function Experience() {
                   <div className="absolute left-2.5 top-7 z-10 grid size-6 place-items-center rounded-full bg-accent text-bg shadow-[0_0_0_8px_var(--bg)] md:left-1/2 md:-translate-x-1/2">
                     <span
                       className={cn(
-                        'size-2.5 rounded-full bg-black',
-                        present && 'animate-pulse bg-black',
+                        'size-2.5 rounded-full bg-bg transition-colors',
+                        present && 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]',
                       )}
                     />
                   </div>

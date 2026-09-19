@@ -105,7 +105,7 @@ const PROJECTS: ProjectSeed[] = [
   },
   {
     title: "KIA Media",
-    desc: "Freelancing (Portfolio Website build for KIA Media Networks) with a focus on clean design and responsive layouts.",
+    desc: "Freelance client project built for KIA Media Networks with clean editorial design and responsive video showcase layouts.",
     techStack: [
       "React", 
       "Vite", 
@@ -118,7 +118,7 @@ const PROJECTS: ProjectSeed[] = [
   },
   {
     title: "CareIQ",
-    desc: "CareIQ is an AI-powered coverage-aware hospital care navigation platform. I built this project for the (GE Health Care - Precison Care Hackathon 2026).",
+    desc: "CareIQ is an AI-powered coverage-aware hospital care navigation platform built for the GE HealthCare - Precision Care Hackathon 2026.",
     techStack: [
       "React.js", 
       "TypeScript", 

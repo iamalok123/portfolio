@@ -37,6 +37,14 @@
   --border: rgba(255, 255, 255, 0.12);
 }
 
+.text-bg {
+  color: var(--bg) !important;
+}
+
+.bg-bg {
+  background-color: var(--bg) !important;
+}
+
 *,
 *::before,
 *::after {
