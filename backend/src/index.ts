@@ -76,14 +76,22 @@ app.get('/', (_req, res) => {
   })
 })
 
-app.get('/health', (_req, res) => {
+app.get(['/health', '/api/health'], (_req, res) => {
+  const memory = process.memoryUsage()
   res.json({
     status: 'ok',
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV ?? 'development',
     database: {
       connected: isDBConnected(),
       state: getDBState(),
     },
-    timestamp: new Date().toISOString(),
+    memory: {
+      rssMb: Math.round(memory.rss / (1024 * 1024)),
+      heapUsedMb: Math.round(memory.heapUsed / (1024 * 1024)),
+      heapTotalMb: Math.round(memory.heapTotal / (1024 * 1024)),
+    },
   })
 })
 

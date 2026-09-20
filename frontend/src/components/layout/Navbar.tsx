@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion'
-import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react'
+import { ArrowUpRight, Menu, Moon, Search, Sun, X } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -90,7 +90,7 @@ export function Navbar() {
           ? 'projects'
           : activeSection
 
-  const effectiveActive = hoveredSection ?? displayActiveSection 
+  const effectiveActive = hoveredSection ?? displayActiveSection
   // ── Scroll header background ───────────────────────────────────────────────
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50)
@@ -258,7 +258,18 @@ export function Navbar() {
             {navItems.map(renderNavLink)}
           </div>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden items-center gap-2.5 lg:flex">
+            <motion.button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.94 }}
+              aria-label="Search portfolio (Cmd+K)"
+              title="Search portfolio (Cmd+K / Ctrl+K)"
+              className="relative grid size-11 place-items-center rounded-full border border-border bg-surface/80 text-foreground shadow-sm backdrop-blur-md transition hover:border-accent/50"
+            >
+              <Search size={18} />
+            </motion.button>
             <ThemeToggle />
             <motion.a
               href="/contact"
@@ -274,7 +285,16 @@ export function Navbar() {
             </motion.a>
           </div>
 
-          <div className="flex items-center gap-3 lg:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
+            <motion.button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+              whileTap={{ scale: 0.94 }}
+              aria-label="Open command search"
+              className="grid size-11 place-items-center rounded-full border border-border bg-surface/80 text-foreground backdrop-blur-md"
+            >
+              <Search size={18} />
+            </motion.button>
             <ThemeToggle />
             <motion.button
               type="button"
@@ -341,7 +361,7 @@ export function Navbar() {
                   className={cn(
                     'border-b border-border pb-5 font-display text-4xl font-extrabold text-foreground',
                     displayActiveSection === ('path' in item ? item.path.replace('/', '') : item.sectionId) &&
-                      'text-accent',
+                    'text-accent',
                   )}
                 >
                   {item.label}

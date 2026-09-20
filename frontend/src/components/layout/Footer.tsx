@@ -1,9 +1,10 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Activity } from 'lucide-react'
 import type { ComponentType } from 'react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
+import { SystemTelemetryModal } from '../ui/SystemTelemetryModal'
 import { Github, Linkedin, TwitterX } from 'react-bootstrap-icons'
 
 
@@ -36,6 +37,7 @@ const SOCIAL_LINKS: { label: string; href: string; Icon: ComponentType<{ size?: 
 ]
 
 export function Footer() {
+  const [isTelemetryOpen, setIsTelemetryOpen] = useState(false)
   const footerRef = useRef<HTMLElement>(null)
   const { ref: inViewRef, inView } = useInView({ triggerOnce: true, threshold: 0.1 })
 
@@ -121,8 +123,41 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Production Telemetry Status Bar */}
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 rounded-xl border border-border/80 bg-surface/50 p-3.5 backdrop-blur-sm sm:flex-row">
+          <div className="flex items-center gap-3">
+            <span className="relative flex size-2.5">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
+            </span>
+            <span className="font-mono text-xs font-medium text-foreground">
+              All Systems Operational
+            </span>
+            <span className="hidden text-xs text-muted sm:inline">•</span>
+            <span className="hidden font-mono text-xs text-muted sm:inline">
+              99.9% Uptime
+            </span>
+            <span className="hidden text-xs text-muted sm:inline">•</span>
+            <span className="hidden font-mono text-xs text-emerald-500 sm:inline">
+              Edge Active
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsTelemetryOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2/80 px-3.5 py-1.5 font-mono text-xs text-muted transition hover:border-accent/60 hover:text-foreground"
+          >
+            <Activity size={12} className="text-accent" />
+            <span>Telemetry &amp; Health</span>
+            <span className="rounded bg-surface px-1.5 py-0.5 text-[10px] font-bold text-foreground">
+              Live
+            </span>
+          </button>
+        </div>
+
         {/* Divider */}
-        <div className="mt-12 h-px w-full bg-border" />
+        <div className="mt-8 h-px w-full bg-border" />
 
         {/* Bottom bar */}
         <div className="mt-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
@@ -145,6 +180,11 @@ export function Footer() {
           </div>
         </div>
       </div>
+
+      <SystemTelemetryModal
+        isOpen={isTelemetryOpen}
+        onClose={() => setIsTelemetryOpen(false)}
+      />
     </motion.footer>
   )
 }

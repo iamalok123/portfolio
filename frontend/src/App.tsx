@@ -1,11 +1,12 @@
 import Lenis from '@studio-freight/lenis'
 import { AnimatePresence } from 'framer-motion'
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
 import { BouncingDots } from './components/ui/BouncingDots'
+import { CommandPalette } from './components/ui/CommandPalette'
 import { LoadingScreen } from './components/ui/LoadingScreen'
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar'
 
@@ -44,6 +45,26 @@ function RouteFallback() {
 
 function App() {
   const location = useLocation()
+  const [isCommandOpen, setIsCommandOpen] = useState(false)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setIsCommandOpen((prev) => !prev)
+      }
+    }
+
+    const handleCustomOpen = () => setIsCommandOpen(true)
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('open-command-palette', handleCustomOpen)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('open-command-palette', handleCustomOpen)
+    }
+  }, [])
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -118,6 +139,10 @@ function App() {
           </Suspense>
         </AnimatePresence>
         <Footer />
+        <CommandPalette
+          isOpen={isCommandOpen}
+          onClose={() => setIsCommandOpen(false)}
+        />
       </div>
     </>
   )
