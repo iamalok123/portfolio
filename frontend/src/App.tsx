@@ -7,8 +7,11 @@ import { Footer } from './components/layout/Footer'
 import { Navbar } from './components/layout/Navbar'
 import { BouncingDots } from './components/ui/BouncingDots'
 import { CommandPalette } from './components/ui/CommandPalette'
+import { ProjectCaseStudyModal } from './components/ui/ProjectCaseStudyModal'
 import { LoadingScreen } from './components/ui/LoadingScreen'
 import { ScrollProgressBar } from './components/ui/ScrollProgressBar'
+import { STATIC_PROJECTS } from './data/projects'
+import type { Project } from './types'
 
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
 const Blog = lazy(() => import('./pages/Blog').then((module) => ({ default: module.Blog })))
@@ -46,6 +49,7 @@ function RouteFallback() {
 function App() {
   const location = useLocation()
   const [isCommandOpen, setIsCommandOpen] = useState(false)
+  const [caseStudyProject, setCaseStudyProject] = useState<Project | null>(null)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -57,14 +61,42 @@ function App() {
 
     const handleCustomOpen = () => setIsCommandOpen(true)
 
+    const handleOpenCaseStudy = (e: Event) => {
+      const customEvent = e as CustomEvent<Project | string>
+      const detail = customEvent.detail
+      if (!detail) return
+      if (typeof detail === 'string') {
+        const found = STATIC_PROJECTS.find(
+          (p) => p._id === detail || p.title.toLowerCase() === detail.toLowerCase()
+        )
+        if (found) setCaseStudyProject(found)
+      } else {
+        setCaseStudyProject(detail)
+      }
+    }
+
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('open-command-palette', handleCustomOpen)
+    window.addEventListener('open-case-study', handleOpenCaseStudy)
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('open-command-palette', handleCustomOpen)
+      window.removeEventListener('open-case-study', handleOpenCaseStudy)
     }
   }, [])
+
+  // Auto-open case study if specified in query string e.g. ?caseStudy=studyflow-ai
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const csId = params.get('caseStudy')
+    if (csId) {
+      const found = STATIC_PROJECTS.find(
+        (p) => p._id === csId || p.title.toLowerCase() === csId.toLowerCase()
+      )
+      if (found) setCaseStudyProject(found)
+    }
+  }, [location.search])
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -142,6 +174,11 @@ function App() {
         <CommandPalette
           isOpen={isCommandOpen}
           onClose={() => setIsCommandOpen(false)}
+        />
+        <ProjectCaseStudyModal
+          project={caseStudyProject}
+          isOpen={Boolean(caseStudyProject)}
+          onClose={() => setCaseStudyProject(null)}
         />
       </div>
     </>

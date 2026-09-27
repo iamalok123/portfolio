@@ -70,6 +70,42 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
+body[data-modal-locked="true"] {
+  position: fixed !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Custom sleek scrollbar for modal dialogs and native scrollable containers */
+[data-lenis-prevent],
+.custom-scrollbar {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--foreground) 24%, transparent) transparent;
+}
+
+[data-lenis-prevent]::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+[data-lenis-prevent]::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-lenis-prevent]::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--foreground) 22%, transparent);
+  border-radius: 9999px;
+}
+
+[data-lenis-prevent]::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--foreground) 40%, transparent);
+}
+
 /* NOTE: pointer-events: none on iframes was intentionally removed.
    It breaks PDF.js canvas and any embedded viewer inside the page.
    Lenis scroll-hijacking inside iframes is not needed since we use

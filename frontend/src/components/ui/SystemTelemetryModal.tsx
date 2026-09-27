@@ -10,9 +10,10 @@ import {
   Sparkles,
   X,
 } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from '../../lib/axios'
 import { cn } from '../../lib/utils'
+import { useModalScrollLock } from '../../hooks/useModalScrollLock'
 
 export interface TelemetryData {
   status: string
@@ -48,10 +49,98 @@ function formatUptime(seconds: number): string {
 }
 
 export function SystemTelemetryModal({ isOpen, onClose }: SystemTelemetryModalProps) {
+  useModalScrollLock(isOpen)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const backdropRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const [data, setData] = useState<TelemetryData | null>(null)
   const [latency, setLatency] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [lastChecked, setLastChecked] = useState<Date>(new Date())
+
+  // Native non-passive wheel handling to prevent background page scroll
+  useEffect(() => {
+    if (!isOpen) return
+
+    const cardEl = cardRef.current
+    const bodyEl = bodyRef.current
+    const backdropEl = backdropRef.current
+    const wrapperEl = wrapperRef.current
+
+    const handleCardWheel = (e: WheelEvent) => {
+      e.stopPropagation()
+
+      if (!bodyEl) {
+        e.preventDefault()
+        return
+      }
+
+      if (bodyEl.contains(e.target as Node)) {
+        const { scrollTop, scrollHeight, clientHeight } = bodyEl
+        const delta = e.deltaY
+
+        const isScrollingDown = delta > 0
+        const isScrollingUp = delta < 0
+
+        const isAtBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight
+        const isAtTop = scrollTop <= 0
+
+        if ((isScrollingDown && isAtBottom) || (isScrollingUp && isAtTop)) {
+          e.preventDefault()
+        }
+        return
+      }
+
+      e.preventDefault()
+      bodyEl.scrollTop += e.deltaY
+    }
+
+    const blockEvent = (e: Event) => {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    if (cardEl) {
+      cardEl.addEventListener('wheel', handleCardWheel, { passive: false })
+    }
+    if (backdropEl) {
+      backdropEl.addEventListener('wheel', blockEvent, { passive: false })
+      backdropEl.addEventListener('touchmove', blockEvent, { passive: false })
+    }
+    if (wrapperEl) {
+      const handleWrapperWheel = (e: WheelEvent) => {
+        if (e.target === wrapperEl) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      }
+      wrapperEl.addEventListener('wheel', handleWrapperWheel, { passive: false })
+      wrapperEl.addEventListener('touchmove', blockEvent, { passive: false })
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      if (cardEl) {
+        cardEl.removeEventListener('wheel', handleCardWheel)
+      }
+      if (backdropEl) {
+        backdropEl.removeEventListener('wheel', blockEvent)
+        backdropEl.removeEventListener('touchmove', blockEvent)
+      }
+      if (wrapperEl) {
+        wrapperEl.removeEventListener('wheel', blockEvent)
+        wrapperEl.removeEventListener('touchmove', blockEvent)
+      }
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
 
   const pingDiagnostics = useCallback(async () => {
     setIsLoading(true)
@@ -105,31 +194,46 @@ export function SystemTelemetryModal({ isOpen, onClose }: SystemTelemetryModalPr
       : 'text-rose-500'
 
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog.Root modal={false} open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <AnimatePresence>
         {isOpen && (
           <Dialog.Portal forceMount>
-            <Dialog.Overlay asChild>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="fixed inset-0 z-50 bg-black/65 backdrop-blur-md"
-              />
-            </Dialog.Overlay>
+            <motion.div
+              ref={backdropRef}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={onClose}
+              style={{
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+              }}
+              className="fixed inset-0 z-100 bg-black/60 dark:bg-black/75 cursor-pointer"
+            />
 
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+            <div
+              ref={wrapperRef}
+              data-lenis-prevent
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  onClose()
+                }
+              }}
+              className="fixed inset-0 z-101 flex items-center justify-center p-4 sm:p-6 pointer-events-auto"
+            >
               <Dialog.Content asChild>
                 <motion.div
+                  ref={cardRef}
                   initial={{ opacity: 0, scale: 0.95, y: 16 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 16 }}
                   transition={{ type: 'spring', damping: 24, stiffness: 260 }}
-                  className="relative flex max-h-[88svh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
+                  data-lenis-prevent
+                  className="relative flex max-h-[88svh] min-h-0 w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
                 >
                   {/* Header */}
-                  <div className="flex items-center justify-between border-b border-border bg-surface-2/60 px-6 py-4">
+                  <div className="flex items-center justify-between border-b border-border bg-surface-2/60 px-6 py-4 shrink-0">
                     <div className="flex items-center gap-3">
                       <span className="relative flex size-3">
                         <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
@@ -149,7 +253,7 @@ export function SystemTelemetryModal({ isOpen, onClose }: SystemTelemetryModalPr
                       <button
                         type="button"
                         aria-label="Close telemetry"
-                        className="grid size-8 place-items-center rounded-lg border border-border text-muted transition hover:bg-surface hover:text-foreground"
+                        className="grid size-8 place-items-center rounded-lg border border-border text-muted transition hover:bg-surface hover:text-foreground cursor-pointer"
                       >
                         <X size={16} />
                       </button>
@@ -157,7 +261,12 @@ export function SystemTelemetryModal({ isOpen, onClose }: SystemTelemetryModalPr
                   </div>
 
                   {/* Body Content */}
-                  <div className="overflow-y-auto p-6 space-y-6">
+                  <div
+                    ref={bodyRef}
+                    data-lenis-prevent
+                    tabIndex={0}
+                    className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-6 custom-scrollbar focus:outline-none"
+                  >
                     {/* Top KPI row */}
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                       {/* KPI: Status */}

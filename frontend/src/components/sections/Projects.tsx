@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowUpRight, ChevronDown, ChevronUp, ExternalLink, Filter, Globe, SearchX, X } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, ChevronUp, ExternalLink, Filter, Globe, Search, SearchX, X } from 'lucide-react'
 import { Github } from 'react-bootstrap-icons'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -7,7 +7,6 @@ import { api } from '../../lib/axios'
 import { resolveAssetUrl } from '../../lib/assets'
 import { cn } from '../../lib/utils'
 import { STATIC_PROJECTS } from '../../data/projects'
-import { ProjectCaseStudyModal } from '../ui/ProjectCaseStudyModal'
 import type { Project } from '../../types'
 
 const MotionLink = motion(Link)
@@ -82,24 +81,28 @@ function ProjectCard({
         <div className="flex items-start justify-between gap-4">
           <h3 className="font-display text-2xl font-extrabold text-foreground">{project.title}</h3>
           <div className="flex shrink-0 gap-2 opacity-100 transition lg:opacity-0 lg:group-hover:opacity-100">
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`${project.title} GitHub`}
-              className="grid size-9 place-items-center rounded-full border border-border text-foreground transition hover:border-accent hover:text-accent"
-            >
-              <Github size={16} />
-            </a>
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`${project.title} live site`}
-              className="grid size-9 place-items-center rounded-full border border-border text-foreground transition hover:border-accent hover:text-accent"
-            >
-              <Globe size={16} />
-            </a>
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${project.title} GitHub`}
+                className="grid size-9 place-items-center rounded-full border border-border text-foreground transition hover:border-accent hover:text-accent"
+              >
+                <Github size={16} />
+              </a>
+            )}
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${project.title} live site`}
+                className="grid size-9 place-items-center rounded-full border border-border text-foreground transition hover:border-accent hover:text-accent"
+              >
+                <Globe size={16} />
+              </a>
+            )}
           </div>
         </div>
         <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted">{project.desc}</p>
@@ -120,7 +123,7 @@ function ProjectCard({
             <button
               type="button"
               onClick={() => onOpenCaseStudy(project)}
-              className="inline-flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-[0.14em] text-accent transition hover:opacity-75"
+              className="inline-flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-[0.14em] text-accent transition hover:opacity-75 cursor-pointer"
             >
               <span>Case Study</span>
               <ArrowUpRight size={13} />
@@ -138,19 +141,101 @@ function ProjectCard({
   )
 }
 
+/**
+ * Smart matcher for project technologies and text queries.
+ * Normalizes differences between 'React' / 'React.js', 'Next.js', 'AI', 'PostgreSQL', etc.
+ */
+function matchProject(project: Project, activeTech: string, searchInput: string): boolean {
+  if (searchInput.trim()) {
+    const q = searchInput.toLowerCase().trim()
+    const matchTitle = project.title.toLowerCase().includes(q)
+    const matchDesc = project.desc.toLowerCase().includes(q)
+    const matchTech = project.techStack.some((t) => t.toLowerCase().includes(q))
+    const matchProblem = project.caseStudy?.problem?.toLowerCase().includes(q)
+    const matchTagline = project.caseStudy?.tagline?.toLowerCase().includes(q)
+    if (!matchTitle && !matchDesc && !matchTech && !matchProblem && !matchTagline) {
+      return false
+    }
+  }
+
+  if (!activeTech || activeTech.toLowerCase() === 'all') {
+    return true
+  }
+
+  const f = activeTech.toLowerCase().trim()
+
+  if (f === 'ai' || f === 'ai & llm' || f === 'ai & llm systems' || f === 'ai / ml') {
+    const aiKeywords = ['gemini', 'rag', 'openrouter', 'inngest', 'cloudflare workers ai', 'ai', 'llm']
+    return (
+      project.techStack.some((t) => aiKeywords.some((k) => t.toLowerCase().includes(k))) ||
+      /ai|llm|rag|gemini|openrouter/i.test(project.title + ' ' + project.desc)
+    )
+  }
+
+  if (f === 'next.js' || f === 'nextjs' || f === 'next') {
+    return project.techStack.some((t) => t.toLowerCase().includes('next'))
+  }
+
+  if (f === 'react' || f === 'react.js') {
+    return project.techStack.some((t) => t.toLowerCase().includes('react'))
+  }
+
+  if (f === 'node.js' || f === 'node' || f === 'full-stack' || f === 'mern' || f === 'pern') {
+    return project.techStack.some((t) =>
+      /node|express|mongodb|postgresql|supabase|prisma/i.test(t)
+    )
+  }
+
+  if (f === 'postgresql' || f === 'postgres') {
+    return project.techStack.some((t) => /postgres|supabase/i.test(t))
+  }
+
+  if (f === 'mongodb' || f === 'mongo') {
+    return project.techStack.some((t) => t.toLowerCase().includes('mongo'))
+  }
+
+  if (f === 'socket.io' || f === 'real-time' || f === 'websocket') {
+    return (
+      project.techStack.some((t) => /socket|realtime/i.test(t)) ||
+      /realtime|chat/i.test(project.title + ' ' + project.desc)
+    )
+  }
+
+  return project.techStack.some(
+    (t) => t.toLowerCase() === f || t.toLowerCase().includes(f)
+  )
+}
+
 export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [projects, setProjects] = useState<Project[]>(STATIC_PROJECTS)
   const [isLoading, setIsLoading] = useState(false)
   const [showAllTopics, setShowAllTopics] = useState(false)
-  const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null)
-  const [isCaseStudyOpen, setIsCaseStudyOpen] = useState(false)
-  const activeTech = showViewAll ? '' : searchParams.get('tech') ?? ''
+  const [searchInput, setSearchInput] = useState('')
+
+  const activeTech = searchParams.get('tech') ?? ''
 
   const handleOpenCaseStudy = (proj: Project) => {
-    setSelectedCaseStudy(proj)
-    setIsCaseStudyOpen(true)
+    window.dispatchEvent(new CustomEvent('open-case-study', { detail: proj }))
   }
+
+  // Sync external filter events (from CommandPalette or global links)
+  useEffect(() => {
+    const handleFilterProjects = (e: Event) => {
+      const customEvent = e as CustomEvent<string>
+      const tech = customEvent.detail
+      const next = new URLSearchParams(searchParams)
+      if (!tech || tech.toLowerCase() === 'all') {
+        next.delete('tech')
+      } else {
+        next.set('tech', tech)
+      }
+      setSearchParams(next)
+    }
+
+    window.addEventListener('filter-projects', handleFilterProjects)
+    return () => window.removeEventListener('filter-projects', handleFilterProjects)
+  }, [searchParams, setSearchParams])
 
   useEffect(() => {
     let isActive = true
@@ -218,7 +303,7 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
     if (activeTech) {
       const allOption = filterOptions.find((option) => option.type === 'all')
       const activeOption = filterOptions.find(
-        (option) => option.type === 'tech' && option.label === activeTech,
+        (option) => option.type === 'tech' && option.label.toLowerCase() === activeTech.toLowerCase(),
       )
 
       if (allOption && activeOption) {
@@ -237,12 +322,11 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
 
   const visibleProjects = useMemo(() => {
     const ordered = [...projects].sort((a, b) => a.order - b.order)
-    const filtered = activeTech
-      ? ordered.filter((project) => project.techStack.includes(activeTech))
-      : ordered
+    const filtered = ordered.filter((project) => matchProject(project, activeTech, searchInput))
 
-    return showViewAll ? filtered.slice(0, 3) : filtered
-  }, [activeTech, projects, showViewAll])
+    // Only limit to 3 if on the homepage AND no active filter or search query is present
+    return showViewAll && !activeTech && !searchInput ? filtered.slice(0, 3) : filtered
+  }, [activeTech, projects, searchInput, showViewAll])
 
   const updateFilter = (option: FilterOption) => {
     const next = new URLSearchParams(searchParams)
@@ -261,10 +345,11 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
       return !activeTech
     }
 
-    return activeTech === option.label
+    return activeTech.toLowerCase() === option.label.toLowerCase()
   }
 
   const clearFilters = () => {
+    setSearchInput('')
     setSearchParams(new URLSearchParams())
   }
 
@@ -282,6 +367,7 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
           </div>
         </div>
 
+        {/* Filter Bar on Dedicated Projects Page */}
         {!showViewAll && (
           <div className="mt-10 rounded-lg border border-border bg-surface p-3 sm:p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:gap-4">
@@ -291,11 +377,34 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
                   Explore by topic
                 </span>
               </div>
-              {activeTech && (
+
+              {/* Real-time Project Search Input */}
+              <div className="relative flex-1 max-w-md">
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  type="text"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="Search projects by title, stack, or problem..."
+                  className="w-full rounded-full border border-border bg-bg py-2 pl-9 pr-8 text-xs text-foreground placeholder:text-muted focus:border-accent focus:outline-none sm:text-sm"
+                />
+                {searchInput && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchInput('')}
+                    aria-label="Clear search"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              {(activeTech || searchInput) && (
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="inline-flex w-fit items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:px-4 sm:py-2 sm:text-sm"
+                  className="inline-flex w-fit items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:px-4 sm:py-2 sm:text-sm cursor-pointer"
                 >
                   <X size={16} />
                   Clear filters
@@ -324,7 +433,7 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
                       type="button"
                       onClick={() => updateFilter(option)}
                       className={cn(
-                        'group inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm',
+                        'group inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border border-border bg-bg px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm cursor-pointer',
                         isActive && 'border-accent bg-accent text-bg hover:text-bg',
                       )}
                     >
@@ -345,7 +454,7 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
                 type="button"
                 onClick={() => setShowAllTopics((value) => !value)}
                 className={cn(
-                  'inline-flex min-h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm',
+                  'inline-flex min-h-9 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-foreground hover:text-foreground sm:min-h-10 sm:px-4 sm:py-2 sm:text-sm cursor-pointer',
                   showAllTopics && 'w-fit',
                 )}
               >
@@ -365,7 +474,37 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
           </div>
         )}
 
-        <div className={showViewAll ? 'mt-12' : 'mt-8'}>
+        {/* Active Filter Notice on Homepage */}
+        {showViewAll && (activeTech || searchInput) && (
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent/40 bg-accent/5 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center gap-2 text-sm text-foreground">
+              <span className="font-bold text-accent">Active Filter:</span>
+              {activeTech && (
+                <span className="rounded-full bg-surface border border-border px-3 py-1 text-xs font-mono font-semibold text-foreground">
+                  Stack: {activeTech}
+                </span>
+              )}
+              {searchInput && (
+                <span className="rounded-full bg-surface border border-border px-3 py-1 text-xs font-mono font-semibold text-foreground">
+                  &ldquo;{searchInput}&rdquo;
+                </span>
+              )}
+              <span className="text-xs text-muted">
+                ({visibleProjects.length} {visibleProjects.length === 1 ? 'project' : 'projects'} found)
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs font-semibold text-foreground hover:border-accent transition cursor-pointer"
+            >
+              <X size={13} />
+              Reset Filters
+            </button>
+          </div>
+        )}
+
+        <div className={showViewAll && !activeTech && !searchInput ? 'mt-12' : 'mt-8'}>
           {isLoading ? (
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 3 }).map((_, index) => (
@@ -389,22 +528,30 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="grid min-h-72 place-items-center rounded-lg border border-dashed border-border bg-surface text-center"
+              className="grid min-h-72 place-items-center rounded-lg border border-dashed border-border bg-surface text-center p-8"
             >
               <div>
                 <SearchX className="mx-auto text-accent" size={36} />
                 <p className="mt-4 font-display text-2xl font-bold text-foreground">
                   No projects found
                 </p>
-                {!showViewAll && (
-                  <p className="mt-2 text-sm text-muted">Try a broader stack or reset filters.</p>
-                )}
+                <p className="mt-2 text-sm text-muted">
+                  No applications matched &ldquo;{activeTech || searchInput}&rdquo;. Try another stack or clear the filter.
+                </p>
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-foreground hover:border-accent transition cursor-pointer"
+                >
+                  <X size={14} />
+                  Reset all filters
+                </button>
               </div>
             </motion.div>
           )}
         </div>
 
-        {showViewAll ? (
+        {showViewAll && !activeTech && !searchInput ? (
           <div className="mt-10 flex justify-center">
             <MotionLink
               to="/projects"
@@ -418,13 +565,6 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
             </MotionLink>
           </div>
         ) : null}
-
-        {/* Interactive Case Study Modal */}
-        <ProjectCaseStudyModal
-          project={selectedCaseStudy}
-          isOpen={isCaseStudyOpen}
-          onClose={() => setIsCaseStudyOpen(false)}
-        />
       </div>
     </section>
   )
