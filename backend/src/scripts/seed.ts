@@ -44,6 +44,7 @@ const PROJECTS: ProjectSeed[] = [
     title: "Zephyr",
     desc: "AI website builder that turns prompts into editable, production-minded web experiences.",
     techStack: [
+      "Next.JS",
       "TypeScript",
       "React",
       "Node.js",

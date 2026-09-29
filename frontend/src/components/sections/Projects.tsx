@@ -1,12 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowUpRight, ChevronDown, ChevronUp, ExternalLink, Filter, Globe, Search, SearchX, X } from 'lucide-react'
+import { ChevronDown, ChevronUp, ExternalLink, Filter, Globe, Search, SearchX, X } from 'lucide-react'
 import { Github } from 'react-bootstrap-icons'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../../lib/axios'
 import { resolveAssetUrl } from '../../lib/assets'
 import { cn } from '../../lib/utils'
 import { STATIC_PROJECTS } from '../../data/projects'
+import { ProjectHoverCaseStudy } from '../ui/ProjectHoverCaseStudy'
 import type { Project } from '../../types'
 
 const MotionLink = motion(Link)
@@ -31,25 +32,47 @@ function SkeletonCard() {
 function ProjectCard({
   project,
   index,
-  onOpenCaseStudy,
+  isHovered,
+  onHoverStart,
+  onHoverEnd,
+  onCardClick,
 }: {
   project: Project
   index: number
-  onOpenCaseStudy: (project: Project) => void
+  isHovered?: boolean
+  onHoverStart: (project: Project, rect: DOMRect) => void
+  onHoverEnd: () => void
+  onCardClick?: (project: Project, rect: DOMRect) => void
 }) {
+  const cardRef = useRef<HTMLElement>(null)
   const coverImage = resolveAssetUrl(project.coverImage || project.image)
   const [failedImageSrc, setFailedImageSrc] = useState('')
   const showCoverImage = Boolean(coverImage && failedImageSrc !== coverImage)
 
   return (
     <motion.article
+      ref={cardRef}
       layout
       initial={{ opacity: 0, scale: 0.92, y: 24 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ type: 'spring', stiffness: 150, damping: 22, delay: index * 0.04 }}
       whileHover={{ y: -4 }}
-      className="group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent/40"
+      onMouseEnter={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        onHoverStart(project, rect)
+      }}
+      onMouseLeave={onHoverEnd}
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest('a, button')) return
+        if (cardRef.current) {
+          onCardClick?.(project, cardRef.current.getBoundingClientRect())
+        }
+      }}
+      className={cn(
+        'group relative flex flex-col overflow-hidden rounded-lg border border-border bg-surface p-4 transition-all duration-200 hover:border-accent/40',
+        isHovered && 'z-50 border-accent/70 shadow-2xl shadow-accent/15 ring-1 ring-accent/40'
+      )}
     >
       <a
         href={project.liveUrl}
@@ -115,26 +138,6 @@ function ProjectCard({
               {tech}
             </span>
           ))}
-        </div>
-
-        {/* Case Study Bar */}
-        <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-4">
-          {project.caseStudy ? (
-            <button
-              type="button"
-              onClick={() => onOpenCaseStudy(project)}
-              className="inline-flex items-center gap-1.5 font-display text-xs font-extrabold uppercase tracking-[0.14em] text-accent transition hover:opacity-75 cursor-pointer"
-            >
-              <span>Case Study</span>
-              <ArrowUpRight size={13} />
-            </button>
-          ) : (
-            <span className="font-mono text-xs text-muted">Project #{project.order}</span>
-          )}
-
-          <span className="text-[11px] text-muted uppercase tracking-wider">
-            {project.techStack[0]}
-          </span>
         </div>
       </div>
     </motion.article>
@@ -212,11 +215,73 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
   const [isLoading, setIsLoading] = useState(false)
   const [showAllTopics, setShowAllTopics] = useState(false)
   const [searchInput, setSearchInput] = useState('')
-
   const activeTech = searchParams.get('tech') ?? ''
+  const [hoveredProject, setHoveredProject] = useState<Project | null>(null)
+  const [cardRect, setCardRect] = useState<DOMRect | null>(null)
+  const [isTouchDevice, setIsTouchDevice] = useState(false)
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const handleOpenCaseStudy = (proj: Project) => {
-    window.dispatchEvent(new CustomEvent('open-case-study', { detail: proj }))
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const touch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+      setIsTouchDevice(touch)
+    }
+  }, [])
+
+  const handleHoverStart = (project: Project, rect: DOMRect) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+    setHoveredProject(project)
+    setCardRect(rect)
+  }
+
+  const handleHoverEnd = () => {
+    if (isTouchDevice) return
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredProject(null)
+      setCardRect(null)
+    }, 180)
+  }
+
+  const handleMouseEnterPopup = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+  }
+
+  const handleMouseLeavePopup = () => {
+    if (isTouchDevice) return
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredProject(null)
+      setCardRect(null)
+    }, 120)
+  }
+
+  const handleCardClick = (project: Project, rect: DOMRect) => {
+    if (hoveredProject?._id === project._id) {
+      setHoveredProject(null)
+      setCardRect(null)
+    } else {
+      setHoveredProject(project)
+      setCardRect(rect)
+    }
+  }
+
+  const handleClosePopup = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    setHoveredProject(null)
+    setCardRect(null)
   }
 
   // Sync external filter events (from CommandPalette or global links)
@@ -519,7 +584,10 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
                     key={project._id}
                     project={project}
                     index={index}
-                    onOpenCaseStudy={handleOpenCaseStudy}
+                    isHovered={hoveredProject?._id === project._id}
+                    onHoverStart={handleHoverStart}
+                    onHoverEnd={handleHoverEnd}
+                    onCardClick={handleCardClick}
                   />
                 ))}
               </AnimatePresence>
@@ -566,6 +634,16 @@ export function Projects({ showViewAll = true }: { showViewAll?: boolean }) {
           </div>
         ) : null}
       </div>
+
+      {/* Hover Case Study Preview & Backdrop Blur */}
+      <ProjectHoverCaseStudy
+        project={hoveredProject}
+        cardRect={cardRect}
+        onMouseEnterPopup={handleMouseEnterPopup}
+        onMouseLeavePopup={handleMouseLeavePopup}
+        onClose={handleClosePopup}
+        isTouch={isTouchDevice}
+      />
     </section>
   )
 }
